@@ -1,4 +1,18 @@
-// xxxxxxxxxxxxxxxxxx
+////////////////////////////////////////////////////////////////////
+//  Archontis Politis
+//  archontis.politis@aalto.fi
+////////////////////////////////////////////////////////////////////
+//
+//  JSHlib a JavaScript library that implements 
+//  the spherical harmonic transform for real spherical harmonics
+//  and some useful transformations in the spherical harmonic domain
+//
+//  The library uses the numeric.js library for matrix operations
+//  http://www.numericjs.com/
+//  
+////////////////////////////////////////////////////////////////////
+
+// forwardSHT implements the forward SHT on data defined over the sphere
 function forwardSHT(N, data, CART_OR_SPH, DIRECT_OR_PINV) {
     
     var Ndirs = data.length, Nsh = (N+1)*(N+1);
@@ -27,7 +41,7 @@ function forwardSHT(N, data, CART_OR_SPH, DIRECT_OR_PINV) {
     return coeffs;
 }
 
-// xxxxxxxxxxxxxxxxxx
+// inverseSHT implements the inverse SHT from SH coefficients
 function inverseSHT(coeffs, aziElev) {
     
     var aziElevR = aziElev;
@@ -48,7 +62,7 @@ function print2Darray(array2D) {
     for (q=0; q<array2D.length; q++) console.log(array2D[q]);
 }
 
-// xxxxxxxxxxxxxxxxxx
+// convertCart2Sph converts arrays of cartesian vectors to spherical coordinates
 function convertCart2Sph(xyz, OMIT_MAG) {
     
     var azi, elev, r;
@@ -68,7 +82,7 @@ function convertCart2Sph(xyz, OMIT_MAG) {
     return aziElevR;
 }
 
-// xxxxxxxxxxxxxxxxxx
+// convertSph2Cart converts arrays of spherical coordinates to cartesian
 function convertSph2Cart(aziElevR) {
     
     var x,y,z;
@@ -84,7 +98,7 @@ function convertSph2Cart(aziElevR) {
     return xyz;
 }
 
-// xxxxxxxxxxxxxxxxxx
+// computeRealSH computes real spherical harmonics up to order N
 function computeRealSH(N, data) {
     
     var azi = new Array(data.length);
@@ -139,13 +153,13 @@ function computeRealSH(N, data) {
     return Y_N;
 }
 
-// xxxxxxxxxxxxxxxxxx
+// factorial compute factorial
 function factorial(n) {
     if (n === 0) return 1;
     return n * factorial(n - 1);
 }
 
-// xxxxxxxxxxxxxxxxxx
+// recurseLegendrePoly computes associated Legendre functions recursively
 function recurseLegendrePoly(n, x, Pnm_minus1, Pnm_minus2) {
     
     var Pnm = new Array(n+1);
@@ -197,6 +211,7 @@ function recurseLegendrePoly(n, x, Pnm_minus1, Pnm_minus2) {
     return Pnm;
 }
 
+// pinv_svd computes the pseudo-inverse using SVD
 function pinv_svd(A) {
     var z = numeric.svd(A), foo = z.S[0];
     var U = z.U, S = z.S, V = z.V;
@@ -206,12 +221,13 @@ function pinv_svd(A) {
     return numeric.dot(numeric.dot(V,numeric.diag(Sinv)),numeric.transpose(U))
 }
 
+// pinv_svd computes the left pseudo-inverse
 function pinv_direct(A) {
     var AT = numeric.transpose(A);
     return numeric.dot(numeric.inv(numeric.dot(AT,A)),AT);
 }
 
-// xxxxxxxxxxxxxxxxxx
+// computes rotation matrices for real spherical harmonics
 function getSHrotMtx(Rxyz, L) {
     
     var Nsh = (L+1)*(L+1);
@@ -343,7 +359,7 @@ function P(i,l,a,b,R_1,R_lm1) {
     return ret;
 }
 
-// xxxxxxxxxxxxxxxxxx
+// yawPitchRoll2Rzyx computes the rotation matrix from ZY'X'' rotation angles
 function yawPitchRoll2Rzyx(yaw, pitch, roll) {
     
     var Rx, Ry, Rz;
