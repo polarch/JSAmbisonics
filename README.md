@@ -195,32 +195,32 @@ and so on.
 
 
 
-## Examples
+## Examples (Chrome and Firefox)
 
 ### FOA
-1. B-format player and binaural decoder (Chrome and Firefox). The filters are based on the author's HRTFs, so performance may vary for others.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA1.WebAudio_ambisonics_Bformat_player.html
+1. B-format player and binaural decoder. The filters are based on the author's HRTFs, so performance may vary for others.
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA1.WebAudio_ambisonics_Bformat_player.html
 2. B-format panner and binaural decoder.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA2.WebAudio_ambisonics_Bformat_panner.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA2.WebAudio_ambisonics_Bformat_panner.html
 3. B-format player with rotation.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA3.WebAudio_ambisonics_Bformat_rotator.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA3.WebAudio_ambisonics_Bformat_rotator.html
 4. B-format panner with an attached B-format intensity analyser and visualization.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA4.WebAudio_ambisonics_Bformat_panner_visualizer.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA4.WebAudio_ambisonics_Bformat_panner_visualizer.html
 5. B-format player with an attached B-format intensity analyser and visualization.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA5.WebAudio_ambisonics_Bformat_player_visualizer.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA5.WebAudio_ambisonics_Bformat_player_visualizer.html
 6. B-format virtual microphone
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA6.WebAudio_ambisonics_Bformat_vmic.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA6.WebAudio_ambisonics_Bformat_vmic.html
 
 ### HOA
 1. HOA player and binaural decoder. The order can be switched to show improvement from low-orders on spatial blurring and colouration.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA1.WebAudio_ambisonics_HOA_player.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA1.WebAudio_ambisonics_HOA_player.html
 2. HOA panner and binaural decoder.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA2.WebAudio_ambisonics_HOA_panner.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA2.WebAudio_ambisonics_HOA_panner.html
 3. HOA player with rotation.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA3.WebAudio_ambisonics_HOA_rotator.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA3.WebAudio_ambisonics_HOA_rotator.html
 4. HOA player with an attached B-format intensity analyser and visualization.
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA4.WebAudio_ambisonics_HOA_player_visualizer.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA4.WebAudio_ambisonics_HOA_player_visualizer.html
 5. HOA virtual microphone
-> https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA5.WebAudio_ambisonics_HOA_vmic.html
+https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA5.WebAudio_ambisonics_HOA_vmic.html
 
 HOA recordings are made by the author in the Acoustics laboratory of Aalto University, using the Eigenmike microphone.
