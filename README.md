@@ -11,7 +11,7 @@ JSAmbisonics is a JavaScript library that implements a set of objects for real-t
 * **WebAudio_HOA.js**: A library for higher-order ambisonics. It is based on the ACN signal set specification, with N3D normalization of the ambisonic signals. It requires the JSHlib for spherical harmonics, and the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
 * **JSHlib.js**: A library that computes real spherical harmonics, the spherical harmonic transform (SHT) and its inverse, and rotations in the spherical harmonic domain. It requires the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
 
-The library is a work-in-progress. At the moment, demos seem to work in Mozilla Firefox and Google Chrome (FOA only) due to different limitations of the Web Audio specification at different browsers (the issue seems to be handling of multichannel WAVE audio, that the demos use at the moment. Firefox seems to handle these without problem. This issue can be circumvented possibly by splitting the files into groups of fewer channels. 4-channel files seem to have no problem.)
+The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. No other browsers have been checked yet.
 
 ---
 ## First-order (B-format) ambisonics
@@ -110,7 +110,7 @@ In case binaural decoding filters are available, they should be loaded in a mult
 BFbinDecoder.updateFilters(audioBuffer);
 ```
 
-Example HRTF-based filters are included in the examples.
+Some FOA and HOA HRTF-based decoding filters are included in the examples.
 
 **B-format virtual microphone** is initialized inside your JavaScript code as
 
@@ -154,16 +154,51 @@ The initialization and usage of all objects is the same as for the B-format with
 
 1. In the initialization the *order* should be passed after the *audioContext*, which defines the HOA order and the number of channels of the HOA stream, (e.g. `var HOAencoder = new HOA_encoder(audioContext, order)`)
 
-2. The *HOA_binDecoder* now requires a multichannel *audioBuffer* for the binaural filters that has *(order+1)^2* filters (e.g. 9 filters for *order=2*, 16 filters for *order=3*, etc.). Chrome seems to have problems at the moment to decode multichannel WAVE files of that many channels, so the decoding may have to be done in Web Audio on individual or smaller WAVE files, and then combined in the same *audioBuffer*.
+2. The *HOA_binDecoder* now requires a multichannel *audioBuffer* for the binaural filters that has *(order+1)^2* filters (e.g. 9 filters for *order=2*, 16 filters for *order=3*, etc.). Chrome seems to have problems at the moment to decode multichannel WAVE files of more than 8 channels, so the HOA filters should be loaded from 8ch files with groups of the HOA channels. Firefox does not seem to have any problem with >8ch. After the individual 8ch buffers have been loaded in the Web Audio context, then they should be merged into an *audiobuffer* with all HOA channels. A helper sound file loading class *HOAloader.js* is provided for that; for more info see below.
 
 3. The *HOA_vmic* has as available higher-order patterns the following: {"cardioid","hypercardioid","max-rE"}, where the *max-rE* specification is the pattern that maximizes the energy vector for a given order, with high front-to-back rejection ratio. The higher-order hypercardioid has the maximum directivity factor for a given order.
 
 The HOA code is based on the larger Matlab and Spherical Harmonic Transform libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
+---
+## Loading multichannel files for HOA
+
+The HOA processing of *order=N* requires audio streams of *(N+1)^2* channels. Loading HOA recordins or HOA binaural filters from sound files of that many channels seems to be problematic for the browsers. Firefox seems to be able to handle many channels but Chrome fails at WAVE files of >8ch. For that reason a helper class is provided that loads individual 8ch files that have been split from the full HOA multichannel file. The class should be included as:
+
+```javascript
+<script type="text/javascript" src="HOAloader.js"></script> 
+```
+
+and used as
+
+```javascript
+var HOA3soundBuffer;
+var order = 3;
+var url = "https://address/HOA3_rec1.wav";
+var callbackOnLoad = function(mergedBuffer) {
+    HOA3soundBuffer = mergedBuffer;
+}
+var HOA3loader = new Bformat_vmic(audioContext, order, url, callback);
+HOA3loader.load();
+```
+The class will try to find files with the provided file name *HOA3_rec1.wav* but of the form:
+```
+  HOA3_rec1_01-08ch.wav
+  HOA3_rec1_09-16ch.wav
+```
+The above example for 3rd-order will have exactly two files of 8ch (16 HOA channels). For a 2nd-order example (9 HOA channels) the loader will check for
+```
+  HOA2_rec1_01-08ch.wav
+  HOA2_rec1_09-09ch.wav
+```
+and so on.
+
+
+
 ## Examples
 
-### FOA (Firefox and Chrome)
-1. B-format player and binaural decoder (Chrome and Firefox). The filters are based on the author's HRTFs, so performance may vary for people.
+### FOA
+1. B-format player and binaural decoder (Chrome and Firefox). The filters are based on the author's HRTFs, so performance may vary for others.
 > https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA1.WebAudio_ambisonics_Bformat_player.html
 2. B-format panner and binaural decoder.
 > https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA2.WebAudio_ambisonics_Bformat_panner.html
@@ -176,7 +211,7 @@ The HOA code is based on the larger Matlab and Spherical Harmonic Transform libr
 6. B-format virtual microphone
 > https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA6.WebAudio_ambisonics_Bformat_vmic.html
 
-### HOA (Firefox)
+### HOA
 1. HOA player and binaural decoder. The order can be switched to show improvement from low-orders on spatial blurring and colouration.
 > https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA1.WebAudio_ambisonics_HOA_player.html
 2. HOA panner and binaural decoder.
