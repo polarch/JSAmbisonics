@@ -1,7 +1,7 @@
 function HOAloader(context, nCh, url, callback) {
     this.context = context;
     this.nCh = nCh;
-    this.nChGroups = Math.floor(this.nCh/8);
+    this.nChGroups = Math.ceil(this.nCh/8);
     this.buffers = new Array();
     this.loadCount = 0;
     this.loaded = false;

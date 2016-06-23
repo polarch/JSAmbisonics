@@ -2,13 +2,14 @@
 A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using Web Audio.
 
 > Archontis Politis
+>
 > archontis.politis@aalto.fi
 
 ----
 ## Description
 JSAmbisonics is a JavaScript library that implements a set of objects for real-time spatial audio processing, using the Ambisonics framework. The objects correspond to typical ambisonic processing blocks, and internally implement Web Audio graphs for the associated operations. The library is split into 3 parts: 
 * **WebAudio_FOA.js**: A library for first-order ambisonics. It is based on the B-format signal set and it has no extra dependencies.
-* **WebAudio_HOA.js**: A library for higher-order ambisonics. It is based on the ACN signal set specification, with N3D normalization of the ambisonic signals. It requires the JSHlib for spherical harmonics, and the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
+* **WebAudio_HOA.js**: A library for higher-order ambisonics. It is based on the ACN signal set specification, with N3D normalization of the ambisonic signals. It requires the **JSHlib.js** for spherical harmonics, and the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
 * **JSHlib.js**: A library that computes real spherical harmonics, the spherical harmonic transform (SHT) and its inverse, and rotations in the spherical harmonic domain. It requires the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
 
 The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. No other browsers have been checked yet.
@@ -158,7 +159,7 @@ The initialization and usage of all objects is the same as for the B-format with
 
 3. The *HOA_vmic* has as available higher-order patterns the following: {"cardioid","hypercardioid","max-rE"}, where the *max-rE* specification is the pattern that maximizes the energy vector for a given order, with high front-to-back rejection ratio. The higher-order hypercardioid has the maximum directivity factor for a given order.
 
-The HOA code is based on the larger Matlab and Spherical Harmonic Transform libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
+The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
 ---
 ## Loading multichannel files for HOA
@@ -178,7 +179,7 @@ var url = "https://address/HOA3_rec1.wav";
 var callbackOnLoad = function(mergedBuffer) {
     HOA3soundBuffer = mergedBuffer;
 }
-var HOA3loader = new Bformat_vmic(audioContext, order, url, callback);
+var HOA3loader = new HOAloader(audioContext, order, url, callbackOnLoad);
 HOA3loader.load();
 ```
 The class will try to find files with the provided file name *HOA3_rec1.wav* but of the form:
@@ -198,29 +199,18 @@ and so on.
 ## Examples (Chrome and Firefox)
 
 ### FOA
-1. B-format player and binaural decoder. The filters are based on the author's HRTFs, so performance may vary for others.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA1.WebAudio_ambisonics_Bformat_player.html
-2. B-format panner and binaural decoder.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA2.WebAudio_ambisonics_Bformat_panner.html
-3. B-format player with rotation.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA3.WebAudio_ambisonics_Bformat_rotator.html
-4. B-format panner with an attached B-format intensity analyser and visualization.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA4.WebAudio_ambisonics_Bformat_panner_visualizer.html
-5. B-format player with an attached B-format intensity analyser and visualization.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA5.WebAudio_ambisonics_Bformat_player_visualizer.html
-6. B-format virtual microphone
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA6.WebAudio_ambisonics_Bformat_vmic.html
+1. [B-format player and binaural decoder. The filters are based on the author's HRTFs, so performance may vary for others.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA1.WebAudio_ambisonics_Bformat_player.html)
+2. [B-format panner and binaural decoder.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA2.WebAudio_ambisonics_Bformat_panner.html)
+3. [B-format player with rotation.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA3.WebAudio_ambisonics_Bformat_rotator.html)
+4. [B-format panner with an attached B-format intensity analyser and visualization.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA4.WebAudio_ambisonics_Bformat_panner_visualizer.html)
+5. [B-format player with an attached B-format intensity analyser and visualization.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA5.WebAudio_ambisonics_Bformat_player_visualizer.html)
+6. [B-format virtual microphone](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA6.WebAudio_ambisonics_Bformat_vmic.html)
 
 ### HOA
-1. HOA player and binaural decoder. The order can be switched to show improvement from low-orders on spatial blurring and colouration.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA1.WebAudio_ambisonics_HOA_player.html
-2. HOA panner and binaural decoder.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA2.WebAudio_ambisonics_HOA_panner.html
-3. HOA player with rotation.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA3.WebAudio_ambisonics_HOA_rotator.html
-4. HOA player with an attached B-format intensity analyser and visualization.
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA4.WebAudio_ambisonics_HOA_player_visualizer.html
-5. HOA virtual microphone
-https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA5.WebAudio_ambisonics_HOA_vmic.html
+1. [HOA player and binaural decoder. The order can be switched to show improvement from low-orders on spatial blurring and colouration.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA1.WebAudio_ambisonics_HOA_player.html)
+2. [HOA panner and binaural decoder.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA2.WebAudio_ambisonics_HOA_panner.html)
+3. [HOA player with rotation.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA3.WebAudio_ambisonics_HOA_rotator.html)
+4. [HOA player with an attached B-format intensity analyser and visualization.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA4.WebAudio_ambisonics_HOA_player_visualizer.html)
+5. [HOA virtual microphone](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA5.WebAudio_ambisonics_HOA_vmic.html)
 
-HOA recordings are made by the author in the Acoustics laboratory of Aalto University, using the Eigenmike microphone.
+HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
