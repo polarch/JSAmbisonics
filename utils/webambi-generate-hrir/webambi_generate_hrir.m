@@ -65,7 +65,7 @@ title('HRIR measurement / virtual speaker grid', 'Fontsize', 16); grid
 maximumOrder_n = 3;
 
 % Define virtual speaker array based on HRIR set measurement grid        
-ls_dirs = rad2deg(speakers_pos_cart_v(:,1:2));
+ls_dirs = rad2deg(speakers_pos_sph_v(:,1:2));
 
 % Get HOA decoding matrix (POLARCH)
 method = 'ALLRAD';
