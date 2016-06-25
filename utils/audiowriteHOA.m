@@ -42,14 +42,17 @@ fileName = filename(1:end-4);
 for k=1:nChGroups
     if k== nChGroups
         fileChanExt = ['_' sprintf('%02d',(k-1)* nChLim +1) '-' sprintf('%02d',nSH) 'ch' fileExt];
-        if isempty(bitsPerSample), audiowrite([path fileName fileChanExt], sig(:,(k-1)*nChLim +1:nSH), fs_out);
-        else audiowrite([path fileName fileChanExt], sig(:,(k-1)*nChLim +1:nSH), fs_out, 'bitsPerSample', bitsPerSample);
+        filename_out = fullfile(path, [fileName fileChanExt]);
+        if isempty(bitsPerSample), audiowrite(filename_out, sig(:,(k-1)*nChLim +1:nSH), fs_out);
+        else audiowrite(filename_out, sig(:,(k-1)*nChLim +1:nSH), fs_out, 'bitsPerSample', bitsPerSample);
         end
     else
         fileChanExt = ['_' sprintf('%02d',(k-1)* nChLim +1) '-' sprintf('%02d',(k-1)* nChLim + nChLim) 'ch' fileExt];
-        if isempty(bitsPerSample), audiowrite([path fileName fileChanExt], sig(:,(k-1)*nChLim +1: nChLim), fs_out);
-        else audiowrite([path fileName fileChanExt], sig(:,(k-1)*nChLim +1: nChLim), fs_out, 'bitsPerSample', bitsPerSample);
+        filename_out = fullfile(path, [fileName fileChanExt]);
+        if isempty(bitsPerSample), audiowrite(filename_out, sig(:,(k-1)*nChLim +1: nChLim), fs_out);
+        else audiowrite(filename_out, sig(:,(k-1)*nChLim +1: nChLim), fs_out, 'bitsPerSample', bitsPerSample);
         end
     end
+    fprintf('file created: \t %s \n', filename_out);
 end
 
