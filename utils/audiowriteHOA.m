@@ -47,9 +47,9 @@ for k=1:nChGroups
         else audiowrite(filename_out, sig(:,(k-1)*nChLim +1:nSH), fs_out, 'bitsPerSample', bitsPerSample);
         end
     else
-        fileChanExt = ['_' sprintf('%02d',(k-1)* nChLim +1) '-' sprintf('%02d',(k-1)* nChLim + nChLim) 'ch' fileExt];
+        fileChanExt = ['_' sprintf('%02d',(k-1)* nChLim +1) '-' sprintf('%02d',k * nChLim) 'ch' fileExt];
         filename_out = fullfile(path, [fileName fileChanExt]);
-        if isempty(bitsPerSample), audiowrite(filename_out, sig(:,(k-1)*nChLim +1: nChLim), fs_out);
+        if isempty(bitsPerSample), audiowrite(filename_out, sig(:,(k-1)*nChLim +1: k*nChLim), fs_out);
         else audiowrite(filename_out, sig(:,(k-1)*nChLim +1: nChLim), fs_out, 'bitsPerSample', bitsPerSample);
         end
     end

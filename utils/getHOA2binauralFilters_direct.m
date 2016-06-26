@@ -24,7 +24,7 @@ function [h_hoa2bin, H_hoa2bin] = getHOA2binauralFilters_direct(order, hrirs, di
 %   Archontis Politis, archontis.politis@aalto.fi
 %
 
-if nargin<3
+if nargin < 4
     samplingWeights = getVoronoiWeights(dirsAziElev);
 end
 nDirs = length(dirsAziElev);
