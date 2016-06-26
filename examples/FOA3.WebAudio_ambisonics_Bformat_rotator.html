@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="description" content="Web Audio ambisonic library tests"/>
+        <meta name="author" content="Archontis Politis"/>
+        <title>Ambisonics on the browser: B-format Player and Rotator</title>
+    </head>
+    <body>
+        
+        <h1>B-format player with rotator</h1>
+        
+        Select sample:
+        <select id="sample_no" onchange="changeSample()">
+            <option value="./sounds/BF_rec1.wav">1</option>
+            <option value="./sounds/BF_rec2.wav">2</option>
+            <option value="./sounds/BF_rec3.wav">3</option>
+            <option value="./sounds/BF_rec4.wav">4</option>
+            <option value="./sounds/BF_rec5.wav">5</option>
+        </select>
+        
+        <button id="play">Play</button> <button id="stop">Stop</button>
+        <br>
+        
+        <p>Click on the map to rotate the sound scene</p>
+        <canvas id="Canvas" width="820" height="412"></canvas>
+        <br>
+        Yaw:
+        <span id="azi-value">0</span>
+        Pitch:
+        <span id="elev-value">0</span>
+        
+        <footer>
+            <hr>
+            <p>Archontis Politis, 2016</p>
+            <a href="mailto:archontis.politis@aalto.fi">archontis.politis@aalto.fi</a>
+        </footer>
+        
+        <script type="text/javascript" src="../WebAudio_FOA.js"></script>
+        
+        <script>
+
+            ////////////////////////////////////////////////
+            // SET-UP WEB AUDIO CONTEXT AND SOUND PROCESSING
+            var AudioContext = window.AudioContext // Default
+            || window.webkitAudioContext; // Safari and old versions of Chrome
+            var context = new AudioContext; // Create and Initialize the Audio Context
+            var soundUrl = "./sounds/BF_rec1.wav";
+            var irUrl = "./filters/BF_filters_direct.wav";
+            var soundBuffer, sound;
+
+            // initialize B-format blocks
+            var rotator = new Bformat_rotator(context);
+            var decoder = new Bformat_binDecoder(context);
+            // make connections
+            rotator.out.connect(decoder.in);
+            decoder.out.connect(context.destination);
+
+            // function to load samples
+            function loadSample(url, doAfterLoading) {
+                var fetchSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
+                fetchSound.open("GET", url, true); // Path to Audio File
+                fetchSound.responseType = "arraybuffer"; // Read as Binary Data
+                fetchSound.onload = function() {
+                    context.decodeAudioData(fetchSound.response, doAfterLoading);
+                }
+                fetchSound.send();
+            }
+            // function to assign sample to the sound buffer for playback (and enable playbutton)
+            var assignSample2SoundBuffer = function(decodedBuffer) {
+                soundBuffer = decodedBuffer;
+                document.getElementById('play').disabled = false;
+            }
+            // function to assign sample to the filter buffers for convolution
+            var assignSample2Filters = function(decodedBuffer) {
+                decoder.updateFilters(decodedBuffer);
+            }
+
+            // load and assign samples
+            document.getElementById('play').disabled = true;
+            document.getElementById('stop').disabled = true;
+            loadSample(soundUrl, assignSample2SoundBuffer);
+            loadSample(irUrl, assignSample2Filters);
+
+            // handle buttons
+            document.getElementById('play').addEventListener('click', function() {
+                                                             sound = context.createBufferSource();
+                                                             sound.buffer = soundBuffer;
+                                                             sound.loop = true;
+                                                             sound.connect(rotator.in);
+                                                             sound.start(0);
+                                                             sound.isPlaying = true;
+                                                             document.getElementById('play').disabled = true;
+                                                             document.getElementById('stop').disabled = false;
+                                                             });
+            document.getElementById('stop').addEventListener('click', function() {
+                                                             sound.stop(0);
+                                                             sound.isPlaying = false;
+                                                             document.getElementById('play').disabled = false;
+                                                             document.getElementById('stop').disabled = true;
+                                                             });
+
+            function changeSample() {
+                document.getElementById('play').disabled = true;
+                document.getElementById('stop').disabled = true;
+                soundUrl = document.getElementById("sample_no").value;
+                if (sound.isPlaying) {
+                    sound.stop(0);
+                    sound.isPlaying = false;
+                }
+                loadSample(soundUrl, assignSample2SoundBuffer);
+            }
+
+            ////////////////////////////
+            // SET-UP GUI AND USER INPUT
+            var canvas = document.getElementById('Canvas');
+            var canvas_context = canvas.getContext("2d");
+            var mouseDown = false;
+            var aziValue = document.getElementById('azi-value');
+            var elevValue = document.getElementById('elev-value');
+
+            // Map sprite
+            var mapSprite = new Image();
+            mapSprite.src = "./resources/map.png";
+
+            // Create a simple class for the markers
+            var Marker = function () {
+                this.Sprite = new Image();
+                this.Sprite.src = "./resources/cursor.png"
+                this.Width = 30;
+                this.Height = 30;
+                this.XPos = 0;
+                this.YPos = 0;
+            }
+            var marker = new Marker();
+
+            // When the user clicks their mouse on our canvas run this code
+            function mouseAction(mouse) {
+                // Get current mouse coords
+                var rect = canvas.getBoundingClientRect();
+                var mouseXPos = (mouse.clientX - rect.left);
+                var mouseYPos = (mouse.clientY - rect.top);
+                
+                // Update webaudio
+                angleX = -Math.round(360*(mouseXPos - (rect.width/2))/rect.width);
+                angleY = Math.round(180*((rect.height/2) - mouseYPos)/rect.height);
+                rotator.yaw = angleX;
+                rotator.pitch = -angleY;
+                rotator.updateRotMtx();
+                aziValue.innerHTML = angleX;
+                elevValue.innerHTML = angleY;
+                
+                // Move the marker when placed to a better location
+                marker.XPos = mouseXPos - (marker.Width/2);
+                marker.YPos = mouseYPos - (marker.Height/2);
+            }
+
+            // Add mouse click event listener to canvas
+            canvas.addEventListener("mousedown", function(mouse) {
+                                    mouseDown = true;
+                                    mouseAction(mouse);
+                                    }, false);
+
+            canvas.addEventListener("mousemove", function(mouse) {
+                                    if (mouseDown) mouseAction(mouse);
+                                    }, false);
+
+            canvas.addEventListener("mouseup", function(mouse) {
+                                    mouseDown = false;
+                                    }, false);
+
+            function draw() {
+                requestAnimationFrame(draw);
+                
+                // Clear Canvas
+                canvas_context.fillStyle = "#000";
+                canvas_context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw map
+                canvas_context.drawImage(mapSprite, 0, 0);
+                
+                // Draw marker
+                canvas_context.drawImage(marker.Sprite, marker.XPos, marker.YPos, marker.Width, marker.Height);
+                
+            };
+            draw();
+
+        </script>
+
+    </body>
+</html>
