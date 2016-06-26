@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="common.css">
+
+<!-- PLAY / STOP -->
+<p>
+Start / Stop audio: &nbsp;
+<button id="play">Play</button>
+<button id="stop">Stop</button>
+</p>
+
+<!-- AMBISONIC ORDER -->
+<div id='div-order'>
+<p>
+Set Ambisonic order: <span id="order-value">3</span> &nbsp;
+<button id="N1">1st</button>
+<button id="N2">2nd</button>
+<button id="N3">3rd</button>
+</p>
+</div>
+
+<!-- AMBISONIC REVERB -->
+<div id='div-reverb'>
+<p>
+Set reverb: <span id="reverb-value">None (virtual)</span> &nbsp;
+<button id="R0">None (virtual)</button>
+<button id="R1" >None (direct)</button>
+<button id="R2">Medium Room</button>
+</p>
+</div>
+
+<hr>
+
+<!-- MOVE SOURCE ON MAP -->
+<p id='move-map-instructions'> Click on the map to pan the source: </p>
+<p> <canvas id="Canvas" width="820" height="412"></canvas> </p>
+<p>
+Azimuth: <span id="azi-value">0</span>
+Elevation: <span id="elev-value">0</span>
+</p>
+
+<!-- SOUND FIELD VISUALIZER -->
+<div id='div-analyser'>
+<p>Intensity visualizer:</p>
+<canvas id="Canvas2" width="820" height="412"></canvas>
+</div>
+
+<footer>
+    <hr>
+    <table>
+        <tr>
+            <th>Archontis Politis</th>
+            <th>David Poirier-Quinot</th>
+        </tr>
+        <tr>
+            <th>
+                <a href="mailto:archontis.politis@aalto.fi">archontis.politis@aalto.fi</a>
+            </th>
+            <th>
+                <a href="mailto:david.poirier-quinot@ircam.fr">david.poirier-quinot@ircam.fr</a>
+            </th>
+        </tr>
+    </table>
+</footer>
+
+
+<script>
+
+////////////////////////////
+// SET-UP GUI AND USER INPUT
+var canvas = document.getElementById('Canvas');
+var canvas_context = canvas.getContext("2d");
+var mouseDown = false;
+var aziValue = document.getElementById('azi-value');
+var elevValue = document.getElementById('elev-value');
+var orderValue = document.getElementById('order-value');
+var reverbValue = document.getElementById('reverb-value');
+
+// Map sprite
+var mapSprite = new Image();
+// mapSprite.src = "https://dl.dropboxusercontent.com/u/6300538/WebAmbi/map.png";
+mapSprite.src = "images/map.png";
+
+// Create a basic class which will be used to create a marker
+var Marker = function () {
+    this.Sprite = new Image();
+    // this.Sprite.src = "https://dl.dropboxusercontent.com/u/6300538/WebAmbi/cursor.png"
+    this.Sprite.src = "images/cursor.png"
+    this.Width = 30;
+    this.Height = 30;
+    // marker to canvas center
+    this.XPos = (document.getElementById('Canvas').width / 2) - this.Width/2;
+    this.YPos = (document.getElementById('Canvas').height / 2) - this.Width/2;
+}
+var marker = new Marker();
+
+// When the user clicks their mouse on our canvas run this code
+function mouseAction(mouse) {
+    // Get current mouse coords
+    var rect = canvas.getBoundingClientRect();
+    var mouseXPos = (mouse.clientX - rect.left);
+    var mouseYPos = (mouse.clientY - rect.top);
+
+    // Update webaudio
+    var angleX = -Math.round(360*(mouseXPos - (rect.width/2))/rect.width);
+    var angleY = Math.round(180*((rect.height/2) - mouseYPos)/rect.height);
+
+    // call example specific function
+    mouseActionLocal([angleX, angleY]);
+
+    // update html values
+    aziValue.innerHTML = angleX;
+    elevValue.innerHTML = angleY;
+
+    // Move the marker when placed to a better location
+    marker.XPos = mouseXPos - (marker.Width/2);
+    marker.YPos = mouseYPos - (marker.Height/2);
+}
+
+// Add mouse click event listener to canvas
+canvas.addEventListener("mousedown", function(mouse) {
+                        mouseDown = true;
+                        mouseAction(mouse);
+                        }, false);
+canvas.addEventListener("mousemove", function(mouse) {
+                        if (mouseDown) mouseAction(mouse);
+                        }, false);
+canvas.addEventListener("mouseup", function(mouse) {
+                        mouseDown = false;
+                        }, false);
+
+var canvas2 = document.getElementById('Canvas2');
+var canvas2_context = canvas2.getContext("2d");
+var circles = [];
+var numCircleLim = 30;
+var opacityLim = 0.2;
+
+function Circle(xPos, yPos, radius, opacity) {
+    this.xPos = xPos;
+    this.yPos = yPos;
+    this.radius = radius;
+    this.opacity = opacity;
+}
+Circle.prototype.draw = function(context) {
+
+    context.beginPath();
+    context.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, false);
+    context.closePath();
+
+    context.fillStyle = 'rgba(185, 211, 238,' + this.opacity + ')';
+    // context.fillStyle = 'rgba(255, 102, 51,' + this.opacity + ')';
+    context.fill();
+};
+
+function angles2pixels(azi, elev, cnv) {
+    var rect = cnv.getBoundingClientRect();
+    var xy = [];
+    xy[0] = Math.round(-azi*rect.width/360 + rect.width/2);
+    xy[1] = Math.round(rect.height/2 - elev*rect.height/180);
+    return xy;
+}
+function updateCircles(params, cnv) {
+    var xy = angles2pixels(params[0], params[1], cnv);
+    var radius = 30*(1-params[2]);
+    var opacity = 1;
+
+    if (circles.length<numCircleLim) {
+        var circle = new Circle(xy[0], xy[1], radius, opacity);
+        circles.push(circle);
+    }
+    else {
+        var circle = new Circle(xy[0], xy[1], radius, opacity);
+        circles.shift();
+        circles.push(circle);
+        for (var i=0; i<numCircleLim-1; i++) circles[i].opacity = opacityLim + i*(1-opacityLim)/numCircleLim;
+    }
+}
+
+function draw() {
+    requestAnimationFrame(draw);
+
+    // Clear Canvas
+    canvas_context.fillStyle = "#000";
+    canvas_context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw map
+    canvas_context.drawImage(mapSprite, 0, 0);
+
+    // Draw marker
+    canvas_context.drawImage(marker.Sprite, marker.XPos, marker.YPos, marker.Width, marker.Height);
+
+    // run example specific draw callback
+    if (!(typeof(drawLocal)=='undefined')) drawLocal();
+
+    // Clear Canvas
+    canvas2_context.fillStyle = "#000";
+    canvas2_context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw map
+    canvas2_context.drawImage(mapSprite, 0, 0);
+
+    // Draw Circles
+    for (var i=0; i<circles.length; i++) circles[i].draw(canvas2_context);
+
+};
+draw();
+</script>

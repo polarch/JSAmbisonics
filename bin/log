@@ -1,0 +1,76 @@
+#!/usr/bin/env node
+var pkg = require('../package.json');
+var colors = require('colors');
+var ora = require('ora');
+var path = require('path');
+
+'use strict';
+
+var prefix = '[' + pkg.name + ']\t';
+var cwd = process.cwd();
+
+function toRel(target) {
+  return path.relative(cwd, target);
+}
+
+function getDeltaTime(time) {
+  return new Date().getTime() - time;
+}
+
+var spinners = {};
+
+var log = {
+  bundleStart: function(dest) {
+    var msg = prefix + (toRel(dest) + ': bundle start').yellow;
+    var spinner = ora({ color: 'white', text: msg });
+    spinner.start();
+
+    spinners[dest] = spinner;
+  },
+
+  bundleSuccess: function(dest, startTime) {
+    var spinner = spinners[dest];
+    var time = getDeltaTime(startTime);
+    var msg = prefix + '%s: successfully created (%sms)'.green;
+
+    spinner.stop();
+    console.log(msg, toRel(dest), time);
+  },
+
+  bundleError: function(dest, err) {
+    var spinner = spinners[dest];
+    var msg = prefix + '%s: bundle error'.red;
+
+    spinner.stop();
+    console.log(msg, toRel(dest));
+    console.log('> ' + err.message);
+  },
+
+  transpileSuccess: function(src, dest, startTime) {
+    var time = getDeltaTime(startTime);
+    var msg = prefix + '%s: successfully transpiled to "%s" (%sms)'.green;
+
+    console.log(msg, toRel(src), toRel(dest), time);
+  },
+
+  transpileError: function(err) {
+    var parts = err.message.split(':');
+    var msg = prefix + '%s'.red;
+
+    console.log(msg, toRel(err.message));
+    console.log(err.codeFrame);
+  },
+
+  uglifySuccess: function(src, dest, startTime) {
+    var time = getDeltaTime(startTime);
+    var msg = prefix + '%s: successfully uglified to "%s" (%sms)'.green;
+    console.log(msg, toRel(src), toRel(dest), time);
+  },
+
+  deleteFile: function(filename) {
+    var msg = prefix + '%s: successfully removed'.yellow;
+    console.log(msg, toRel(filename));
+  }
+};
+
+module.exports = log;
