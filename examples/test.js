@@ -25,7 +25,7 @@ for (var i = 0; i < maxOrder; i++) hoa_limiter.updateOrder(i);
 var hoa_decoder = new webAudioAmbisonic.HOA_binDecoder(context, maxOrder);
 console.log(hoa_decoder);
 var hoa_assignFiltersOnLoad = function(buffer) { hoa_decoder.updateFilters(buffer); }
-var irUrl = "IRs/IRC_1008_R_HRIR.wav";
+var irUrl = "IRs/IRC_1008_R_HRIR_virtual.wav";
 var hoa_loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl, hoa_assignFiltersOnLoad);
 hoa_loader_filters.load();
 hoa_decoder.resetFilters();
