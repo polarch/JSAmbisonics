@@ -1,12 +1,15 @@
 console.log(webAudioAmbisonic);
 
-// adapt common html elements to specific example
-document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
-
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
     || window.webkitAudioContext; // Safari and old versions of Chrome
 var context = new AudioContext; // Create and Initialize the Audio Context
+
+// added resume context to handle Firefox suspension of it when new IR loaded
+// see: http://stackoverflow.com/questions/32955594/web-audio-scriptnode-not-called-after-button-onclick
+context.onstatechange = function() {
+    if (context.state === "suspended") { context.resume(); }
+}
 
 var soundUrl = "sounds/HOA3_rec4.wav";
 var irUrl_0 = "IRs/IRC_1008_R_HRIR_virtual.wav";
@@ -29,6 +32,7 @@ var decoder = new webAudioAmbisonic.HOA_binDecoder(context, maxOrder);
 console.log(decoder);
 // HOA field  analyser
 var analyser = new webAudioAmbisonic.HOA_analyser(context, maxOrder);
+console.log(analyser);
 
 // connect HOA blocks
 limiter.out.connect(rotator.in);
@@ -57,11 +61,6 @@ var assignFiltersOnLoad = function(buffer) {
 var loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
 loader_filters.load();
 
-
-// Init GUI
-document.getElementById('play').disabled = true;
-document.getElementById('stop').disabled = true;
-
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
     rotator.yaw = -angleXY[0];
@@ -76,58 +75,71 @@ function drawLocal() {
     updateCircles(params, canvas);
 }
 
-// Init event listeners
-document.getElementById('play').addEventListener('click', function() {
-    sound = context.createBufferSource();
-    sound.buffer = soundBuffer;
-    sound.loop = true;
-    sound.connect(limiter.in);
-    sound.start(0);
-    sound.isPlaying = true;
+$.holdReady( true ); // to force awaiting on common.html loading
+
+$(document).ready(function() {
+
+    // adapt common html elements to specific example
+    document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
+
+    // Init GUI
     document.getElementById('play').disabled = true;
-    document.getElementById('stop').disabled = false;
-});
-document.getElementById('stop').addEventListener('click', function() {
-    sound.stop(0);
-    sound.isPlaying = false;
-    document.getElementById('play').disabled = false;
     document.getElementById('stop').disabled = true;
-});
 
-document.getElementById('N1').addEventListener('click', function() {
-    orderOut = 1;
-    orderValue.innerHTML = orderOut;
-    limiter.updateOrder(orderOut);
-    limiter.out.connect(rotator.in);
-});
-document.getElementById('N2').addEventListener('click', function() {
-    orderOut = 2;
-    orderValue.innerHTML = orderOut;
-    limiter.updateOrder(orderOut);
-    limiter.out.connect(rotator.in);
-});
-document.getElementById('N3').addEventListener('click', function() {
-    orderOut = 3;
-    orderValue.innerHTML = orderOut;
-    limiter.updateOrder(orderOut);
-    limiter.out.connect(rotator.in);
-});
+    // Init event listeners
+    document.getElementById('play').addEventListener('click', function() {
+        sound = context.createBufferSource();
+        sound.buffer = soundBuffer;
+        sound.loop = true;
+        sound.connect(limiter.in);
+        sound.start(0);
+        sound.isPlaying = true;
+        document.getElementById('play').disabled = true;
+        document.getElementById('stop').disabled = false;
+    });
+    document.getElementById('stop').addEventListener('click', function() {
+        sound.stop(0);
+        sound.isPlaying = false;
+        document.getElementById('play').disabled = false;
+        document.getElementById('stop').disabled = true;
+    });
 
-document.getElementById('R0').addEventListener('click', function() {
-    reverbOut = 0;
-    reverbValue.innerHTML = 'None (virtual)';
-    loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
-    loader_filters.load();
-});
-document.getElementById('R1').addEventListener('click', function() {
-    reverbOut = 1;
-    reverbValue.innerHTML = 'None (direct)';
-    loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_1, assignFiltersOnLoad);
-    loader_filters.load();
-});
-document.getElementById('R2').addEventListener('click', function() {
-    reverbOut = 2;
-    reverbValue.innerHTML = 'Medium Room';
-    loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_2, assignFiltersOnLoad);
-    loader_filters.load();
+    document.getElementById('N1').addEventListener('click', function() {
+        orderOut = 1;
+        orderValue.innerHTML = orderOut;
+        limiter.updateOrder(orderOut);
+        limiter.out.connect(rotator.in);
+    });
+    document.getElementById('N2').addEventListener('click', function() {
+        orderOut = 2;
+        orderValue.innerHTML = orderOut;
+        limiter.updateOrder(orderOut);
+        limiter.out.connect(rotator.in);
+    });
+    document.getElementById('N3').addEventListener('click', function() {
+        orderOut = 3;
+        orderValue.innerHTML = orderOut;
+        limiter.updateOrder(orderOut);
+        limiter.out.connect(rotator.in);
+    });
+
+    document.getElementById('R0').addEventListener('click', function() {
+        reverbOut = 0;
+        reverbValue.innerHTML = 'None (virtual)';
+        loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
+        loader_filters.load();
+    });
+    document.getElementById('R1').addEventListener('click', function() {
+        reverbOut = 1;
+        reverbValue.innerHTML = 'None (direct)';
+        loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_1, assignFiltersOnLoad);
+        loader_filters.load();
+    });
+    document.getElementById('R2').addEventListener('click', function() {
+        reverbOut = 2;
+        reverbValue.innerHTML = 'Medium Room';
+        loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_2, assignFiltersOnLoad);
+        loader_filters.load();
+    });
+
 });

@@ -1,13 +1,15 @@
 console.log(webAudioAmbisonic);
 
-// adapt common html elements to specific example
-document.getElementById("div-reverb").outerHTML='';
-document.getElementById("div-order").outerHTML='';
-
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
     || window.webkitAudioContext; // Safari and old versions of Chrome
 var context = new AudioContext; // Create and Initialize the Audio Context
+
+// added resume context to handle Firefox suspension of it when new IR loaded
+// see: http://stackoverflow.com/questions/32955594/web-audio-scriptnode-not-called-after-button-onclick
+context.onstatechange = function() {
+    if (context.state === "suspended") { context.resume(); }
+}
 
 var soundUrl = "sounds/4-Audio-Track.wav";
 var irUrl = "IRs/BF_filters_direct.wav";
@@ -53,10 +55,6 @@ var assignSample2Filters = function(decodedBuffer) {
 loadSample(soundUrl, assignSample2SoundBuffer);
 loadSample(irUrl, assignSample2Filters);
 
-// Init GUI
-document.getElementById('play').disabled = true;
-document.getElementById('stop').disabled = true;
-
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
     encoder.azi = angleXY[0];
@@ -71,20 +69,34 @@ function drawLocal() {
     updateCircles(params, canvas);
 }
 
-// Init event listeners
-document.getElementById('play').addEventListener('click', function() {
-    sound = context.createBufferSource();
-    sound.buffer = soundBuffer;
-    sound.loop = true;
-    sound.connect(encoder.in);
-    sound.start(0);
-    sound.isPlaying = true;
+$.holdReady( true ); // to force awaiting on common.html loading
+
+$(document).ready(function() {
+
+    // adapt common html elements to specific example
+    document.getElementById("div-reverb").outerHTML='';
+    document.getElementById("div-order").outerHTML='';
+
+    // Init GUI
     document.getElementById('play').disabled = true;
-    document.getElementById('stop').disabled = false;
-});
-document.getElementById('stop').addEventListener('click', function() {
-    sound.stop(0);
-    sound.isPlaying = false;
-    document.getElementById('play').disabled = false;
     document.getElementById('stop').disabled = true;
+
+    // Init event listeners
+    document.getElementById('play').addEventListener('click', function() {
+        sound = context.createBufferSource();
+        sound.buffer = soundBuffer;
+        sound.loop = true;
+        sound.connect(encoder.in);
+        sound.start(0);
+        sound.isPlaying = true;
+        document.getElementById('play').disabled = true;
+        document.getElementById('stop').disabled = false;
+    });
+    document.getElementById('stop').addEventListener('click', function() {
+        sound.stop(0);
+        sound.isPlaying = false;
+        document.getElementById('play').disabled = false;
+        document.getElementById('stop').disabled = true;
+    });
+
 });
