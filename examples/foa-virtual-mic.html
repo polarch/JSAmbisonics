@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebAudio HOA</title>
+    <script src="//code.jquery.com/jquery-3.0.0.min.js"></script>
+</head>
+
+<body>
+    <div id='main-column'>
+
+    <h1>WebAudio Ambisonic - B-format Virtual Microphone</h1> <hr>
+
+    <div>
+        <p>
+        Select virtual microphone pattern: &nbsp;
+        <select id="pattern_id" onchange="changePattern()">
+            <option value="subcardioid">subcardioid</option>
+            <option value="cardioid">cardioid</option>
+            <option value="supercardioid">supercardioid</option>
+            <option value="hypercardioid" selected>hypercardioid</option>
+            <option value="dipole">dipole</option>
+        </select>
+        </p>
+    </div>
+
+    <!-- Load html and js elements common to all examples -->
+    <div id="common"></div><br/>
+    <script> $("#common").load("common.html"); </script>
+    <script src="../web-audio-ambisonic.umd.js"></script>
+
+    <!-- Load js file related to current example -->
+    <script src="./foa-virtual-mic.js"></script>
+
+    </div>
+</body>
+
+</html>

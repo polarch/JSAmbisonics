@@ -1,0 +1,178 @@
+#!/usr/bin/env node
+var fse = require('fs-extra');
+var watch = require('watch');
+var path = require('path');
+var pkg = require('../package.json');
+var util = require('util');
+
+var javascripts = require('./javascripts');
+var cwd = process.cwd();
+
+'use strict';
+
+/**
+ * Options for babel transpiling.
+ */
+var babelOptions = {
+  sourceMap: 'inline',
+  presets: ['es2015'],
+  plugins: ['transform-runtime', 'transform-es2015-modules-commonjs'],
+};
+
+/**
+ * Options for watch.
+ */
+var watchOptions = {
+  ignoreDotFiles: true,
+  ignoreUnreadableDir: true,
+  ignoreNotPermitted: true,
+  interval: 2000, // watch internally use `fs.watchFile`
+};
+
+/**
+ * Options for browserify.
+ */
+var browserifyOptions = {
+  debug: true,
+  fullPaths: false,
+  standalone: pkg.standalone,
+};
+
+/**
+ * Watched directories
+ */
+var srcDirectory = path.join(cwd, 'src');
+var distDirectory = path.join(cwd, 'dist');
+
+var umdTarget = path.join(cwd, pkg.name + '.umd.js');
+var minTarget = path.join(cwd, pkg.name + '.min.js');
+
+/**
+ * Define which file should be ignored by every command.
+ */
+var allowedExtentions = /\.ejs$|\.scss$|\.js$/;
+var excludeFiles = /^\./; // exclude hidden files
+
+/**
+ * Test the given filename, to ensure it can be processed by any command / tranpsiler
+ * @param {String} filename - The filename to be checked.
+ * @param {Boolean} [ensureFile=true] - If set to false, don't test if the file exists.
+ */
+function isAllowed(filename, ensureFile) {
+  ensureFile = ensureFile === undefined ? true : ensureFile;
+
+  var basename = path.basename(filename);
+  var isFile = true;
+
+  if (ensureFile) {
+    try {
+      isFile = fse.lstatSync(filename).isFile() && !fse.lstatSync(filename).isSymbolicLink();
+    } catch(e) {
+      console.log(e.message);
+      isFile = false;
+    }
+  }
+
+  var hasAllowedExt = allowedExtentions.test(basename);
+  var notExcludeFile = !excludeFiles.test(basename);
+
+  return isFile && hasAllowedExt && notExcludeFile;
+}
+
+/**
+ * Returns a list of the file in a given folder recursively.
+ */
+function _getFileList(folder, callback) {
+  var files = [];
+
+  fse.walk(folder)
+    .on('data', function(item) {
+      if (item.stats.isFile() && isAllowed(item.path))
+        files.push(item.path);
+    })
+    .on('end', function() {
+      callback(files);
+    });
+}
+
+/**
+ * Watch javascript source files.
+ */
+function watchFiles(srcDirectory, distDirectory) {
+  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+    var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
+
+    monitor.on('created', function(filename, stats) {
+      if (isAllowed(filename))
+        transpiler.transpile(filename, []);
+    });
+
+    monitor.on('changed', function(filename, stats) {
+      if (isAllowed(filename))
+        transpiler.transpile(filename, []);
+    });
+
+    monitor.on('removed', function(filename, stats) {
+      if (isAllowed(filename, false))
+        transpiler.delete(filename);
+    });
+  });
+}
+
+
+function transpileFiles(srcDirectory, distDirectory, callback) {
+  _getFileList(srcDirectory, function(files) {
+    var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
+    transpiler.transpile(undefined, files, callback);
+  });
+}
+
+function bundle(distDirectory) {
+  var entryPoint = path.join(distDirectory, 'index.js');
+  var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
+
+  transpileFiles(srcDirectory, distDirectory, function() {
+    transpiler.bundle(entryPoint, umdTarget, function() {
+      transpiler.uglify(umdTarget, minTarget);
+    });
+  });
+}
+
+
+/* --------------------------------------------------------------------------
+ * Process and execute the given command.
+ * -------------------------------------------------------------------------- */
+
+var command = process.argv[2];
+var args = process.argv.slice(3);
+var argv = {};
+for (var i = 0; i < args.length; i += 2) {
+  argv[args[i]] = args[i + 1];
+}
+
+switch (command) {
+  /**
+   * Watch the file system and transpile from es6 to es5.
+   */
+  case '--watch':
+    watchFiles(srcDirectory, distDirectory);
+    break;
+
+  /**
+   * Transpile all files in `src` from es6 to es5.
+   */
+  case '--transpile':
+    transpileFiles(srcDirectory, distDirectory);
+    break;
+
+  /**
+   * Transpile all files in `src` from es6 to es5.
+   */
+  case '--bundle':
+    bundle(distDirectory);
+    break;
+}
+
+/* --------------------------------------------------------------------------
+ * -------------------------------------------------------------------------- */
+

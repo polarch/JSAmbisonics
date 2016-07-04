@@ -1,0 +1,149 @@
+#!/usr/bin/env node
+var babel = require('babel-core');
+var browserify = require('browserify');
+var fse = require('fs-extra');
+var log = require('./log');
+var path = require('path');
+var uglify = require('uglify-js');
+
+'use strict';
+
+/**
+ * Create a transpiler object binded to a `srcDirectory` and a `distDirectory`
+ */
+function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions) {
+
+  /**
+   * Returns the name of the target transpiled file
+   */
+  function getTarget(filename) {
+    var relFilename = path.relative(srcDirectory, filename);
+    var outFilename = path.join(distDirectory, relFilename);
+    return outFilename;
+  }
+
+  /**
+   * returns the transpiler to be consumed.
+   */
+  var transpiler = {
+    /**
+     * Transpile the given file from es6 to es5. If the given stack is not empty
+     * call the method recursively till its empty. When the stack is empty,
+     * execute the callback.
+     */
+    transpile: function(filename, stack, callback) {
+      /**
+       * If stack is not empty transpile the next entry, else execute the
+       * callback if any.
+       */
+      function next() {
+        if (stack && stack.length > 0)
+          transpiler.transpile(stack.shift(), stack, callback);
+        else if (stack.length === 0 && callback)
+          callback();
+      }
+
+      if (filename === undefined || !isAllowed(filename))
+        return next();
+
+      var outFilename = getTarget(filename);
+      var startTime = new Date().getTime();
+
+      babel.transformFile(filename, babelOptions, function(err, result) {
+        if (err)
+          return log.transpileError(err);
+
+        fse.outputFile(outFilename, result.code, function(err) {
+          if (err)
+            return console.error(err.message);
+
+          log.transpileSuccess(filename, outFilename, startTime);
+          next();
+        });
+      });
+    },
+
+    /**
+     * Transform a given file to it's browserified version, client only.
+     * Only clients have their browserified counterparts, each folder in `src/client`
+     * is considered has a separate browserified client file. The `index.js` in each
+     * folder defines the entry point of the particular client. The browserified
+     * file is name after the name of the folder.
+     */
+    bundle: function(entryPoint, outFilename, callback) {
+      if (entryPoint === undefined || !isAllowed(entryPoint))
+        return;
+
+      var bundler = browserify(entryPoint, browserifyOptions);
+      var startTime = new Date().getTime();
+
+      log.bundleStart(outFilename);
+      fse.ensureFileSync(outFilename); // ensure file exists
+
+      var writeStream = fse.createWriteStream(outFilename);
+
+      bundler
+        .bundle()
+        .on('error', function(err) {
+          log.bundleError(outFilename, err);
+        })
+        .on('end', function() {
+          log.bundleSuccess(outFilename, startTime);
+        })
+        .pipe(writeStream);
+
+      writeStream.on('finish', function() {
+        if (callback)
+          callback();
+      });
+    },
+
+    /**
+     * Uglify the `inFilename` into `outFilename`.
+     */
+    uglify: function(inFilename, outFilename) {
+      var result = uglify.minify(inFilename);
+      var startTime = new Date().getTime();
+
+
+      fse.outputFile(outFilename, result.code, function(err) {
+        if (err)
+          return console.error(err.message);
+
+        log.uglifySuccess(inFilename, outFilename, startTime);
+      });
+    },
+
+    /**
+     * Delete the transpiled file.
+     */
+    delete: function(filename, callback) {
+      var outFilename = getTarget(filename);
+
+      fse.stat(outFilename, function(err, stats) {
+        if (err)
+          return console.log(err.message);
+
+        if (stats.isFile()) {
+          fse.remove(outFilename, function(err) {
+            if (err)
+              return console.log(err.message);
+
+            log.deleteFile(outFilename);
+
+            if (callback)
+              callback();
+          });
+        } else {
+          callback();
+        }
+      });
+    },
+  };
+
+  return transpiler;
+}
+
+module.exports = {
+  getTranspiler: getTranspiler
+};
