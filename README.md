@@ -1,23 +1,31 @@
 # JSAmbisonics
 A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using Web Audio.
 
-> Archontis Politis
->
+> Archontis Politis (Aalto University)
 > archontis.politis@aalto.fi
+> David Poirier-Quinot (IRCAM)
+> david.poirier-quinot@ircam.fr
 
 ----
 ## Description
-JSAmbisonics is a JavaScript library that implements a set of objects for real-time spatial audio processing, using the Ambisonics framework. The objects correspond to typical ambisonic processing blocks, and internally implement Web Audio graphs for the associated operations. The library is split into 3 parts: 
-* **WebAudio_FOA.js**: A library for first-order ambisonics. It is based on the B-format signal set and it has no extra dependencies.
-* **WebAudio_HOA.js**: A library for higher-order ambisonics. It is based on the ACN signal set specification, with N3D normalization of the ambisonic signals. It requires the **JSHlib.js** for spherical harmonics, and the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
-* **JSHlib.js**: A library that computes real spherical harmonics, the spherical harmonic transform (SHT) and its inverse, and rotations in the spherical harmonic domain. It requires the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
+JSAmbisonics is a JavaScript library that implements a set of objects for real-time spatial audio processing, using the Ambisonics framework. The objects correspond to typical ambisonic processing blocks, and internally implement Web Audio graphs for the associated operations. The library is based on 3 main components:
+* **FOA classes**: to design first-order ambisonics, based on the B-format signal set.
+* **HOA classes**:to design higher-order Ambisonics, based on the ACN signal set specification, with N3D normalization of the Ambisonic signals. Most of its internal routines are based on the **JSHlib.js** library for spherical harmonics, and the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
+* **JSHlib**: A library that computes real spherical harmonics, the spherical harmonic transform (SHT) and its inverse, and rotations in the spherical harmonic domain. Requires the [numeric.js](http://www.numericjs.com/) JavaScript library for matrix and vector operations.
 
 The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. No other browsers have been checked yet.
 
 ---
-## First-order (B-format) ambisonics
+## Live demo (Chrome and Firefox)
 
-The WebAudio_FOA.js implements the following objects:
+See the live [Rawgit demo](https://rawgit.com/polarch/JSAmbisonics/f56b0aece88087f939fa4727c64fcd9191573265/index.html)  (serving the content of the ``./examples`` folder).
+
+HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
+
+---
+## First-order (B-format) Ambisonics
+
+FOA classes implemented:
 * **Bformat_encoder**: encodes a monophonic sound source to a B-format stream, at a user-defined panning direction.
 * **Bformat_rotator**: rotates the sound scene of a B-format stream, at user-defined yaw, pitch, roll rotation angles.
 * **Bformat_vmic**: implements standard virtual microphones to a B-format stream, with user-defined orientation.
@@ -27,7 +35,7 @@ The WebAudio_FOA.js implements the following objects:
 ---
 ## Higher-order (ACN/N3D) ambisonics
 
-The WebAudio_HOA.js implements the following objects:
+HOA classes implemented:
 * **HOA_encoder**: encodes a monophonic sound source to a HOA stream of a set order, at a user-defined panning direction.
 * **HOA_rotator**: rotates the sound scene of a HOA stream, at user-defined yaw, pitch, roll rotation angles.
 * **HOA_vmic**: implements higher-order virtual microphones to a HOA stream, with user-defined orientation.
@@ -35,11 +43,12 @@ The WebAudio_HOA.js implements the following objects:
 * **HOA_order_limiter**: takes a HOA stream of order N, and outputs the channel limited HOA stream of order N'<=N
 * **HOA_bf2acn**: converts a B-format stream to an ACN/N3D HOA stream
 * **HOA_acn2bf**: converts the first-order channels of a HOA stream to B-format
- 
+* **HOA_analyser**: implements an acoustic intensity analysis for visualization of directional information captured in the HOA stream.
+
 ---
 ## Usage
 
-For more detailed usage information check out the page source code of the examples below. All objects have an input node *object.in* and an output node *object.out* which are used for the connections. The number of channels expected from each input depends on the object (for example a B-format encoder expects a monophonic signal, and outputs 4 channels, a B-format binaural decoder expects 4-channel input and outpus 2 channels, etc.). Example connections:
+All objects have an input node *object.in* and an output node *object.out* which are used for the connections. The number of channels expected from each input depends on the object (for example a B-format encoder expects a monophonic signal, and outputs 4 channels, a B-format binaural decoder expects 4-channel input and outputs 2 channels, etc.). Example connections:
 ```javascript
 soundBufferPlayer.connect(BFencoder.in);
 BFencoder.out.connect(BFrotator.in);
@@ -51,7 +60,7 @@ which implements a graph such as:
 soundBufferPlayer ------------->BFencoder------------>BFrotator---------->BFbinDecoder-------------->out
                   mono stream            BF stream             BF stream              stereo stream
 ```
-and 
+and
 ```javascript
 soundBufferPlayer.connect(BFvmic.in);
 BFvmic.out.connect(audioContext.destination);
@@ -59,22 +68,25 @@ BFvmic.out.connect(audioContext.destination);
 with a graph such as:
 ```
 soundBufferPlayer ------------->BFvmic------------>out
-                  BF stream           mono stream  
+                  BF stream           mono stream
 ```
 
-### FOA
-To use the FOA library, include it in the body of your html code as
+To use either FOA or HOA objects, include the JSAmbisonic library in the body of your html code as:
 ```javascript
-<script type="text/javascript" src="WebAudio_FOA.js"></script>
+<script type="text/javascript" src="web-audio-ambisonic.umd.js"></script>
 ```
+
+See the scripts in the ``./examples`` folder for more insights on how to use the different objects of the library.
+
+### Usage (FOA detail)
 
 **B-format encoder** is initialized inside your JavaScript code as
 
 ```javascript
-var BFencoder = new Bformat_encoder(audioContext)
+var BFencoder = new webAudioAmbisonic.Bformat_encoder(audioContext)
 ```
 
-where *context* is the current Web Audio context. The input stream comes from an audio node to be spatialized. 
+where *context* is the current Web Audio context. The input stream comes from an audio node to be spatialized.
 The azimuth and elevation of the encoded source can be updated at runtime by
 
 ```javascript
@@ -86,10 +98,10 @@ BFencoder.updateGains();
 **B-format rotator** is initialized inside your JavaScript code as
 
 ```javascript
-var BFrotator = new Bformat_rotator(audioContext)
+var BFrotator = new webAudioAmbisonic.Bformat_rotator(audioContext)
 ```
 
-where *context* is the current Web Audio context. 
+where *context* is the current Web Audio context.
 The yaw (Z-axis rotation), pitch (Y-axis) and roll (X-axis) rotation angles can be updated at runtime by
 ```javascript
 BFrotator.yaw = yaw_value_in_degrees;
@@ -101,7 +113,7 @@ BFrotator.updateRotMtx();
 **B-format binaural decoder** is initialized inside your JavaScript code as
 
 ```javascript
-var BFbinDecoder = new Bformat_binDecoder(audioContext)
+var BFbinDecoder = new webAudioAmbisonic.Bformat_binDecoder(audioContext)
 ```
 
 where *context* is the current Web Audio context. If no decoding filters are passed to the decoder, an initial decoding based on two opposing cardioids is defined by default.
@@ -116,7 +128,7 @@ Some FOA and HOA HRTF-based decoding filters are included in the examples.
 **B-format virtual microphone** is initialized inside your JavaScript code as
 
 ```javascript
-var BFvmic = new Bformat_vmic(audioContext)
+var BFvmic = new webAudioAmbisonic.Bformat_vmic(audioContext)
 ```
 
 where *context* is the current Web Audio context. The virtual microphone is initialized to a cardioid pointing to the front. The orientation can be updated at runtime by
@@ -141,19 +153,14 @@ where *string* can be one of the following:
 * "dipole"
 
 
-### HOA
-
-To use the HOA library, include in the body of your html code the following
-
-```javascript
-<script type="text/javascript" src="numeric.js"></script> 
-<script type="text/javascript" src="JSHlib.js"></script> 
-<script type="text/javascript" src="WebAudio_HOA.js"></script>
-```
+### Usage (HOA detail)
 
 The initialization and usage of all objects is the same as for the B-format with the following differences:
 
-1. In the initialization the *order* should be passed after the *audioContext*, which defines the HOA order and the number of channels of the HOA stream, (e.g. `var HOAencoder = new HOA_encoder(audioContext, order)`)
+1. In the initialization the *order* should be passed after the *audioContext*, which defines the HOA order and the number of channels of the HOA stream, e.g.
+```javascript
+var HOAencoder = new webAudioAmbisonic.HOA_encoder(audioContext, order)
+```
 
 2. The *HOA_binDecoder* now requires a multichannel *audioBuffer* for the binaural filters that has *(order+1)^2* filters (e.g. 9 filters for *order=2*, 16 filters for *order=3*, etc.). Chrome seems to have problems at the moment to decode multichannel WAVE files of more than 8 channels, so the HOA filters should be loaded from 8ch files with groups of the HOA channels. Firefox does not seem to have any problem with >8ch. After the individual 8ch buffers have been loaded in the Web Audio context, then they should be merged into an *audiobuffer* with all HOA channels. A helper sound file loading class *HOAloader.js* is provided for that; for more info see below.
 
@@ -162,15 +169,9 @@ The initialization and usage of all objects is the same as for the B-format with
 The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
 ---
-## Loading multichannel files for HOA
+## Note on the loading of multichannel files for HOA
 
-The HOA processing of *order=N* requires audio streams of *(N+1)^2* channels. Loading HOA recordins or HOA binaural filters from sound files of that many channels seems to be problematic for the browsers. Firefox seems to be able to handle many channels but Chrome fails at WAVE files of >8ch. For that reason a helper class is provided that loads individual 8ch files that have been split from the full HOA multichannel file. The class should be included as:
-
-```javascript
-<script type="text/javascript" src="HOAloader.js"></script> 
-```
-
-and used as
+The HOA processing of *order=N* requires audio streams of *(N+1)^2* channels. Loading HOA recordins or HOA binaural filters from sound files of that many channels seems to be problematic for the browsers. Firefox seems to be able to handle many channels but Chrome fails at WAVE files of >8ch. For that reason a helper class is provided that loads individual 8ch files that have been split from the full HOA multichannel file. usage:
 
 ```javascript
 var HOA3soundBuffer;
@@ -179,7 +180,7 @@ var url = "https://address/HOA3_rec1.wav";
 var callbackOnLoad = function(mergedBuffer) {
     HOA3soundBuffer = mergedBuffer;
 }
-var HOA3loader = new HOAloader(audioContext, order, url, callbackOnLoad);
+var HOA3loader = new webAudioAmbisonic.HOAloader(audioContext, order, url, callbackOnLoad);
 HOA3loader.load();
 ```
 The class will try to find files with the provided file name *HOA3_rec1.wav* but of the form:
@@ -193,24 +194,3 @@ The above example for 3rd-order will have exactly two files of 8ch (16 HOA chann
   HOA2_rec1_09-09ch.wav
 ```
 and so on.
-
-
-
-## Examples (Chrome and Firefox)
-
-### FOA
-1. [B-format player and binaural decoder. The filters are based on the author's HRTFs, so performance may vary for others.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA1.WebAudio_ambisonics_Bformat_player.html)
-2. [B-format panner and binaural decoder.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA2.WebAudio_ambisonics_Bformat_panner.html)
-3. [B-format player with rotation.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA3.WebAudio_ambisonics_Bformat_rotator.html)
-4. [B-format panner with an attached B-format intensity analyser and visualization.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA4.WebAudio_ambisonics_Bformat_panner_visualizer.html)
-5. [B-format player with an attached B-format intensity analyser and visualization.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA5.WebAudio_ambisonics_Bformat_player_visualizer.html)
-6. [B-format virtual microphone](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/FOA6.WebAudio_ambisonics_Bformat_vmic.html)
-
-### HOA
-1. [HOA player and binaural decoder. The order can be switched to show improvement from low-orders on spatial blurring and colouration.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA1.WebAudio_ambisonics_HOA_player.html)
-2. [HOA panner and binaural decoder.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA2.WebAudio_ambisonics_HOA_panner.html)
-3. [HOA player with rotation.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA3.WebAudio_ambisonics_HOA_rotator.html)
-4. [HOA player with an attached B-format intensity analyser and visualization.](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA4.WebAudio_ambisonics_HOA_player_visualizer.html)
-5. [HOA virtual microphone](https://dl.dropboxusercontent.com/u/6300538/WebAmbi/HOA5.WebAudio_ambisonics_HOA_vmic.html)
-
-HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
