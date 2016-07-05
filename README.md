@@ -24,7 +24,7 @@ See the live [Rawgit demo](https://rawgit.com/polarch/JSAmbisonics/f56b0aece8808
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
 ---
-## First-order (B-format) Ambisonics
+## First-order Ambisonics  (FuMa specification)
 
 FOA classes implemented:
 * **Bformat_encoder**: encodes a monophonic sound source to a B-format stream, at a user-defined panning direction.
@@ -34,7 +34,7 @@ FOA classes implemented:
 * **Bformat_analyser**: implements an acoustic intensity analysis for visualization of directional information captured in the B-format stream.
 
 ---
-## Higher-order (ACN/N3D) ambisonics
+## Higher-order ambisonics (ACN/N3D specification)
 
 HOA classes implemented:
 * **HOA_encoder**: encodes a monophonic sound source to a HOA stream of a set order, at a user-defined panning direction.
@@ -42,8 +42,8 @@ HOA classes implemented:
 * **HOA_vmic**: implements higher-order virtual microphones to a HOA stream, with user-defined orientation.
 * **HOA_binDecoder**: implements a HOA to binaural conversion, using user-defined HRTF-based filters. If these are not provided, two plain opposing cardioids are used instead.
 * **HOA_order_limiter**: takes a HOA stream of order N, and outputs the channel limited HOA stream of order N'<=N
-* **HOA_bf2acn**: converts a B-format stream to an ACN/N3D HOA stream
-* **HOA_acn2bf**: converts the first-order channels of a HOA stream to B-format
+* **HOA_bf2acn**: converts a FOA FuMa stream to FOA ACN/N3D stream
+* **HOA_acn2bf**: converts the first-order channels of a HOA stream to FOA FuMa stream
 * **HOA_analyser**: implements an acoustic intensity analysis for visualization of directional information captured in the HOA stream.
 
 ---
@@ -197,7 +197,7 @@ The above example for 3rd-order will have exactly two files of 8ch (16 HOA chann
 and so on.
 
 ---
-## Developpers
+## Developers
 
 To modify the library you need Node.js installed on your machine. Install the project's dependencies typing in a terminal (opened in project's root):
 
