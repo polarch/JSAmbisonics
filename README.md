@@ -3,6 +3,7 @@ A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) pr
 
 > Archontis Politis (Aalto University)
 > archontis.politis@aalto.fi
+>
 > David Poirier-Quinot (IRCAM)
 > david.poirier-quinot@ircam.fr
 
