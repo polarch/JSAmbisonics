@@ -194,3 +194,26 @@ The above example for 3rd-order will have exactly two files of 8ch (16 HOA chann
   HOA2_rec1_09-09ch.wav
 ```
 and so on.
+
+---
+## Developpers
+
+To modify the library you need Node.js installed on your machine. Install the project's dependencies typing in a terminal (opened in project's root):
+
+```bash
+npm install
+```
+
+You can then start developing, using the ```watch```  utility to dynamically transpile / bundle your code as you write it:
+
+```bash
+npm run watch
+```
+
+and test the changes on the files of the ```./examples``` folder, serving ```./index.html``` with a local http server (see e.g. the [http-server node](https://github.com/indexzero/http-server)).
+
+When you're satisfied with your changes, create ```web-audio-ambisonic.*.js``` bundles with:
+
+```bash
+npm run bundle
+```
