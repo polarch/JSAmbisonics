@@ -2,6 +2,11 @@
   "name": "web-audio-ambisonic",
   "version": "0.1.0",
   "description": "web audio classes for Ambisonic processing",
+  "author": "Archontis Politis <archontis.politis@aalto.i>"
+  "contributors": [{
+                     "name": "David Poirier-Quinot",
+                     "email": "David.Poirier-Quinot@ircam.fr"
+                     }],
   "main": "dist/index.js",
   "standalone": "webAudioAmbisonic",
   "scripts": {
@@ -13,7 +18,7 @@
   "license": "BSD-3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PyrApple/JSAmbisonics.git"
+    "url": "https://github.com/polarch/JSAmbisonics.git"
   },
   "jshintConfig": {
     "esnext": true,
