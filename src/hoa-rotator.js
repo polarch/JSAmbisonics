@@ -15,7 +15,7 @@
 /* HOA ROTATOR */
 /////////////////
 
-import * as jshlib from './jsh-lib';
+import * as jshlib from 'spherical-harmonic-transform';
 
 export default class HOA_rotator {
 

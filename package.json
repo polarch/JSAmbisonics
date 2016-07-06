@@ -2,7 +2,7 @@
   "name": "web-audio-ambisonic",
   "version": "0.1.0",
   "description": "web audio classes for Ambisonic processing",
-  "author": "Archontis Politis <archontis.politis@aalto.i>"
+  "author": "Archontis Politis <archontis.politis@aalto.com>",
   "contributors": [{
                      "name": "David Poirier-Quinot",
                      "email": "David.Poirier-Quinot@ircam.fr"
@@ -15,7 +15,7 @@
     "prewatch": "node ./bin/runner --transpile",
     "watch": "node ./bin/runner --watch"
   },
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/polarch/JSAmbisonics.git"
@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "babel-runtime": "^6.6.1",
-    "numeric": "^1.2.6"
+    "spherical-harmonic-transform": "^0.1.0",
+    "numeric": "^1.2.6"    
   },
   "devDependencies": {
     "babel-core": "^6.6.5",

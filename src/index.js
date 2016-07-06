@@ -1,5 +1,3 @@
-import * as _jshlib from './jsh-lib';
-export const jshlib = _jshlib;
 
 // expose for plugins
 export { default as HOA_encoder } from './hoa-encoder';
