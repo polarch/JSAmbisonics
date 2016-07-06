@@ -17,19 +17,28 @@ var irUrl = "IRs/BF_filters_direct.wav";
 var soundBuffer, sound;
 
 // initialize B-format rotator
-var rotator = new webAudioAmbisonic.Bformat_rotator(context);
+var rotator = new webAudioAmbisonic.HOA_rotator(context, 1);
+rotator.init();
 console.log(rotator);
 // initialize B-format decoder
-var decoder = new webAudioAmbisonic.Bformat_binDecoder(context);
+var decoder = new webAudioAmbisonic.HOA_binDecoder(context, 1);
 console.log(decoder);
 // initialize B-format analyser
 var analyser = new webAudioAmbisonic.Bformat_analyser(context);
 console.log(analyser);
+// FuMa to ACN converter, and the opposite
+var converterF2A = new webAudioAmbisonic.hoa_converters.HOA_bf2acn(context);
+var converterA2F = new webAudioAmbisonic.hoa_converters.HOA_acn2bf(context);
+console.log(converterF2A);
+console.log(converterA2F);
 
 // connect graph
-rotator.out.connect(analyser.in);
-analyser.out.connect(decoder.in);
+converterF2A.out.connect(rotator.in);
+rotator.out.connect(decoder.in);
 decoder.out.connect(context.destination);
+
+rotator.out.connect(converterA2F.in);
+converterA2F.out.connect(analyser.in);
 
 // function to load samples
 function loadSample(url, doAfterLoading) {
@@ -87,7 +96,7 @@ $(document).ready(function() {
         sound = context.createBufferSource();
         sound.buffer = soundBuffer;
         sound.loop = true;
-        sound.connect(rotator.in);
+        sound.connect(converterF2A.in);
         sound.start(0);
         sound.isPlaying = true;
         document.getElementById('play').disabled = true;
