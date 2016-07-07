@@ -58,20 +58,39 @@ export default class HOA_vmic {
 
         function computeCardioidCoeffs(N) {
             var coeffs = new Array(N + 1);
-            for (var n = 0; n < N + 1; n++) {
-                coeffs[n] = Math.sqrt(2 * n + 1) * jshlib.factorial(N) * jshlib.factorial(N + 1) / (jshlib.factorial(N + n + 1) * jshlib.factorial(N - n)) / (N + 1);
-            }
-            
-            // normalize coefficients
             for (var n = 0; n <= N; n++) {
-                coeffs[n] = coeffs[n]/Math.sqrt(2*n+1);
+                coeffs[n] = Math.sqrt(2*n+1) * jshlib.factorial(N) * jshlib.factorial(N + 1) / (jshlib.factorial(N + n + 1) * jshlib.factorial(N - n)) / (N + 1);
             }
             return coeffs;
         }
 
         function computeHypercardCoeffs(N) {
             var coeffs = new Array(N + 1);
-            coeffs.fill(1/((N+1)*(N+1)));
+            var nSH = (N+1)*(N+1);
+            for (var n = 0; n <= N; n++) {
+                coeffs[n] = Math.sqrt(2*n+1) / nSH;
+            }
+            return coeffs;
+        }
+        
+        function computeSupercardCoeffs(N) {
+            switch (N) {
+                case 1:
+                    var coeffs = [0.3660, 0.3660];
+                    break;
+                case 2:
+                    var coeffs = [0.2362, 0.2706, 0.1320];
+                    break;
+                case 3:
+                    var coeffs = [0.1768, 0.2218, 0.1416, 0.0463];
+                    break;
+                case 4:
+                    var coeffs = [0.1414, 0.1883, 0.1394, 0.0653, 0.0161];
+                    break;
+                default:
+                    console.error("Orders should be in the range of 1-4 at the moment.");
+                    return;
+            }
             return coeffs;
         }
 
@@ -83,16 +102,15 @@ export default class HOA_vmic {
             var leg_n = 0;
             for (var n = 1; n < N + 1; n++) {
                 leg_n = jshlib.recurseLegendrePoly(n, [Math.cos(2.406809 / (N + 1.51))], leg_n_minus1, leg_n_minus2);
-                coeffs[n] = leg_n[0][0];
+                coeffs[n] = Math.sqrt(2*n+1) * leg_n[0][0];
 
                 leg_n_minus2 = leg_n_minus1;
                 leg_n_minus1 = leg_n;
             }
-            
             // compute normalization factor
             var norm = 0;
             for (var n = 0; n <= N; n++) {
-                norm = norm + coeffs[n]*(2*n+1);
+                norm += coeffs[n] * Math.sqrt(2*n+1);
             }
             for (var n = 0; n <= N; n++) {
                 coeffs[n] = coeffs[n]/norm;
@@ -107,7 +125,7 @@ export default class HOA_vmic {
                 break;
             case "supercardioid":
                 // maximum front-back energy ratio
-                // TBD
+                this.vmicCoeffs = computeSupercardCoeffs(this.order);
                 break;
             case "hypercardioid":
                 // maximum directivity factor
@@ -132,11 +150,9 @@ export default class HOA_vmic {
         var azi = this.azi * Math.PI / 180;
         var elev = this.elev * Math.PI / 180;
 
-        var tempSH = jshlib.computeRealSH(this.order, [
-            [azi, elev]
-        ]);
+        var tempSH = jshlib.computeRealSH(this.order, [ [azi, elev] ]);
 
-        for (var i = 1; i < this.nCh; i++) {
+        for (var i = 0; i < this.nCh; i++) {
             this.SHxyz[i] = tempSH[i][0];
         }
 
@@ -146,14 +162,14 @@ export default class HOA_vmic {
     updateGains() {
 
         var q;
-        for (var n = 0; n < this.order + 1; n++) {
-            for (var m = -this.order; m < this.order + 1; m++) {
+        for (var n = 0; n <= this.order; n++) {
+            for (var m = -n; m <= n; m++) {
                 q = n * n + n + m;
-                this.vmicGains[q] = (1 / Math.sqrt(2 * n + 1)) * this.vmicCoeffs[n] * this.SHxyz[q];
+                this.vmicGains[q] = this.vmicCoeffs[n] * this.SHxyz[q] / Math.sqrt(2*n+1);
             }
         }
 
-        for (var i = 1; i < this.nCh; i++) {
+        for (var i = 0; i < this.nCh; i++) {
             this.vmicGainNodes[i].gain.value = this.vmicGains[i];
         }
     }
