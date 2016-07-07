@@ -12,7 +12,7 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/BF_rec1.wav";
-var irUrl = "IRs/BF_filters_direct.wav";
+var irUrl = "IRs/HOA1_filters_virtual.wav";
 
 var soundBuffer, sound;
 
