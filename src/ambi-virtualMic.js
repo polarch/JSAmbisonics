@@ -61,12 +61,17 @@ export default class HOA_vmic {
             for (var n = 0; n < N + 1; n++) {
                 coeffs[n] = Math.sqrt(2 * n + 1) * jshlib.factorial(N) * jshlib.factorial(N + 1) / (jshlib.factorial(N + n + 1) * jshlib.factorial(N - n)) / (N + 1);
             }
+            
+            // normalize coefficients
+            for (var n = 0; n <= N; n++) {
+                coeffs[n] = coeffs[n]/Math.sqrt(2*n+1);
+            }
             return coeffs;
         }
 
         function computeHypercardCoeffs(N) {
             var coeffs = new Array(N + 1);
-            coeffs.fill(1);
+            coeffs.fill(1/((N+1)*(N+1)));
             return coeffs;
         }
 
@@ -82,6 +87,15 @@ export default class HOA_vmic {
 
                 leg_n_minus2 = leg_n_minus1;
                 leg_n_minus1 = leg_n;
+            }
+            
+            // compute normalization factor
+            var norm = 0;
+            for (var n = 0; n <= N; n++) {
+                norm = norm + coeffs[n]*(2*n+1);
+            }
+            for (var n = 0; n <= N; n++) {
+                coeffs[n] = coeffs[n]/norm;
             }
             return coeffs;
         }
