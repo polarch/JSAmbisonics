@@ -12,9 +12,9 @@
 ////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////
-/* B-FORMAT TO ACN/N3D CONVERTER */
+/* FOA B-FORMAT TO ACN/N3D CONVERTER */
 ///////////////////////////////////
-export class HOA_bf2acn {
+export class bf2acn {
 
     constructor(audioCtx) {
 
@@ -38,9 +38,9 @@ export class HOA_bf2acn {
 }
 
 ///////////////////////////////////
-/* ACN/N3D TO B-FORMAT CONVERTER */
+/* ACN/N3D TO FOA B-FORMAT CONVERTER */
 ///////////////////////////////////
-export class HOA_acn2bf {
+export class acn2bf {
 
     constructor(audioCtx) {
 
@@ -66,7 +66,7 @@ export class HOA_acn2bf {
 ///////////////////////////////////
 /* ACN/N3D TO B-FORMAT CONVERTER */
 ///////////////////////////////////
-export class HOA_fuma2acn {
+export class fuma2acn {
 
     constructor(audioCtx, order) {
 

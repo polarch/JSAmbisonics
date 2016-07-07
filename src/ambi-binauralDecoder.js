@@ -15,7 +15,7 @@
 /* HOA BINAURAL DECODER */
 //////////////////////////
 
-export default class HOA_binDecoder {
+export default class binDecoder {
 
     constructor(audioCtx, order) {
 

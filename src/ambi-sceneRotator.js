@@ -17,7 +17,7 @@
 
 import * as jshlib from 'spherical-harmonic-transform';
 
-export default class HOA_rotator {
+export default class sceneRotator {
 
     constructor(audioCtx, order) {
 

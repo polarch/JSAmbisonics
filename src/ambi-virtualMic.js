@@ -17,7 +17,7 @@
 
 import * as jshlib from 'spherical-harmonic-transform';
 
-export default class HOA_vmic {
+export default class virtualMic {
 
     constructor(audioCtx, order) {
 

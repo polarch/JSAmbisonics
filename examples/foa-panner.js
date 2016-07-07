@@ -17,16 +17,16 @@ var irUrl = "IRs/HOA1_filters_virtual.wav";
 var soundBuffer, sound;
 
 // initialize encoder
-var encoder = new webAudioAmbisonic.HOA_encoder(context, 1);
+var encoder = new webAudioAmbisonic.monoEncoder(context, 1);
 console.log(encoder);
 // initialize decoder
-var decoder = new webAudioAmbisonic.HOA_binDecoder(context, 1);
+var decoder = new webAudioAmbisonic.binDecoder(context, 1);
 console.log(decoder);
 // initialize B-format analyser
-var analyser = new webAudioAmbisonic.Bformat_analyser(context);
+var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
 // initialize ACN-to-FuMa converter
-var converter = new webAudioAmbisonic.hoa_converters.HOA_acn2bf(context);
+var converter = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(converter);
 
 // connect graph

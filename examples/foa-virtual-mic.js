@@ -15,13 +15,13 @@ var soundUrl = "./sounds/BF_rec1.wav";
 var soundBuffer, sound;
 
 // initialize virtual micorphone block
-var vmic = new webAudioAmbisonic.HOA_vmic(context, 1);
+var vmic = new webAudioAmbisonic.virtualMic(context, 1);
 console.log(vmic);
 // initialize B-format analyser
-var analyser = new webAudioAmbisonic.Bformat_analyser(context);
+var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
 // converter from FuMa to ACN
-var converterF2A = new webAudioAmbisonic.hoa_converters.HOA_bf2acn(context);
+var converterF2A = new webAudioAmbisonic.converters.bf2acn(context);
 
 // connect HOA blocks
 converterF2A.out.connect(vmic.in);

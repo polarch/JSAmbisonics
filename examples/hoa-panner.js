@@ -21,24 +21,24 @@ var orderOut = 3;
 var soundBuffer, sound;
 
 // define HOA encoder (panner)
-var encoder = new webAudioAmbisonic.HOA_encoder(context, maxOrder);
+var encoder = new webAudioAmbisonic.monoEncoder(context, maxOrder);
 console.log(encoder);
 // define HOA order limiter (to show the effect of order)
-var limiter = new webAudioAmbisonic.HOA_orderLimiter(context, maxOrder, orderOut);
+var limiter = new webAudioAmbisonic.orderLimiter(context, maxOrder, orderOut);
 console.log(limiter);
 // binaural HOA decoder
-var decoder = new webAudioAmbisonic.HOA_binDecoder(context, maxOrder);
+var decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
 console.log(decoder);
-// HOA analyser
-var analyser = new webAudioAmbisonic.HOA_analyser(context, maxOrder);
-// var analyser = new webAudioAmbisonic.Bformat_analyser(context);
-// var converter = new webAudioAmbisonic.hoa_converters.HOA_acn2bf(context);
+// intensity analyser
+var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
+// ACN to FuMa converter
+var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(analyser);
 
 // connect HOA blocks
-// encoder.out.connect(converter.in);
-// converter.out.connect(analyser.in);
-encoder.out.connect(analyser.in);
+encoder.out.connect(converterA2F.in);
+converterA2F.out.connect(analyser.in);
+
 encoder.out.connect(limiter.in);
 limiter.out.connect(decoder.in);
 decoder.out.connect(context.destination);

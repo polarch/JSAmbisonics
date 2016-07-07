@@ -17,18 +17,18 @@ var irUrl = "IRs/HOA1_filters_virtual.wav";
 var soundBuffer, sound;
 
 // initialize B-format rotator
-var rotator = new webAudioAmbisonic.HOA_rotator(context, 1);
+var rotator = new webAudioAmbisonic.sceneRotator(context, 1);
 rotator.init();
 console.log(rotator);
 // initialize B-format decoder
-var decoder = new webAudioAmbisonic.HOA_binDecoder(context, 1);
+var decoder = new webAudioAmbisonic.binDecoder(context, 1);
 console.log(decoder);
 // initialize B-format analyser
-var analyser = new webAudioAmbisonic.Bformat_analyser(context);
+var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
 // FuMa to ACN converter, and the opposite
-var converterF2A = new webAudioAmbisonic.hoa_converters.HOA_bf2acn(context);
-var converterA2F = new webAudioAmbisonic.hoa_converters.HOA_acn2bf(context);
+var converterF2A = new webAudioAmbisonic.converters.bf2acn(context);
+var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(converterF2A);
 console.log(converterA2F);
 

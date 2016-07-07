@@ -15,7 +15,7 @@
 /* HOA ORDER LIMITER */
 ///////////////////////
 
-export default class HOA_orderLimiter {
+export default class orderLimiter {
 
     constructor(audioCtx, orderIn, orderOut) {
 

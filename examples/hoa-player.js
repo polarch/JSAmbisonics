@@ -21,24 +21,29 @@ var orderOut = 3;
 var soundBuffer, sound;
 
 // define HOA order limiter (to show the effect of order)
-var limiter = new webAudioAmbisonic.HOA_orderLimiter(context, maxOrder, orderOut);
+var limiter = new webAudioAmbisonic.orderLimiter(context, maxOrder, orderOut);
 console.log(limiter);
 // define HOA rotator
-var rotator = new webAudioAmbisonic.HOA_rotator(context, maxOrder);
+var rotator = new webAudioAmbisonic.sceneRotator(context, maxOrder);
 rotator.init();
 console.log(rotator);
 // binaural HOA decoder
-var decoder = new webAudioAmbisonic.HOA_binDecoder(context, maxOrder);
+var decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
 console.log(decoder);
-// HOA field  analyser
-var analyser = new webAudioAmbisonic.HOA_analyser(context, maxOrder);
+// intensity analyser
+var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
 console.log(analyser);
+// converter from ACN to FOA FuMa
+var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
+console.log(converterA2F);
 
 // connect HOA blocks
 limiter.out.connect(rotator.in);
 rotator.out.connect(decoder.in);
-rotator.out.connect(analyser.in);
 decoder.out.connect(context.destination);
+
+rotator.out.connect(converterA2F.in);
+converterA2F.out.connect(analyser.in);
 
 // function to assign sample to the sound buffer for playback (and enable playbutton)
 var assignSample2SoundBuffer = function(decodedBuffer) {
