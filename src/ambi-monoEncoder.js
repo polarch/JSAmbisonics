@@ -26,7 +26,7 @@ export default class monoEncoder {
         this.ctx = audioCtx;
         this.order = order;
         this.nCh = (order + 1) * (order + 1);
-        this.azi = 0;
+        this.azim = 0;
         this.elev = 0;
         this.gains = new Array(this.nCh);
         this.gainNodes = new Array(this.nCh);
@@ -53,7 +53,7 @@ export default class monoEncoder {
     updateGains() {
         var N = this.order;
         var g_enc = jshlib.computeRealSH(N, [
-            [this.azi * Math.PI / 180, this.elev * Math.PI / 180]
+            [this.azim * Math.PI / 180, this.elev * Math.PI / 180]
         ]);
 
         for (var i = 0; i < this.nCh; i++) {

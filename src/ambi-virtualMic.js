@@ -26,7 +26,7 @@ export default class virtualMic {
         this.ctx = audioCtx;
         this.order = order;
         this.nCh = (order + 1) * (order + 1);
-        this.azi = 0;
+        this.azim = 0;
         this.elev = 0;
         this.vmicGains = new Array(this.nCh);
         this.vmicGainNodes = new Array(this.nCh);
@@ -72,7 +72,7 @@ export default class virtualMic {
             }
             return coeffs;
         }
-        
+
         function computeSupercardCoeffs(N) {
             switch (N) {
                 case 1:
@@ -147,10 +147,10 @@ export default class virtualMic {
 
     updateOrientation() {
 
-        var azi = this.azi * Math.PI / 180;
+        var azim = this.azim * Math.PI / 180;
         var elev = this.elev * Math.PI / 180;
 
-        var tempSH = jshlib.computeRealSH(this.order, [ [azi, elev] ]);
+        var tempSH = jshlib.computeRealSH(this.order, [ [azim, elev] ]);
 
         for (var i = 0; i < this.nCh; i++) {
             this.SHxyz[i] = tempSH[i][0];

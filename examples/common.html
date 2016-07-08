@@ -35,7 +35,7 @@ Set reverb: <span id="reverb-value">None (virtual)</span> &nbsp;
 <p id='move-map-instructions'> Click on the map to pan the source: </p>
 <p> <canvas id="Canvas" width="820" height="412"></canvas> </p>
 <p>
-Azimuth: <span id="azi-value">0</span>
+Azimuth: <span id="azim-value">0</span>
 Elevation: <span id="elev-value">0</span>
 </p>
 
@@ -73,7 +73,7 @@ Elevation: <span id="elev-value">0</span>
 var canvas = document.getElementById('Canvas');
 var canvas_context = canvas.getContext("2d");
 var mouseDown = false;
-var aziValue = document.getElementById('azi-value');
+var azimValue = document.getElementById('azim-value');
 var elevValue = document.getElementById('elev-value');
 var orderValue = document.getElementById('order-value');
 var reverbValue = document.getElementById('reverb-value');
@@ -111,7 +111,7 @@ function mouseAction(mouse) {
     mouseActionLocal([angleX, angleY]);
 
     // update html values
-    aziValue.innerHTML = angleX;
+    azimValue.innerHTML = angleX;
     elevValue.innerHTML = angleY;
 
     // Move the marker when placed to a better location
@@ -160,10 +160,10 @@ Circle.prototype.draw = function(context) {
     context.fill();
 };
 
-function angles2pixels(azi, elev, cnv) {
+function angles2pixels(azim, elev, cnv) {
     var rect = cnv.getBoundingClientRect();
     var xy = [];
-    xy[0] = Math.round(-azi*rect.width/360 + rect.width/2);
+    xy[0] = Math.round(-azim*rect.width/360 + rect.width/2);
     xy[1] = Math.round(rect.height/2 - elev*rect.height/180);
     return xy;
 }

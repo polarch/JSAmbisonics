@@ -70,7 +70,7 @@ loader_filters.load();
 
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
-    encoder.azi = angleXY[0];
+    encoder.azim = angleXY[0];
     encoder.elev = angleXY[1];
     encoder.updateGains();
 }

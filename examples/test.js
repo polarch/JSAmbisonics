@@ -12,7 +12,7 @@ var soundBuffer, sound;
 // test HOA encoder (panner)
 var hoa_encoder = new webAudioAmbisonic.monoEncoder(context, maxOrder);
 console.log(hoa_encoder);
-hoa_encoder.azi = 90;
+hoa_encoder.azim = 90;
 hoa_encoder.elev = 45;
 hoa_encoder.updateGains();
 

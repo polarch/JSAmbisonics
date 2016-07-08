@@ -40,7 +40,7 @@ loader_sound.load();
 
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
-    vmic.azi = angleXY[0];
+    vmic.azim = angleXY[0];
     vmic.elev = angleXY[1];
     vmic.updateOrientation();
 }

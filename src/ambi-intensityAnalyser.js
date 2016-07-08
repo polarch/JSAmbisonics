@@ -58,7 +58,7 @@ export default class intensityAnalyser {
         var XX = 0;
         var YY = 0;
         var ZZ = 0;
-        var I, I_norm, E, Psi, azi, elev;
+        var I, I_norm, E, Psi, azim, elev;
         // Accumulators for correlations and energies
         for (let i = 0; i < this.fftSize; i++) {
 
@@ -74,10 +74,10 @@ export default class intensityAnalyser {
         I_norm = Math.sqrt(I[0] * I[0] + I[1] * I[1] + I[2] * I[2]); // intensity magnitude
         E = (WW + XX + YY + ZZ) / 2; // energy
         Psi = 1 - I_norm / (E + 10e-8); // diffuseness
-        azi = Math.atan2(iY, iX) * 180 / Math.PI;
+        azim = Math.atan2(iY, iX) * 180 / Math.PI;
         elev = Math.atan2(I[2], Math.sqrt(I[0] * I[0] + I[1] * I[1])) * 180 / Math.PI;
 
-        var params = [azi, elev, Psi, E];
+        var params = [azim, elev, Psi, E];
         return params;
     }
 }

@@ -49,6 +49,12 @@ HOA recordings are made by the author in the [Communication Acoustics laboratory
 ---
 ## Usage
 
+To add the library to you node project, type in (terminal at project root):
+
+```bash
+npm install polarch/JSAmbisonics
+```
+
 To use the ambisonic objects, include the WebAudioAmbisonic library in the body of your html code as:
 ```javascript
 <script type="text/javascript" src="web-audio-ambisonic.umd.js"></script>
@@ -64,7 +70,7 @@ where *audioContext* is the current Web Audio context, and *order* the desired a
 The azimuth and elevation of the encoded source can be updated at runtime by
 
 ```javascript
-encoder.azi = azi_value_in_degrees;
+encoder.azim = azim_value_in_degrees;
 encoder.elev = elev_value_in_degrees;
 encoder.updateGains();
 ```
@@ -113,7 +119,7 @@ var vmic = new webAudioAmbisonic.virtualMic(audioContext, order)
 The virtual microphone is initialized to a hypercardioid of the appropriate order, pointing to the front. The orientation can be updated at runtime by
 
 ```javascript
-vmic.azi = azi_value_in_degrees;
+vmic.azim = azim_value_in_degrees;
 vmic.elev = elev_value_in_degrees;
 vmic.updateOrientation();
 ```
