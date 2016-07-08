@@ -125,10 +125,11 @@ vmic.vmicPattern = string;
 vmic.updatePattern();
 ```
 where *string* can be one of the following:
-* "cardioid"
-* "supercardioid"
-* "hypercardioid"
-* "max_rE"
+* **"cardioid"**
+* **"supercardioid"**
+* **"hypercardioid"**
+* **"max_rE"**
+
 Higher-order cardioids correspond to the normal cardioid raised to the power of *order*. Higher-order supercardioids correspond to the pattern of that order that maximizes the front-to-back energy ratio. Higher-order hypercardioids correspond to the pattern of that order that maximizes the directivity factor. the max-rE pattern, found in ambisonic decoding literature, corresponds to the pattern of that order that maximizes the (Gerzon) energy vector for diffuse sound.
 
 All objects have an input node *object.in* and an output node *object.out* which are used for the connections. The number of channels expected from each input depends on the object (for example a FOA encoder expects a monophonic signal, and outputs 4 channels, a FOA binaural decoder expects 4-channel input and outputs 2 channels, etc.). Example connections:
