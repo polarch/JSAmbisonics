@@ -16,14 +16,18 @@ var soundBuffer, sound;
 var maxOrder = 3;
 
 // initialize virtual micorphone block
-var vmic = new webAudioAmbisonic.HOA_vmic(context, maxOrder);
+var vmic = new webAudioAmbisonic.virtualMic(context, maxOrder);
 console.log(vmic);
 // HOA analyser
-var analyser = new webAudioAmbisonic.HOA_analyser(context, maxOrder);
+var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
 console.log(analyser);
+// ACN to Fuma converter
+var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
+console.log(converterA2F);
 
 // connect HOA blocks
 vmic.out.connect(context.destination);
+converterA2F.out.connect(analyser.in);
 
 // load samples and assign to buffers
 var assignSoundBufferOnLoad = function(buffer) {
@@ -72,7 +76,7 @@ $(document).ready(function() {
         sound.buffer = soundBuffer;
         sound.loop = true;
         sound.connect(vmic.in);
-        sound.connect(analyser.in);
+        sound.connect(converterA2F.in);
         sound.start(0);
         sound.isPlaying = true;
         document.getElementById('play').disabled = true;

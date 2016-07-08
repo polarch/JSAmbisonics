@@ -3,59 +3,59 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Bformat_analyser = exports.Bformat_binDecoder = exports.Bformat_vmic = exports.Bformat_rotator = exports.Bformat_encoder = exports.hoa_converters = exports.HOAloader = exports.HOA_analyser = exports.HOA_vmic = exports.HOA_binDecoder = exports.HOA_rotator = exports.HOA_orderLimiter = exports.HOA_encoder = exports.jshlib = undefined;
+exports.intensityAnalyser = exports.converters = exports.HOAloader = exports.powermapAnalyser = exports.virtualMic = exports.binDecoder = exports.sceneRotator = exports.orderLimiter = exports.monoEncoder = undefined;
 
-var _hoaEncoder = require('./hoa-encoder');
+var _ambiMonoEncoder = require('./ambi-monoEncoder');
 
-Object.defineProperty(exports, 'HOA_encoder', {
+Object.defineProperty(exports, 'monoEncoder', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_hoaEncoder).default;
+    return _interopRequireDefault(_ambiMonoEncoder).default;
   }
 });
 
-var _hoaLimiter = require('./hoa-limiter');
+var _ambiOrderLimiter = require('./ambi-orderLimiter');
 
-Object.defineProperty(exports, 'HOA_orderLimiter', {
+Object.defineProperty(exports, 'orderLimiter', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_hoaLimiter).default;
+    return _interopRequireDefault(_ambiOrderLimiter).default;
   }
 });
 
-var _hoaRotator = require('./hoa-rotator');
+var _ambiSceneRotator = require('./ambi-sceneRotator');
 
-Object.defineProperty(exports, 'HOA_rotator', {
+Object.defineProperty(exports, 'sceneRotator', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_hoaRotator).default;
+    return _interopRequireDefault(_ambiSceneRotator).default;
   }
 });
 
-var _hoaDecoderBin = require('./hoa-decoderBin');
+var _ambiBinauralDecoder = require('./ambi-binauralDecoder');
 
-Object.defineProperty(exports, 'HOA_binDecoder', {
+Object.defineProperty(exports, 'binDecoder', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_hoaDecoderBin).default;
+    return _interopRequireDefault(_ambiBinauralDecoder).default;
   }
 });
 
-var _hoaVirtualMic = require('./hoa-virtualMic');
+var _ambiVirtualMic = require('./ambi-virtualMic');
 
-Object.defineProperty(exports, 'HOA_vmic', {
+Object.defineProperty(exports, 'virtualMic', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_hoaVirtualMic).default;
+    return _interopRequireDefault(_ambiVirtualMic).default;
   }
 });
 
-var _hoaAnalyser = require('./hoa-analyser');
+var _ambiPowermapAnalyser = require('./ambi-powermapAnalyser');
 
-Object.defineProperty(exports, 'HOA_analyser', {
+Object.defineProperty(exports, 'powermapAnalyser', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_hoaAnalyser).default;
+    return _interopRequireDefault(_ambiPowermapAnalyser).default;
   }
 });
 
@@ -68,65 +68,22 @@ Object.defineProperty(exports, 'HOAloader', {
   }
 });
 
-var _foaEncoder = require('./foa-encoder');
+var _ambiIntensityAnalyser = require('./ambi-intensityAnalyser');
 
-Object.defineProperty(exports, 'Bformat_encoder', {
+Object.defineProperty(exports, 'intensityAnalyser', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_foaEncoder).default;
+    return _interopRequireDefault(_ambiIntensityAnalyser).default;
   }
 });
 
-var _foaRotator = require('./foa-rotator');
+var _ambiConverters = require('./ambi-converters');
 
-Object.defineProperty(exports, 'Bformat_rotator', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_foaRotator).default;
-  }
-});
-
-var _foaVirtualMic = require('./foa-virtualMic');
-
-Object.defineProperty(exports, 'Bformat_vmic', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_foaVirtualMic).default;
-  }
-});
-
-var _foaDecoderBin = require('./foa-decoderBin');
-
-Object.defineProperty(exports, 'Bformat_binDecoder', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_foaDecoderBin).default;
-  }
-});
-
-var _foaAnalyser = require('./foa-analyser');
-
-Object.defineProperty(exports, 'Bformat_analyser', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_foaAnalyser).default;
-  }
-});
-
-var _jshLib = require('./jsh-lib');
-
-var _jshlib = _interopRequireWildcard(_jshLib);
-
-var _hoaConverters = require('./hoa-converters');
-
-var _hoa_converters = _interopRequireWildcard(_hoaConverters);
+var _converters = _interopRequireWildcard(_ambiConverters);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var jshlib = exports.jshlib = _jshlib;
-
-// expose for plugins
-var hoa_converters = exports.hoa_converters = _hoa_converters;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluZGV4LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OzsrQ0FJUyxPOzs7Ozs7Ozs7K0NBQ0EsTzs7Ozs7Ozs7OytDQUNBLE87Ozs7Ozs7OztrREFDQSxPOzs7Ozs7Ozs7a0RBQ0EsTzs7Ozs7Ozs7O2dEQUNBLE87Ozs7Ozs7Ozs4Q0FFQSxPOzs7Ozs7Ozs7K0NBS0EsTzs7Ozs7Ozs7OytDQUNBLE87Ozs7Ozs7OztrREFDQSxPOzs7Ozs7Ozs7a0RBQ0EsTzs7Ozs7Ozs7O2dEQUNBLE87Ozs7QUFwQlQ7O0lBQVksTzs7QUFhWjs7SUFBWSxlOzs7Ozs7QUFaTCxJQUFNLDBCQUFTLE9BQWY7OztBQWFBLElBQU0sMENBQWlCLGVBQXZCIiwiZmlsZSI6ImluZGV4LmpzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0ICogYXMgX2pzaGxpYiBmcm9tICcuL2pzaC1saWInO1xuZXhwb3J0IGNvbnN0IGpzaGxpYiA9IF9qc2hsaWI7XG5cbi8vIGV4cG9zZSBmb3IgcGx1Z2luc1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBIT0FfZW5jb2RlciB9IGZyb20gJy4vaG9hLWVuY29kZXInO1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBIT0Ffb3JkZXJMaW1pdGVyIH0gZnJvbSAnLi9ob2EtbGltaXRlcic7XG5leHBvcnQgeyBkZWZhdWx0IGFzIEhPQV9yb3RhdG9yIH0gZnJvbSAnLi9ob2Etcm90YXRvcic7XG5leHBvcnQgeyBkZWZhdWx0IGFzIEhPQV9iaW5EZWNvZGVyfSBmcm9tICcuL2hvYS1kZWNvZGVyQmluJztcbmV4cG9ydCB7IGRlZmF1bHQgYXMgSE9BX3ZtaWMgfSBmcm9tICcuL2hvYS12aXJ0dWFsTWljJztcbmV4cG9ydCB7IGRlZmF1bHQgYXMgSE9BX2FuYWx5c2VyIH0gZnJvbSAnLi9ob2EtYW5hbHlzZXInO1xuXG5leHBvcnQgeyBkZWZhdWx0IGFzIEhPQWxvYWRlciB9IGZyb20gJy4vaG9hLWxvYWRlcic7XG5cbmltcG9ydCAqIGFzIF9ob2FfY29udmVydGVycyBmcm9tICcuL2hvYS1jb252ZXJ0ZXJzJztcbmV4cG9ydCBjb25zdCBob2FfY29udmVydGVycyA9IF9ob2FfY29udmVydGVycztcblxuZXhwb3J0IHsgZGVmYXVsdCBhcyBCZm9ybWF0X2VuY29kZXIgfSBmcm9tICcuL2ZvYS1lbmNvZGVyJztcbmV4cG9ydCB7IGRlZmF1bHQgYXMgQmZvcm1hdF9yb3RhdG9yIH0gZnJvbSAnLi9mb2Etcm90YXRvcic7XG5leHBvcnQgeyBkZWZhdWx0IGFzIEJmb3JtYXRfdm1pYyB9IGZyb20gJy4vZm9hLXZpcnR1YWxNaWMnO1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBCZm9ybWF0X2JpbkRlY29kZXJ9IGZyb20gJy4vZm9hLWRlY29kZXJCaW4nO1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBCZm9ybWF0X2FuYWx5c2VyfSBmcm9tICcuL2ZvYS1hbmFseXNlcic7XG4iXX0=
+var converters = exports.converters = _converters;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluZGV4LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztvREFFUyxPOzs7Ozs7Ozs7cURBQ0EsTzs7Ozs7Ozs7O3FEQUNBLE87Ozs7Ozs7Ozt3REFDQSxPOzs7Ozs7Ozs7bURBQ0EsTzs7Ozs7Ozs7O3lEQUNBLE87Ozs7Ozs7Ozs4Q0FFQSxPOzs7Ozs7Ozs7MERBS0EsTzs7OztBQUhUOztJQUFZLFc7Ozs7OztBQUNMLElBQU0sa0NBQWEsV0FBbkIiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VzQ29udGVudCI6WyJcbi8vIGV4cG9zZSBmb3IgcGx1Z2luc1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBtb25vRW5jb2RlciB9IGZyb20gJy4vYW1iaS1tb25vRW5jb2Rlcic7XG5leHBvcnQgeyBkZWZhdWx0IGFzIG9yZGVyTGltaXRlciB9IGZyb20gJy4vYW1iaS1vcmRlckxpbWl0ZXInO1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBzY2VuZVJvdGF0b3IgfSBmcm9tICcuL2FtYmktc2NlbmVSb3RhdG9yJztcbmV4cG9ydCB7IGRlZmF1bHQgYXMgYmluRGVjb2Rlcn0gZnJvbSAnLi9hbWJpLWJpbmF1cmFsRGVjb2Rlcic7XG5leHBvcnQgeyBkZWZhdWx0IGFzIHZpcnR1YWxNaWMgfSBmcm9tICcuL2FtYmktdmlydHVhbE1pYyc7XG5leHBvcnQgeyBkZWZhdWx0IGFzIHBvd2VybWFwQW5hbHlzZXIgfSBmcm9tICcuL2FtYmktcG93ZXJtYXBBbmFseXNlcic7XG5cbmV4cG9ydCB7IGRlZmF1bHQgYXMgSE9BbG9hZGVyIH0gZnJvbSAnLi9ob2EtbG9hZGVyJztcblxuaW1wb3J0ICogYXMgX2NvbnZlcnRlcnMgZnJvbSAnLi9hbWJpLWNvbnZlcnRlcnMnO1xuZXhwb3J0IGNvbnN0IGNvbnZlcnRlcnMgPSBfY29udmVydGVycztcblxuZXhwb3J0IHsgZGVmYXVsdCBhcyBpbnRlbnNpdHlBbmFseXNlcn0gZnJvbSAnLi9hbWJpLWludGVuc2l0eUFuYWx5c2VyJztcbiJdfQ==

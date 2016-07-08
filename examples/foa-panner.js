@@ -12,23 +12,27 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/4-Audio-Track.wav";
-var irUrl = "IRs/BF_filters_direct.wav";
+var irUrl = "IRs/HOA1_filters_virtual.wav";
 
 var soundBuffer, sound;
 
-// initialize B-format encoder
-var encoder = new webAudioAmbisonic.Bformat_encoder(context);
+// initialize encoder
+var encoder = new webAudioAmbisonic.monoEncoder(context, 1);
 console.log(encoder);
-// initialize B-format decoder
-var decoder = new webAudioAmbisonic.Bformat_binDecoder(context);
+// initialize decoder
+var decoder = new webAudioAmbisonic.binDecoder(context, 1);
 console.log(decoder);
 // initialize B-format analyser
-var analyser = new webAudioAmbisonic.Bformat_analyser(context);
+var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
+// initialize ACN-to-FuMa converter
+var converter = new webAudioAmbisonic.converters.acn2bf(context);
+console.log(converter);
 
 // connect graph
-encoder.out.connect(analyser.in);
-analyser.out.connect(decoder.in);
+encoder.out.connect(converter.in);
+encoder.out.connect(decoder.in);
+converter.out.connect(analyser.in);
 decoder.out.connect(context.destination);
 
 // function to load samples
