@@ -14,13 +14,13 @@ A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) pr
 ----
 
 ## Description
-JSAmbisonics is a JavaScript library that implements a set of objects for real-time spatial audio processing, using the Ambisonics framework. The objects correspond to typical ambisonic processing blocks, and internally implement Web Audio graphs for the associated operations. 
+JSAmbisonics is a JavaScript library that implements a set of objects for real-time spatial audio processing, using the Ambisonics framework. The objects correspond to typical ambisonic processing blocks, and internally implement Web Audio graphs for the associated operations.
 
 The library is suitable for both FOA and HOA processing, using the following specifications:
 * FOA B-format signals with traditional ordering **[W X Y Z]** and a factor of **1/sqrt(2)** on the omnidirectional first channel.
 * FOA or HOA (up to 3rd-order) using the [Furse-Malham specification](http://www.blueripplesound.com/b-format).
 * FOA or HOA with ACN channel ordering and N3D normalization. This is the default mode, and all internal processing is done using this.
-* FOA or HOA with ACN channel ordering and SN3D normalization. 
+* FOA or HOA with ACN channel ordering and SN3D normalization.
 
 Computation of spherical harmonics and rotations rely on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
@@ -42,7 +42,7 @@ The library is a work-in-progress, but fully functional. At the moment, demos se
 ---
 ## Real-time demo (Chrome and Firefox)
 
-See the live [Rawgit demo](https://rawgit.com/polarch/JSAmbisonics/f56b0aece88087f939fa4727c64fcd9191573265/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://rawgit.com/polarch/JSAmbisonics/e5090128dd38eb8a3d5d2db3e76c6e3066db7e5b/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
