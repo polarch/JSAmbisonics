@@ -24,15 +24,6 @@ The library is suitable for both FOA and HOA processing, using the following spe
 
 Computation of spherical harmonics and rotations rely on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
-The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. No other browsers have been checked yet.
-
----
-## Real-time demo (Chrome and Firefox)
-
-See the live [Rawgit demo](https://rawgit.com/polarch/JSAmbisonics/f56b0aece88087f939fa4727c64fcd9191573265/index.html)  (serving the content of the ``./examples`` folder).
-
-HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
-
 The implemented Web Audio classes are:
 * **monoEncoder**: encodes a monophonic sound source to an ambisonic stream of a set order, with real-time control of the panning direction.
 * **sceneRotator**: rotates the sound scene of an ambisonic stream, with real-time control of yaw, pitch, and roll rotation angles.
@@ -45,6 +36,15 @@ The implemented Web Audio classes are:
 * **converters.sn3d2n3d**: converts an ACN/SN3D stream to an ACN/N3D stream
 * **converters.fuma2acn**: converts a FuMa stream to a ACN/N3D stream
 * **intensityAnalyser**: implements an acoustic intensity analysis for visualization of directional information captured in the ambisonic stream.
+
+The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. No other browsers have been checked yet.
+
+---
+## Real-time demo (Chrome and Firefox)
+
+See the live [Rawgit demo](https://rawgit.com/polarch/JSAmbisonics/f56b0aece88087f939fa4727c64fcd9191573265/index.html)  (serving the content of the ``./examples`` folder).
+
+HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
 ---
 ## Usage
