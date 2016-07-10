@@ -1,4 +1,4 @@
-function h_hoa2bin = getHOA2binauralFilters_virtual(order, hrirs, dirsAziElev)
+function h_hoa2bin = getHOA2binauralFilters_virtual(order, hrirs, dirsAziElev, useRawArray)
 %getHOA2binauralFilters_virtual Summary of this function goes here
 %
 %   Converts an HRIR set to a set of IRs that can be directly convolved 
@@ -31,17 +31,30 @@ function h_hoa2bin = getHOA2binauralFilters_virtual(order, hrirs, dirsAziElev)
 %   Archontis Politis, archontis.politis@aalto.fi
 %   David Poirier-Quinot, david.poirier-quinot@ircam.fr
 
+%% Handle arguments
+if nargin < 4; useRawArray = false; end
+
 %% Get Ambisonic decode matrix
 
-% Define virtual speaker array based on HRIR set measurement grid
-[~, ls_dirs_rad] = getTdesign(2*order);
+if ~useRawArray;
+    % Define virtual speaker array based on HRIR set measurement grid
+    [~, ls_dirs_rad_orig] = getTdesign(2*order);
 
-% Find closest HRIRs in the set and return actual directions
-[hrirs_closest, ls_dirs_rad] = getClosestHRIRs(hrirs, dirsAziElev, ls_dirs_rad);
+    % Find closest HRIRs in the set and return actual directions
+    [hrirs_closest, ls_dirs_rad] = getClosestHRIRs(hrirs.', dirsAziElev, ls_dirs_rad_orig);
+    
+    rE_WEIGHT = 1;
+else
+    % Every HRIR in the set is considered as a virtual speaker. Non-optimal
+    % method, yet some prefer how the resulting hoa irs sound. use at your
+    % own risk.
+    hrirs_closest = hrirs.';
+    ls_dirs_rad = deg2rad(dirsAziElev);
+    rE_WEIGHT = 0;
+end
 
 % Get HOA decoding matrix
 method = 'ALLRAD';
-rE_WEIGHT = 1;
 M_dec = ambiDecoder ( rad2deg(ls_dirs_rad), method, rE_WEIGHT, order );
 
 %% Combine Ambisonic decoding with HRIRs
