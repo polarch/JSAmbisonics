@@ -30,7 +30,6 @@ hrir_base_name = 'IRC_1008_R_HRIR'; % see README.md for download instructions
 hrir_filename = fullfile( pwd, [hrir_base_name '.mat'] );
 load( hrir_filename, 'l_hrir_S', 'r_hrir_S' );
 
-
 %% Generate SH HRIR
 
 order = 3;
@@ -46,8 +45,8 @@ switch ENCODING_APPROACH,
     case 'VIRTUAL', 
         hrirs_l = l_hrir_S.content_m;
         hrirs_r = r_hrir_S.content_m;
-        [h_hoa2bin_l, h_hoa2bin_r] = getHOA2binauralFilters_virtual(order, hrirs_l, hrirs_r, dirsAziElev);        
-        h_hoa2bin = h_hoa2bin_l.';
+        useRawArray = true;
+        h_hoa2bin = getHOA2binauralFilters_virtual(order, hrirs_l, dirsAziElev, useRawArray);
 end
 
 %% Save IRs to use with JSHlib
