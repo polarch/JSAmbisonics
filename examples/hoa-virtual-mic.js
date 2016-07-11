@@ -24,9 +24,12 @@ console.log(analyser);
 // ACN to Fuma converter
 var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(converterA2F);
+// output gain
+var gainOut = context.createGain();
 
 // connect HOA blocks
-vmic.out.connect(context.destination);
+vmic.out.connect(gainOut);
+gainOut.connect(context.destination);
 converterA2F.out.connect(analyser.in);
 
 // load samples and assign to buffers

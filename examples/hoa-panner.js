@@ -34,6 +34,8 @@ var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
 // ACN to FuMa converter
 var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(analyser);
+// output gain
+var gainOut = context.createGain();
 
 // connect HOA blocks
 encoder.out.connect(converterA2F.in);
@@ -41,7 +43,8 @@ converterA2F.out.connect(analyser.in);
 
 encoder.out.connect(limiter.in);
 limiter.out.connect(decoder.in);
-decoder.out.connect(context.destination);
+decoder.out.connect(gainOut);
+gainOut.connect(context.destination);
 
 // function to assign sample to the sound buffer for playback (and enable playbutton)
 var assignSample2SoundBuffer = function(decodedBuffer) {

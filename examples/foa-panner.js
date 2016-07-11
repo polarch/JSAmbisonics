@@ -28,12 +28,15 @@ console.log(analyser);
 // initialize ACN-to-FuMa converter
 var converter = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(converter);
+// output gain
+var gainOut = context.createGain();
 
 // connect graph
 encoder.out.connect(converter.in);
 encoder.out.connect(decoder.in);
 converter.out.connect(analyser.in);
-decoder.out.connect(context.destination);
+decoder.out.connect(gainOut);
+gainOut.connect(context.destination);
 
 // function to load samples
 function loadSample(url, doAfterLoading) {

@@ -31,11 +31,14 @@ var converterF2A = new webAudioAmbisonic.converters.bf2acn(context);
 var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(converterF2A);
 console.log(converterA2F);
+// output gain
+var gainOut = context.createGain();
 
 // connect graph
 converterF2A.out.connect(rotator.in);
 rotator.out.connect(decoder.in);
-decoder.out.connect(context.destination);
+decoder.out.connect(gainOut);
+gainOut.connect(context.destination);
 
 rotator.out.connect(converterA2F.in);
 converterA2F.out.connect(analyser.in);

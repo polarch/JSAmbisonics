@@ -22,10 +22,13 @@ var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
 // converter from FuMa to ACN
 var converterF2A = new webAudioAmbisonic.converters.bf2acn(context);
+// output gain
+var gainOut = context.createGain();
 
 // connect HOA blocks
 converterF2A.out.connect(vmic.in);
-vmic.out.connect(context.destination);
+vmic.out.connect(gainOut);
+gainOut.connect(context.destination);
 
 // function to load samples
 function loadSample(url, doAfterLoading) {
