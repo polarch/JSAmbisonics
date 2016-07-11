@@ -69,10 +69,6 @@ $(document).ready(function() {
     document.getElementById("div-order").outerHTML = '';
     document.getElementById("move-map-instructions").outerHTML = 'Click on the map to rotate the microphone:';
 
-    // Init GUI
-    document.getElementById('play').disabled = true;
-    document.getElementById('stop').disabled = true;
-
     // handle buttons
     document.getElementById('play').addEventListener('click', function() {
         sound = context.createBufferSource();

@@ -90,10 +90,6 @@ $(document).ready(function() {
     document.getElementById("div-order").outerHTML='';
     document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
 
-    // Init GUI
-    document.getElementById('play').disabled = true;
-    document.getElementById('stop').disabled = true;
-
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
         sound = context.createBufferSource();

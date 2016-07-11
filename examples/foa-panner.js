@@ -84,10 +84,6 @@ $(document).ready(function() {
     document.getElementById("div-reverb").outerHTML='';
     document.getElementById("div-order").outerHTML='';
 
-    // Init GUI
-    document.getElementById('play').disabled = true;
-    document.getElementById('stop').disabled = true;
-
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
         sound = context.createBufferSource();

@@ -89,10 +89,6 @@ $.holdReady( true ); // to force awaiting on common.html loading
 
 $(document).ready(function() {
 
-    // load and assign samples
-    document.getElementById('play').disabled = true;
-    document.getElementById('stop').disabled = true;
-
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
         sound = context.createBufferSource();
