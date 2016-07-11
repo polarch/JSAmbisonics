@@ -15,6 +15,9 @@
 /* PRESSURE-VELOCITY INTENSITY ANALYZER */
 //////////////////////////////////////////
 
+// for Safari support where audioContext.Analyser.getFloatTimeDomainData is not defined for now
+import 'get-float-time-domain-data';
+
 export default class intensityAnalyser {
     constructor(audioCtx) {
         this.initialized = false;

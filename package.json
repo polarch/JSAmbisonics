@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "web audio classes for Ambisonic processing",
   "author": "Archontis Politis <archontis.politis@aalto.com>",
-  "contributors": [{
-                     "name": "David Poirier-Quinot",
-                     "email": "David.Poirier-Quinot@ircam.fr"
-                     }],
+  "contributors": [
+    {
+      "name": "David Poirier-Quinot",
+      "email": "David.Poirier-Quinot@ircam.fr"
+    }
+  ],
   "main": "dist/index.js",
   "standalone": "webAudioAmbisonic",
   "scripts": {
@@ -28,8 +30,9 @@
   },
   "dependencies": {
     "babel-runtime": "^6.6.1",
-    "spherical-harmonic-transform": "^0.1.0",
-    "numeric": "^1.2.6"    
+    "get-float-time-domain-data": "^0.1.0",
+    "numeric": "^1.2.6",
+    "spherical-harmonic-transform": "^0.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.6.5",
