@@ -12,7 +12,7 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/4-Audio-Track.wav";
-var irUrl_0 = "IRs/IRC_1008_R_HRIR_virtual.wav";
+var irUrl_0 = "IRs/HOA3_filters_virtual.wav";
 var irUrl_1 = "IRs/HOA3_filters_direct.wav";
 var irUrl_2 = "IRs/room-medium-1-furnished-src-20-Set1.wav";
 
