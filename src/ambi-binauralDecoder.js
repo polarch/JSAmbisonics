@@ -29,6 +29,8 @@ export default class binDecoder {
         // input and output nodes
         this.in = this.ctx.createChannelSplitter(this.nCh);
         this.out = this.ctx.createChannelMerger(2);
+        this.out.channelCountMode = 'explicit';
+        this.out.channelCount = 1;
         // downmixing gains for left and right ears
         this.gainMid = this.ctx.createGain();
         this.gainSide = this.ctx.createGain();
@@ -78,8 +80,19 @@ export default class binDecoder {
         cardGains[0] = 0.5;
         cardGains[1] = 0.5 / Math.sqrt(3);
         for (var i = 0; i < this.nCh; i++) {
-            this.decFilters[i] = this.ctx.createBuffer(1, 1, this.ctx.sampleRate);
-            this.decFilters[i].getChannelData(0).set([cardGains[i]]);
+            // ------------------------------------
+            // This works for Chrome and Firefox:
+            // this.decFilters[i] = this.ctx.createBuffer(1, 1, this.ctx.sampleRate);
+            // this.decFilters[i].getChannelData(0).set([cardGains[i]]);
+            // ------------------------------------
+            // Safari forces us to use this:
+            this.decFilters[i] = this.ctx.createBuffer(1, 64, this.ctx.sampleRate);
+            // and will send gorgeous crancky noise bursts for any value below 64
+            for (var j = 0; j < 64; j++) {
+                this.decFilters[i].getChannelData(0)[j] = 0.0;
+            }
+            this.decFilters[i].getChannelData(0)[0] = cardGains[i];
+            // ------------------------------------
             this.decFilterNodes[i].buffer = this.decFilters[i];
         }
     }
