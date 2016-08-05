@@ -67,3 +67,17 @@ hoa_encoder.out.connect(hoa_limiter.in);
 hoa_limiter.out.connect(hoa_decoder.in);
 hoa_decoder.out.connect(context.destination);
 
+///////////////////////////
+// TEST HRIR SOFA LOADER //
+///////////////////////////
+console.log('\n#### TEST HRIR SOFA LOADER ####\n');
+
+var irUrl_01 = 'IRs/IRC_1037_C_HRIR_44100.sofa.json';
+// load filters and assign to buffers
+var assignFiltersOnLoad2 = function(buffer) {
+    console.log('successfully loaded HOA buffer:', buffer);
+    hoa_decoder.updateFilters(buffer);
+}
+var hrirLoader = new webAudioAmbisonic.HRIRloader(context, maxOrder, assignFiltersOnLoad2);
+hrirLoader.load(irUrl_01);
+console.log(hrirLoader);
