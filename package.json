@@ -33,7 +33,8 @@
     "get-float-time-domain-data": "^0.1.0",
     "numeric": "^1.2.6",
     "serve-sofa-hrtf": "git://github.com/PyrApple/serveSofaHrtf",
-    "spherical-harmonic-transform": "^0.1.0"
+    "spherical-harmonic-transform": "^0.1.0",
+    "convex-hull": "^1.0.3"  
   },
   "devDependencies": {
     "babel-core": "^6.6.5",
