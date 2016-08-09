@@ -63,13 +63,94 @@ export class acn2bf {
     }
 }
 
+
 ///////////////////////////////////
-/* ACN/N3D TO B-FORMAT CONVERTER */
+/* ACN/SN3D TO ACN/N3D CONVERTER */
 ///////////////////////////////////
+export class sn3d2n3d {
+    
+    constructor(audioCtx, order) {
+        
+        this.ctx = audioCtx;
+        this.order = order;
+        this.nCh = (order + 1) * (order + 1);
+        this.in = this.ctx.createChannelSplitter(this.nCh);
+        this.out = this.ctx.createChannelMerger(this.nCh);
+        this.gains = [];
+        
+        for (var i = 0; i < this.nCh; i++) {
+            var n = Math.floor(Math.sqrt(i));
+            
+            this.gains[i] = this.ctx.createGain();
+            this.gains[i].gain.value = Math.sqrt(2*n+1);
+            
+            this.in.connect(this.gains[i], i, 0);
+            this.gains[i].connect(this.out, 0, i);
+        }
+    }
+}
+
+///////////////////////////////////
+/* ACN/N3D TO ACN/SN3D CONVERTER */
+///////////////////////////////////
+export class n3d2sn3d {
+    
+    constructor(audioCtx, order) {
+        
+        this.ctx = audioCtx;
+        this.order = order;
+        this.nCh = (order + 1) * (order + 1);
+        this.in = this.ctx.createChannelSplitter(this.nCh);
+        this.out = this.ctx.createChannelMerger(this.nCh);
+        this.gains = [];
+        
+        for (var i = 0; i < this.nCh; i++) {
+            var n = Math.floor(Math.sqrt(i));
+            
+            this.gains[i] = this.ctx.createGain();
+            this.gains[i].gain.value = 1/Math.sqrt(2*n+1);
+            
+            this.in.connect(this.gains[i], i, 0);
+            this.gains[i].connect(this.out, 0, i);
+        }
+    }
+}
+
+
+///////////////////////////////
+/* FUMA TO ACN/N3D CONVERTER */
+///////////////////////////////
 export class fuma2acn {
 
     constructor(audioCtx, order) {
-
+        
+        if (order>3) {
+            console.log("FuMa specifiction is supported up to 3rd order");
+            order = 3;
+        }
+        
+        // re-mapping indices from FuMa channels to ACN
+        // var index_fuma2acn = [0, 2, 3, 1, 8, 6, 4, 5, 7, 15, 13, 11, 9, 10, 12, 14];
+        // //                    W  Y  Z  X  V  T  R  S  U  Q   O   M   K  L   N   P
+        
+        // gains for each FuMa channel to N3D, after re-mapping channels
+        var gains_fuma2n3d = [Math.sqrt(2),     // W
+                              Math.sqrt(3),     // Y
+                              Math.sqrt(3),     // Z
+                              Math.sqrt(3),     // X
+                              Math.sqrt(15)/2,  // V
+                              Math.sqrt(15)/2,  // T
+                              Math.sqrt(5),     // R
+                              Math.sqrt(15)/2,  // S
+                              Math.sqrt(15)/2,  // U
+                              Math.sqrt(35/8),  // Q
+                              Math.sqrt(35)/3,  // O
+                              Math.sqrt(224/45),// M
+                              Math.sqrt(7),     // K
+                              Math.sqrt(224/45),// L
+                              Math.sqrt(35)/3,  // N
+                              Math.sqrt(35/8)]  // P
+        
         this.ctx = audioCtx;
         this.order = order;
         this.nCh = (order + 1) * (order + 1);
@@ -98,6 +179,7 @@ export class fuma2acn {
         // connect inputs/outputs (kept separated for clarity's sake)
         for (var i = 0; i < this.nCh; i++) {
             this.gains[i] = this.ctx.createGain();
+            this.gains[i].gain.value = gains_fuma2n3d[i];
             this.in.connect(this.gains[i], this.remapArray[i], 0);
             this.gains[i].connect(this.out, 0, i);
         }
