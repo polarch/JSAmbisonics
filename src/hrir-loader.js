@@ -18,6 +18,8 @@
 import * as serveSofaHrtf from 'serve-sofa-hrtf';
 import {getTdesign} from './utils'
 
+var ambidec = require("../utils/binAmbidec.js")
+
 export default class HRIRloader {
     constructor(context, order, callback) {
         this.context = context;
@@ -56,6 +58,20 @@ export default class HRIRloader {
             }
             console.log('hrirBuffer: ', this.hrirBuffer);
 
+            // get decoding matrix
+            // - from deg to rad
+            this.grantedFilterPosRad = [];
+            for (let i = 0; i < this.grantedFilterPos.length; i++) {
+                this.grantedFilterPosRad.push([
+                    this.grantedFilterPos[i][0] * Math.PI / 180.0,
+                    this.grantedFilterPos[i][1] * Math.PI / 180.0,
+                    this.grantedFilterPos[i][2]
+                    ]);
+            }
+            // - get decoding matrix
+            this.M_dec = ambidec.getAmbiBinauralDecMtx( this.grantedFilterPosRad, this.order );
+            console.log('decoding matrix: ', this.M_dec);
+
             // convert hrir filters to hoa filters
             this.hoaBuffer = this.getHoaFilterFromHrirFilter();
             console.log('hoaBuffer: ', this.hoaBuffer);
@@ -71,9 +87,16 @@ export default class HRIRloader {
         let hrirBufferSampleRate = this.hrirBuffer[0].sampleRate; // same
         let hoaBuffer = this.context.createBuffer(this.nCh, hrirBufferLength, hrirBufferSampleRate);
 
-        // DUMMY FILL IN OF THE BUFFER FOR NOW
+        // sum weighted HRIR over Ambisonic channels to create HOA IRs
         for (let i = 0; i < this.nCh; i++) {
-            hoaBuffer.getChannelData(i).set(this.hrirBuffer[i].getChannelData(0));
+            let concatBufferArrayLeft = new Float32Array(hrirBufferLength);
+            for (let j = 0; j < this.hrirBuffer.length; j++) {
+                for (let k = 0; k < hrirBufferLength; k++) {
+                    concatBufferArrayLeft[k] += this.M_dec[j][i] * this.hrirBuffer[j].getChannelData(0)[k];
+                }
+            }
+            // console.log('concat buffer: ',i,concatBufferArrayLeft);
+            hoaBuffer.getChannelData(i).set(concatBufferArrayLeft);
         }
 
         return hoaBuffer;
