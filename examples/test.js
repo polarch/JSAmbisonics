@@ -23,12 +23,22 @@ for (var i = 0; i < maxOrder; i++) hoa_limiter.updateOrder(i);
 
 // test binaural HOA decoder
 var hoa_decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
+hoa_decoder.resetFilters();
 console.log(hoa_decoder);
+
+// test HOA loader
 var hoa_assignFiltersOnLoad = function(buffer) { hoa_decoder.updateFilters(buffer); }
 var irUrl = "IRs/IRC_1008_R_HRIR_virtual.wav";
-var hoa_loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl, hoa_assignFiltersOnLoad);
-hoa_loader_filters.load();
-hoa_decoder.resetFilters();
+var hoaLoader = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl, hoa_assignFiltersOnLoad);
+hoaLoader.load();
+console.log(hoaLoader);
+
+// test sofa HRIR loader
+var irUrl_01 = 'IRs/IRC_1037_C_HRIR_44100.sofa.json';
+var assignFiltersOnLoad2 = function(buffer) { hoa_decoder.updateFilters(buffer); }
+var hrirLoader = new webAudioAmbisonic.HRIRloader(context, maxOrder, assignFiltersOnLoad2);
+hrirLoader.load(irUrl_01);
+console.log(hrirLoader);
 
 // test HOA rotator
 var hoa_rotator = new webAudioAmbisonic.sceneRotator(context, maxOrder);
@@ -66,18 +76,3 @@ hoa_analyser.computeIntensity();
 hoa_encoder.out.connect(hoa_limiter.in);
 hoa_limiter.out.connect(hoa_decoder.in);
 hoa_decoder.out.connect(context.destination);
-
-///////////////////////////
-// TEST HRIR SOFA LOADER //
-///////////////////////////
-console.log('\n#### TEST HRIR SOFA LOADER ####\n');
-
-var irUrl_01 = 'IRs/IRC_1037_C_HRIR_44100.sofa.json';
-// load filters and assign to buffers
-var assignFiltersOnLoad2 = function(buffer) {
-    console.log('successfully loaded HOA buffer:', buffer);
-    hoa_decoder.updateFilters(buffer);
-}
-var hrirLoader = new webAudioAmbisonic.HRIRloader(context, maxOrder, assignFiltersOnLoad2);
-hrirLoader.load(irUrl_01);
-console.log(hrirLoader);

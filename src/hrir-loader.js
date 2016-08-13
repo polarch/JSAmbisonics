@@ -16,9 +16,7 @@
 /////////////////
 
 import * as serveSofaHrtf from 'serve-sofa-hrtf';
-import {getTdesign} from './utils'
-
-var ambidec = require("../utils/binAmbidec.js")
+var utils = require("./utils.js");
 
 export default class HRIRloader {
     constructor(context, order, callback) {
@@ -33,48 +31,43 @@ export default class HRIRloader {
         this.hrtfSet = new serveSofaHrtf.HrtfSet({ audioContext:this.context, coordinateSystem:'sofaSpherical' });
 
         // define required speakers (hence hrirs) positions based on Ambisonic order
-        this.wishedSpeakerPos = getTdesign(2*this.order);
+        this.wishedSpeakerPos = utils.getTdesign(2*this.order);
     }
-
-
 
     load(setUrl) {
 
         this.hrtfSet.load(setUrl).then( () => {
 
             // extract hrir buffers of interest from the database
-            this.grantedFilterPos = [];
+            let grantedFilterPos = [];
             this.hrirBuffer = [];
             for (let i = 0; i < this.wishedSpeakerPos.length; i++) {
                 // get available positions (in the db) nearest from the required speakers positions
-                this.grantedFilterPos.push(this.hrtfSet.nearest(this.wishedSpeakerPos[i]).position);
+                grantedFilterPos.push(this.hrtfSet.nearest(this.wishedSpeakerPos[i]).position);
                 // get related hrir
                 this.hrirBuffer.push(this.hrtfSet.nearest(this.wishedSpeakerPos[i]).fir);
             }
 
-            // DEBUG
+            // DEBUG //////////////////////////////////////////////////////
+            // compare required vs. present positions in HRIR filter
+            let angularDistDeg = 0;
             for (let i = 0; i < this.wishedSpeakerPos.length; i++) {
-                console.log('asked / granted pos: ', this.wishedSpeakerPos[i], '/', this.grantedFilterPos[i]);
+                if (this.wishedSpeakerPos[i][0] < 0) this.wishedSpeakerPos[i][0] += 360.0;
+                angularDistDeg += Math.sqrt(
+                    Math.pow(this.wishedSpeakerPos[i][0] - grantedFilterPos[i][0], 2) +
+                    Math.pow(this.wishedSpeakerPos[i][1] - grantedFilterPos[i][1], 2));
+                // console.log('asked / granted pos: ', this.wishedSpeakerPos[i], '/', grantedFilterPos[i]);
             }
-            console.log('hrirBuffer: ', this.hrirBuffer);
+            console.log('summed / average angular dist between asked and present pos:',
+                Math.round(angularDistDeg*100)/100, 'deg /',
+                Math.round( (angularDistDeg/this.wishedSpeakerPos.length) *100)/100, 'deg');
+            // DEBUG END //////////////////////////////////////////////////
 
             // get decoding matrix
-            // - from deg to rad
-            this.grantedFilterPosRad = [];
-            for (let i = 0; i < this.grantedFilterPos.length; i++) {
-                this.grantedFilterPosRad.push([
-                    this.grantedFilterPos[i][0] * Math.PI / 180.0,
-                    this.grantedFilterPos[i][1] * Math.PI / 180.0,
-                    this.grantedFilterPos[i][2]
-                    ]);
-            }
-            // - get decoding matrix
-            this.M_dec = ambidec.getAmbiBinauralDecMtx( this.grantedFilterPosRad, this.order );
-            console.log('decoding matrix: ', this.M_dec);
+            this.decodingMatrix = utils.getAmbiBinauralDecMtx(grantedFilterPos, this.order);
 
             // convert hrir filters to hoa filters
             this.hoaBuffer = this.getHoaFilterFromHrirFilter();
-            console.log('hoaBuffer: ', this.hoaBuffer);
 
             // pass resulting hoa filters to user callback
             this.onLoad(this.hoaBuffer);
@@ -92,10 +85,9 @@ export default class HRIRloader {
             let concatBufferArrayLeft = new Float32Array(hrirBufferLength);
             for (let j = 0; j < this.hrirBuffer.length; j++) {
                 for (let k = 0; k < hrirBufferLength; k++) {
-                    concatBufferArrayLeft[k] += this.M_dec[j][i] * this.hrirBuffer[j].getChannelData(0)[k];
+                    concatBufferArrayLeft[k] += this.decodingMatrix[j][i] * this.hrirBuffer[j].getChannelData(0)[k];
                 }
             }
-            // console.log('concat buffer: ',i,concatBufferArrayLeft);
             hoaBuffer.getChannelData(i).set(concatBufferArrayLeft);
         }
 
