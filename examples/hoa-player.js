@@ -136,19 +136,19 @@ $(document).ready(function() {
         orderOut = 1;
         orderValue.innerHTML = orderOut;
         limiter.updateOrder(orderOut);
-        limiter.out.connect(rotator.in);
+        limiter.out.connect(decoder.in);
     });
     document.getElementById('N2').addEventListener('click', function() {
         orderOut = 2;
         orderValue.innerHTML = orderOut;
         limiter.updateOrder(orderOut);
-        limiter.out.connect(rotator.in);
+        limiter.out.connect(decoder.in);
     });
     document.getElementById('N3').addEventListener('click', function() {
         orderOut = 3;
         orderValue.innerHTML = orderOut;
         limiter.updateOrder(orderOut);
-        limiter.out.connect(rotator.in);
+        limiter.out.connect(decoder.in);
     });
 
     document.getElementById('R0').addEventListener('click', function() {
