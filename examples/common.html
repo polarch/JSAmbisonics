@@ -9,6 +9,13 @@ Start / Stop audio: &nbsp;
 <button id="stop" disabled>Stop</button>
 </p>
 
+<!-- SAMPLE SELECTOR -->
+<p>
+Select sample:
+<select id="sample_no" onchange="changeSample()">
+    <option value=""></option>
+</select>
+
 <!-- AMBISONIC ORDER -->
 <div id='div-order'>
 <p>
@@ -29,13 +36,24 @@ Set reverb: <span id="reverb-value">None (virtual)</span> &nbsp;
 </p>
 </div>
 
-<!-- AMBISONIC REVERB -->
+<!-- OUTPUT VOLUME -->
 <div id='div-volume'>
 <label for="volume-slider">Volume</label> &nbsp;
 <input id="volume-slider" type="range" min="0.1" max="10" value="1" step="0.1" />
 </div>
 
 <hr>
+
+<!-- AMBISONIC MIRRORING -->
+<div id='div-mirror'>
+    <p>
+    Set mirroring: <span id="mirror-value">None</span> &nbsp;
+    <button id="M0">None</button>
+    <button id="M1">Front-back</button>
+    <button id="M2">Left-right</button>
+    <button id="M3">Up-down</button>
+    </p>
+</div>
 
 <!-- MOVE SOURCE ON MAP -->
 <p id='move-map-instructions'> Click on the map to pan the source: </p>
@@ -83,6 +101,7 @@ var azimValue = document.getElementById('azim-value');
 var elevValue = document.getElementById('elev-value');
 var orderValue = document.getElementById('order-value');
 var reverbValue = document.getElementById('reverb-value');
+var mirrorValue = document.getElementById('mirror-value');
 
 // Map sprite
 var mapSprite = new Image();

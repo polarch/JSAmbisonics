@@ -11,37 +11,36 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/BF_rec1.wav";
+var soundUrl = "sounds/BF_rec1.ogg";
 var irUrl = "IRs/HOA1_filters_virtual.wav";
 
 var soundBuffer, sound;
 
-// initialize B-format rotator
+// initialize ambisonic mirroring
+var mirror = new webAudioAmbisonic.sceneMirror(context, 1);
+console.log(mirror);
+// initialize ambisonic rotator
 var rotator = new webAudioAmbisonic.sceneRotator(context, 1);
-rotator.init();
 console.log(rotator);
-// initialize B-format decoder
+// initialize ambisonic decoder
 var decoder = new webAudioAmbisonic.binDecoder(context, 1);
 console.log(decoder);
-// initialize B-format analyser
+// initialize ambisonic analyser
 var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
-// FuMa to ACN converter, and the opposite
-var converterF2A = new webAudioAmbisonic.converters.bf2acn(context);
-var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
+// FuMa to ACN converter
+var converterF2A = new webAudioAmbisonic.converters.wxyz2acn(context);
 console.log(converterF2A);
-console.log(converterA2F);
 // output gain
 var gainOut = context.createGain();
 
 // connect graph
-converterF2A.out.connect(rotator.in);
+converterF2A.out.connect(mirror.in);
+mirror.out.connect(rotator.in);
 rotator.out.connect(decoder.in);
+rotator.out.connect(analyser.in);
 decoder.out.connect(gainOut);
 gainOut.connect(context.destination);
-
-rotator.out.connect(converterA2F.in);
-converterA2F.out.connect(analyser.in);
 
 // function to load samples
 function loadSample(url, doAfterLoading) {
@@ -61,6 +60,17 @@ var assignSample2SoundBuffer = function(decodedBuffer) {
     // function to assign sample to the filter buffers for convolution
 var assignSample2Filters = function(decodedBuffer) {
     decoder.updateFilters(decodedBuffer);
+}
+// function to change sample from select box
+function changeSample() {
+    document.getElementById('play').disabled = true;
+    document.getElementById('stop').disabled = true;
+    soundUrl = document.getElementById("sample_no").value;
+    if (typeof sound != 'undefined' && sound.isPlaying) {
+        sound.stop(0);
+        sound.isPlaying = false;
+    }
+    loadSample(soundUrl, assignSample2SoundBuffer);
 }
 
 // load and assign samples
@@ -89,6 +99,20 @@ $(document).ready(function() {
     document.getElementById("div-reverb").outerHTML='';
     document.getElementById("div-order").outerHTML='';
     document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
+                  
+    // update sample list for selection
+    var sampleList = {"soundscape": "sounds/BF_rec1.ogg",
+    "big band": "sounds/BF_rec2.ogg",
+    "choir": "sounds/BF_rec3.ogg",
+    "orchestral": "sounds/BF_rec4.ogg",
+    "folk": "sounds/BF_rec5.ogg"
+    };
+    var $el = $("#sample_no");
+    $el.empty(); // remove old options
+    $.each(sampleList, function(key,value) {
+         $el.append($("<option></option>")
+                    .attr("value", value).text(key));
+         });
 
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
@@ -107,5 +131,22 @@ $(document).ready(function() {
         document.getElementById('play').disabled = false;
         document.getElementById('stop').disabled = true;
     });
+                  
+    document.getElementById('M0').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'None';
+                                                 mirror.mirror(0);
+                                                 });
+    document.getElementById('M1').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Front-back';
+                                                 mirror.mirror(1);
+                                                 });
+    document.getElementById('M2').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Left-right';
+                                                 mirror.mirror(2);
+                                                 });
+    document.getElementById('M3').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Up-down';
+                                                 mirror.mirror(3);
+                                                 });
 
 });

@@ -14,14 +14,14 @@
 ///////////////////////////////////
 /* FOA B-FORMAT TO ACN/N3D CONVERTER */
 ///////////////////////////////////
-export class bf2acn {
+export class wxyz2acn {
 
     constructor(audioCtx) {
 
         this.ctx = audioCtx;
         this.in = this.ctx.createChannelSplitter(4);
         this.out = this.ctx.createChannelMerger(4);
-        this.gains = [];
+        this.gains = new Array(4);
 
         for (var i = 0; i < 4; i++) {
             this.gains[i] = this.ctx.createGain();
@@ -40,14 +40,14 @@ export class bf2acn {
 ///////////////////////////////////
 /* ACN/N3D TO FOA B-FORMAT CONVERTER */
 ///////////////////////////////////
-export class acn2bf {
+export class acn2wxyz {
 
     constructor(audioCtx) {
 
         this.ctx = audioCtx;
         this.in = this.ctx.createChannelSplitter(4);
         this.out = this.ctx.createChannelMerger(4);
-        this.gains = [];
+        this.gains = new Array(4);
 
         for (var i = 0; i < 4; i++) {
             this.gains[i] = this.ctx.createGain();
@@ -76,7 +76,7 @@ export class sn3d2n3d {
         this.nCh = (order + 1) * (order + 1);
         this.in = this.ctx.createChannelSplitter(this.nCh);
         this.out = this.ctx.createChannelMerger(this.nCh);
-        this.gains = [];
+        this.gains = new Array(this.nCh);
         
         for (var i = 0; i < this.nCh; i++) {
             var n = Math.floor(Math.sqrt(i));
@@ -102,7 +102,7 @@ export class n3d2sn3d {
         this.nCh = (order + 1) * (order + 1);
         this.in = this.ctx.createChannelSplitter(this.nCh);
         this.out = this.ctx.createChannelMerger(this.nCh);
-        this.gains = [];
+        this.gains = new Array(this.nCh);
         
         for (var i = 0; i < this.nCh; i++) {
             var n = Math.floor(Math.sqrt(i));
@@ -163,16 +163,18 @@ export class fuma2acn {
         this.remapArray.push(0, 2, 3, 1); // manually handle until order 1
 
         // get channel remapping values order 2-N
-        var o = 0;
-        var m;
-        for (var i = 0; i < this.nCh; i++) {
-            m = [];
-            if (i >= (o + 1) * (o + 1)) {
-                o += 1;
-                for (var j = (o + 1) * (o + 1); j < (o + 2) * (o + 2); j++) {
-                    if (((j + o % 2) % 2) == 0) { m.push(j) } else { m.unshift(j) }
+        if (order>1) {
+            var o = 0;
+            var m;
+            for (var i = 0; i < this.nCh; i++) {
+                m = [];
+                if (i >= (o + 1) * (o + 1)) {
+                    o += 1;
+                    for (var j = (o + 1) * (o + 1); j < (o + 2) * (o + 2); j++) {
+                        if (((j + o % 2) % 2) == 0) { m.push(j) } else { m.unshift(j) }
+                    }
+                    this.remapArray = this.remapArray.concat(m);
                 }
-                this.remapArray = this.remapArray.concat(m);
             }
         }
 

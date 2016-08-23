@@ -11,7 +11,7 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/4-Audio-Track.wav";
+var soundUrl = "sounds/sample1.ogg";
 var irUrl = "IRs/HOA1_filters_virtual.wav";
 
 var soundBuffer, sound;
@@ -19,22 +19,22 @@ var soundBuffer, sound;
 // initialize encoder
 var encoder = new webAudioAmbisonic.monoEncoder(context, 1);
 console.log(encoder);
+// initialize mirroring
+var mirror = new webAudioAmbisonic.sceneMirror(context, 1);
+console.log(mirror);
 // initialize decoder
 var decoder = new webAudioAmbisonic.binDecoder(context, 1);
 console.log(decoder);
-// initialize B-format analyser
+// initialize intensity analyser
 var analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(analyser);
-// initialize ACN-to-FuMa converter
-var converter = new webAudioAmbisonic.converters.acn2bf(context);
-console.log(converter);
 // output gain
 var gainOut = context.createGain();
 
 // connect graph
-encoder.out.connect(converter.in);
-encoder.out.connect(decoder.in);
-converter.out.connect(analyser.in);
+encoder.out.connect(mirror.in);
+mirror.out.connect(decoder.in);
+mirror.out.connect(analyser.in);
 decoder.out.connect(gainOut);
 gainOut.connect(context.destination);
 
@@ -56,6 +56,17 @@ var assignSample2SoundBuffer = function(decodedBuffer) {
     // function to assign sample to the filter buffers for convolution
 var assignSample2Filters = function(decodedBuffer) {
     decoder.updateFilters(decodedBuffer);
+}
+// function to change sample from select box
+function changeSample() {
+    document.getElementById('play').disabled = true;
+    document.getElementById('stop').disabled = true;
+    soundUrl = document.getElementById("sample_no").value;
+    if (typeof sound != 'undefined' && sound.isPlaying) {
+        sound.stop(0);
+        sound.isPlaying = false;
+    }
+    loadSample(soundUrl, assignSample2SoundBuffer);
 }
 
 // load and assign samples
@@ -83,6 +94,17 @@ $(document).ready(function() {
     // adapt common html elements to specific example
     document.getElementById("div-reverb").outerHTML='';
     document.getElementById("div-order").outerHTML='';
+                  
+    // update sample list for selection
+    var sampleList = {"drum loop": "sounds/sample1.ogg",
+    "speech": "sounds/sample2.ogg"
+    };
+    var $el = $("#sample_no");
+    $el.empty(); // remove old options
+    $.each(sampleList, function(key,value) {
+         $el.append($("<option></option>")
+                    .attr("value", value).text(key));
+         });
 
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
@@ -101,5 +123,22 @@ $(document).ready(function() {
         document.getElementById('play').disabled = false;
         document.getElementById('stop').disabled = true;
     });
+                  
+    document.getElementById('M0').addEventListener('click', function() {
+                                                mirrorValue.innerHTML = 'None';
+                                                mirror.mirror(0);
+                                                });
+    document.getElementById('M1').addEventListener('click', function() {
+                                                mirrorValue.innerHTML = 'Front-back';
+                                                mirror.mirror(1);
+                                                });
+    document.getElementById('M2').addEventListener('click', function() {
+                                                mirrorValue.innerHTML = 'Left-right';
+                                                mirror.mirror(2);
+                                                });
+    document.getElementById('M3').addEventListener('click', function() {
+                                                mirrorValue.innerHTML = 'Up-down';
+                                                mirror.mirror(3);
+                                                });
 
 });

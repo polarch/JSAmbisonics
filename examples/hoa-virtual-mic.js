@@ -11,7 +11,7 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/HOA3_rec4.wav";
+var soundUrl = "sounds/HOA3_rec1.ogg";
 var soundBuffer, sound;
 var maxOrder = 3;
 
@@ -21,16 +21,12 @@ console.log(vmic);
 // HOA analyser
 var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
 console.log(analyser);
-// ACN to Fuma converter
-var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
-console.log(converterA2F);
 // output gain
 var gainOut = context.createGain();
 
 // connect HOA blocks
 vmic.out.connect(gainOut);
 gainOut.connect(context.destination);
-converterA2F.out.connect(analyser.in);
 
 // load samples and assign to buffers
 var assignSoundBufferOnLoad = function(buffer) {
@@ -40,6 +36,19 @@ var assignSoundBufferOnLoad = function(buffer) {
 
 var loader_sound = new webAudioAmbisonic.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
 loader_sound.load();
+
+// function to change sample from select box
+function changeSample() {
+    document.getElementById('play').disabled = true;
+    document.getElementById('stop').disabled = true;
+    soundUrl = document.getElementById("sample_no").value;
+    if (typeof sound != 'undefined' && sound.isPlaying) {
+        sound.stop(0);
+        sound.isPlaying = false;
+    }
+    loader_sound = new webAudioAmbisonic.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
+    loader_sound.load();
+}
 
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
@@ -67,15 +76,29 @@ $(document).ready(function() {
     // adapt common html elements to specific example
     document.getElementById("div-reverb").outerHTML = '';
     document.getElementById("div-order").outerHTML = '';
+    document.getElementById("div-mirror").outerHTML = '';
     document.getElementById("move-map-instructions").outerHTML = 'Click on the map to rotate the microphone:';
 
+    // update sample list for selection
+    var sampleList = {"orchestral 1": "sounds/HOA3_rec1.ogg",
+    "orchestral 2": "sounds/HOA3_rec2.ogg",
+    "orchestral 3": "sounds/HOA3_rec3.ogg",
+    "theatrical": "sounds/HOA3_rec4.ogg"
+    };
+    var $el = $("#sample_no");
+    $el.empty(); // remove old options
+    $.each(sampleList, function(key,value) {
+         $el.append($("<option></option>")
+                    .attr("value", value).text(key));
+         });
+                  
     // handle buttons
     document.getElementById('play').addEventListener('click', function() {
         sound = context.createBufferSource();
         sound.buffer = soundBuffer;
         sound.loop = true;
         sound.connect(vmic.in);
-        sound.connect(converterA2F.in);
+        sound.connect(analyser.in);
         sound.start(0);
         sound.isPlaying = true;
         document.getElementById('play').disabled = true;

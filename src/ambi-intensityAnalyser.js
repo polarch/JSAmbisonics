@@ -20,29 +20,39 @@ import 'get-float-time-domain-data';
 
 export default class intensityAnalyser {
     constructor(audioCtx) {
-        this.initialized = false;
 
         this.ctx = audioCtx;
         this.fftSize = 2048;
-        this.analysers = new Array(4);
-        this.analBuffers = new Array(4);
         // Input and output nodes
         this.in = this.ctx.createChannelSplitter(4);
         this.out = this.ctx.createChannelMerger(4);
+        // Gains to go from ACN/N3D to pressure-velocity (WXYZ)
+        this.gains = new Array(4);
+        for (var i = 0; i < 3; i++) {
+            this.gains[i] = this.ctx.createGain();
+            this.gains[i].gain.value = 1 / Math.sqrt(3);
+        }
         // Initialize analyzer buffers
-        for (let i = 0; i < 4; i++) {
+        this.analysers = new Array(4);
+        this.analBuffers = new Array(4);
+        for (i = 0; i < 4; i++) {
             this.analysers[i] = this.ctx.createAnalyser();
             this.analysers[i].fftSize = this.fftSize;
             this.analysers[i].smoothingTimeConstant = 0;
             this.analBuffers[i] = new Float32Array(this.fftSize);
         }
         // Create connections
-        for (let i = 0; i < 4; i++) {
-            this.in.connect(this.out, i, i);
-            this.in.connect(this.analysers[i], i, 0);
+        this.in.connect(this.out, 0, 0);
+        this.in.connect(this.analysers[0], 0, 0);
+        
+        this.in.connect(this.gains[1], 1, 0);
+        this.in.connect(this.gains[2], 2, 0);
+        this.in.connect(this.gains[0], 3, 0);
+        for (i = 0; i < 3; i++) {
+            this.gains[i].connect(this.analysers[i+1], 0, 0);
+            this.gains[i].connect(this.out, 0, i+1);
         }
 
-        this.initialized = true;
     }
 
     updateBuffers() {

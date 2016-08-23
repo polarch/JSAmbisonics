@@ -33,11 +33,19 @@ hoa_decoder.resetFilters();
 // test HOA rotator
 var hoa_rotator = new webAudioAmbisonic.sceneRotator(context, maxOrder);
 console.log(hoa_rotator);
-hoa_rotator.init();
 hoa_rotator.yaw = 10;
 hoa_rotator.pitch = 50;
 hoa_rotator.roll = -30;
 hoa_rotator.updateRotMtx();
+
+// test HOA rotator
+var hoa_mirror = new webAudioAmbisonic.sceneMirror(context, maxOrder);
+console.log(hoa_mirror);
+var mirrorPlaneList = [0, 1, 2, 3, 4]
+mirrorPlaneList.forEach(function(planeNo) {
+                        hoa_mirror.mirror(planeNo);
+                    });
+hoa_mirror.reset();
 
 // test HOA virtual mic
 var hoa_vmic = new webAudioAmbisonic.virtualMic(context, maxOrder);
@@ -49,15 +57,19 @@ patternList.forEach(function(pattern) {
 });
 
 // test HOA converters
-var hoa_converter_bf2acn = new webAudioAmbisonic.converters.bf2acn(context);
-console.log(hoa_converter_bf2acn);
-var hoa_converter_acn2bf = new webAudioAmbisonic.converters.acn2bf(context);
-console.log(hoa_converter_acn2bf);
+var hoa_converter_wxyz2acn = new webAudioAmbisonic.converters.wxyz2acn(context);
+console.log(hoa_converter_wxyz2acn);
+var hoa_converter_acn2wxyz = new webAudioAmbisonic.converters.acn2wxyz(context);
+console.log(hoa_converter_acn2wxyz);
+var hoa_converter_n3d2sn3d = new webAudioAmbisonic.converters.n3d2sn3d(context, maxOrder);
+console.log(hoa_converter_n3d2sn3d);
+var hoa_converter_sn3d2n3d = new webAudioAmbisonic.converters.sn3d2n3d(context, maxOrder);
+console.log(hoa_converter_sn3d2n3d);
 var hoa_converter_fuma2acn = new webAudioAmbisonic.converters.fuma2acn(context, maxOrder);
 console.log(hoa_converter_fuma2acn);
 
 // test HOA analyser
-var hoa_analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
+var hoa_analyser = new webAudioAmbisonic.intensityAnalyser(context);
 console.log(hoa_analyser);
 hoa_analyser.updateBuffers();
 hoa_analyser.computeIntensity();

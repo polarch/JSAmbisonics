@@ -59,7 +59,7 @@ export default class virtualMic {
         function computeCardioidCoeffs(N) {
             var coeffs = new Array(N + 1);
             for (var n = 0; n <= N; n++) {
-                coeffs[n] = Math.sqrt(2*n+1) * jshlib.factorial(N) * jshlib.factorial(N + 1) / (jshlib.factorial(N + n + 1) * jshlib.factorial(N - n)) / (N + 1);
+                coeffs[n] = jshlib.factorial(N) * jshlib.factorial(N) / (jshlib.factorial(N + n + 1) * jshlib.factorial(N - n));
             }
             return coeffs;
         }
@@ -68,7 +68,7 @@ export default class virtualMic {
             var coeffs = new Array(N + 1);
             var nSH = (N+1)*(N+1);
             for (var n = 0; n <= N; n++) {
-                coeffs[n] = Math.sqrt(2*n+1) / nSH;
+                coeffs[n] = 1 / nSH;
             }
             return coeffs;
         }
@@ -76,16 +76,16 @@ export default class virtualMic {
         function computeSupercardCoeffs(N) {
             switch (N) {
                 case 1:
-                    var coeffs = [0.3660, 0.3660];
+                    var coeffs = [0.3660, 0.2113];
                     break;
                 case 2:
-                    var coeffs = [0.2362, 0.2706, 0.1320];
+                    var coeffs = [0.2362, 0.1562, 0.0590];
                     break;
                 case 3:
-                    var coeffs = [0.1768, 0.2218, 0.1416, 0.0463];
+                    var coeffs = [0.1768, 0.1281, 0.0633, 0.0175];
                     break;
                 case 4:
-                    var coeffs = [0.1414, 0.1883, 0.1394, 0.0653, 0.0161];
+                    var coeffs = [0.1414, 0.1087, 0.0623, 0.0247, 0.0054];
                     break;
                 default:
                     console.error("Orders should be in the range of 1-4 at the moment.");
@@ -102,7 +102,7 @@ export default class virtualMic {
             var leg_n = 0;
             for (var n = 1; n < N + 1; n++) {
                 leg_n = jshlib.recurseLegendrePoly(n, [Math.cos(2.406809 / (N + 1.51))], leg_n_minus1, leg_n_minus2);
-                coeffs[n] = Math.sqrt(2*n+1) * leg_n[0][0];
+                coeffs[n] = leg_n[0][0];
 
                 leg_n_minus2 = leg_n_minus1;
                 leg_n_minus1 = leg_n;
@@ -110,7 +110,7 @@ export default class virtualMic {
             // compute normalization factor
             var norm = 0;
             for (var n = 0; n <= N; n++) {
-                norm += coeffs[n] * Math.sqrt(2*n+1);
+                norm += coeffs[n] * (2*n+1);
             }
             for (var n = 0; n <= N; n++) {
                 coeffs[n] = coeffs[n]/norm;
@@ -165,7 +165,7 @@ export default class virtualMic {
         for (var n = 0; n <= this.order; n++) {
             for (var m = -n; m <= n; m++) {
                 q = n * n + n + m;
-                this.vmicGains[q] = this.vmicCoeffs[n] * this.SHxyz[q] / Math.sqrt(2*n+1);
+                this.vmicGains[q] = this.vmicCoeffs[n] * this.SHxyz[q];
             }
         }
 

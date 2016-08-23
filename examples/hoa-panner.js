@@ -11,18 +11,22 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/4-Audio-Track.wav";
+var soundUrl = "sounds/sample1.ogg";
 var irUrl_0 = "IRs/HOA3_filters_virtual.wav";
 var irUrl_1 = "IRs/HOA3_filters_direct.wav";
 var irUrl_2 = "IRs/room-medium-1-furnished-src-20-Set1.wav";
 
 var maxOrder = 3;
 var orderOut = 3;
+var reverbOut = 0;
 var soundBuffer, sound;
 
 // define HOA encoder (panner)
 var encoder = new webAudioAmbisonic.monoEncoder(context, maxOrder);
 console.log(encoder);
+// define HOA mirroring
+var mirror = new webAudioAmbisonic.sceneMirror(context, maxOrder);
+console.log(mirror);
 // define HOA order limiter (to show the effect of order)
 var limiter = new webAudioAmbisonic.orderLimiter(context, maxOrder, orderOut);
 console.log(limiter);
@@ -31,17 +35,15 @@ var decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
 console.log(decoder);
 // intensity analyser
 var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
-// ACN to FuMa converter
-var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
 console.log(analyser);
 // output gain
 var gainOut = context.createGain();
 
 // connect HOA blocks
-encoder.out.connect(converterA2F.in);
-converterA2F.out.connect(analyser.in);
+encoder.out.connect(mirror.in);
 
-encoder.out.connect(limiter.in);
+mirror.out.connect(analyser.in);
+mirror.out.connect(limiter.in);
 limiter.out.connect(decoder.in);
 decoder.out.connect(gainOut);
 gainOut.connect(context.destination);
@@ -71,6 +73,18 @@ var assignFiltersOnLoad = function(buffer) {
 var loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
 loader_filters.load();
 
+// function to change sample from select box
+function changeSample() {
+    document.getElementById('play').disabled = true;
+    document.getElementById('stop').disabled = true;
+    soundUrl = document.getElementById("sample_no").value;
+    if (typeof sound != 'undefined' && sound.isPlaying) {
+        sound.stop(0);
+        sound.isPlaying = false;
+    }
+    loadSample(soundUrl, assignSample2SoundBuffer);
+}
+
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
     encoder.azim = angleXY[0];
@@ -88,6 +102,17 @@ function drawLocal() {
 $.holdReady( true ); // to force awaiting on common.html loading
 
 $(document).ready(function() {
+
+    // update sample list for selection
+    var sampleList = {"drum loop": "sounds/sample1.ogg",
+    "speech": "sounds/sample2.ogg"
+    };
+    var $el = $("#sample_no");
+    $el.empty(); // remove old options
+    $.each(sampleList, function(key,value) {
+         $el.append($("<option></option>")
+                    .attr("value", value).text(key));
+         });
 
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
@@ -144,5 +169,22 @@ $(document).ready(function() {
         loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_2, assignFiltersOnLoad);
         loader_filters.load();
     });
+                  
+    document.getElementById('M0').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'None';
+                                                 mirror.mirror(0);
+                                                 });
+    document.getElementById('M1').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Front-back';
+                                                 mirror.mirror(1);
+                                                 });
+    document.getElementById('M2').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Left-right';
+                                                 mirror.mirror(2);
+                                                 });
+    document.getElementById('M3').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Up-down';
+                                                 mirror.mirror(3);
+                                                 });
 
 });

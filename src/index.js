@@ -3,6 +3,7 @@
 export { default as monoEncoder } from './ambi-monoEncoder';
 export { default as orderLimiter } from './ambi-orderLimiter';
 export { default as sceneRotator } from './ambi-sceneRotator';
+export { default as sceneMirror } from './ambi-sceneMirror';
 export { default as binDecoder} from './ambi-binauralDecoder';
 export { default as virtualMic } from './ambi-virtualMic';
 export { default as powermapAnalyser } from './ambi-powermapAnalyser';

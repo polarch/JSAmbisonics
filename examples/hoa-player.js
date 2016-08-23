@@ -11,7 +11,7 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/HOA3_rec4.wav";
+var soundUrl = "sounds/HOA3_rec1.ogg";
 var irUrl_0 = "IRs/HOA4_filters_virtual.wav";
 var irUrl_1 = "IRs/HOA4_filters_direct.wav";
 var irUrl_2 = "IRs/room-medium-1-furnished-src-20-Set1.wav";
@@ -20,12 +20,14 @@ var maxOrder = 3;
 var orderOut = 3;
 var soundBuffer, sound;
 
+// define HOA mirroring
+var mirror = new webAudioAmbisonic.sceneMirror(context, maxOrder);
+console.log(mirror);
 // define HOA order limiter (to show the effect of order)
 var limiter = new webAudioAmbisonic.orderLimiter(context, maxOrder, orderOut);
 console.log(limiter);
 // define HOA rotator
 var rotator = new webAudioAmbisonic.sceneRotator(context, maxOrder);
-rotator.init();
 console.log(rotator);
 // binaural HOA decoder
 var decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
@@ -33,20 +35,16 @@ console.log(decoder);
 // intensity analyser
 var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
 console.log(analyser);
-// converter from ACN to FOA FuMa
-var converterA2F = new webAudioAmbisonic.converters.acn2bf(context);
-console.log(converterA2F);
 // output gain
 var gainOut = context.createGain();
 
 // connect HOA blocks
-limiter.out.connect(rotator.in);
-rotator.out.connect(decoder.in);
+mirror.out.connect(rotator.in);
+rotator.out.connect(limiter.in);
+rotator.out.connect(analyser.in);
+limiter.out.connect(decoder.in);
 decoder.out.connect(gainOut);
 gainOut.connect(context.destination);
-
-rotator.out.connect(converterA2F.in);
-converterA2F.out.connect(analyser.in);
 
 // function to assign sample to the sound buffer for playback (and enable playbutton)
 var assignSample2SoundBuffer = function(decodedBuffer) {
@@ -69,6 +67,19 @@ var assignFiltersOnLoad = function(buffer) {
 var loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
 loader_filters.load();
 
+// function to change sample from select box
+function changeSample() {
+    document.getElementById('play').disabled = true;
+    document.getElementById('stop').disabled = true;
+    soundUrl = document.getElementById("sample_no").value;
+    if (typeof sound != 'undefined' && sound.isPlaying) {
+        sound.stop(0);
+        sound.isPlaying = false;
+    }
+    loader_sound = new webAudioAmbisonic.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
+    loader_sound.load();
+}
+
 // Define mouse drag on spatial map .png local impact
 function mouseActionLocal(angleXY) {
     rotator.yaw = -angleXY[0];
@@ -90,12 +101,25 @@ $(document).ready(function() {
     // adapt common html elements to specific example
     document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
 
+    // update sample list for selection
+    var sampleList = {"orchestral 1": "sounds/HOA3_rec1.ogg",
+    "orchestral 2": "sounds/HOA3_rec2.ogg",
+    "orchestral 3": "sounds/HOA3_rec3.ogg",
+    "theatrical": "sounds/HOA3_rec4.ogg"
+    };
+    var $el = $("#sample_no");
+    $el.empty(); // remove old options
+    $.each(sampleList, function(key,value) {
+         $el.append($("<option></option>")
+                    .attr("value", value).text(key));
+         });
+                  
     // Init event listeners
     document.getElementById('play').addEventListener('click', function() {
         sound = context.createBufferSource();
         sound.buffer = soundBuffer;
         sound.loop = true;
-        sound.connect(limiter.in);
+        sound.connect(mirror.in);
         sound.start(0);
         sound.isPlaying = true;
         document.getElementById('play').disabled = true;
@@ -145,5 +169,22 @@ $(document).ready(function() {
         loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_2, assignFiltersOnLoad);
         loader_filters.load();
     });
+                  
+    document.getElementById('M0').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'None';
+                                                 mirror.mirror(0);
+                                                 });
+    document.getElementById('M1').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Front-back';
+                                                 mirror.mirror(1);
+                                                 });
+    document.getElementById('M2').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Left-right';
+                                                 mirror.mirror(2);
+                                                 });
+    document.getElementById('M3').addEventListener('click', function() {
+                                                 mirrorValue.innerHTML = 'Up-down';
+                                                 mirror.mirror(3);
+                                                 });
 
 });
