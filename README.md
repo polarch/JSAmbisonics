@@ -27,11 +27,12 @@ Computation of spherical harmonics and rotations rely on the JavaScript spherica
 The implemented Web Audio classes are:
 * **monoEncoder**: encodes a monophonic sound source to an ambisonic stream of a set order, with real-time control of the panning direction.
 * **sceneRotator**: rotates the sound scene of an ambisonic stream, with real-time control of yaw, pitch, and roll rotation angles.
+* **sceneMirror**: mirrors the sound scene of an ambisonic stream with respect to (front-back), (left-right), or (up-down) axes.
 * **virtualMic**: applies FOA and HOA virtual microphones to an ambionic stream, with real-time control of their orientation and pattern.
 * **binDecoder**: implements an ambisonic to binaural decoding, using user-defined HRTF-based filters. If these are not provided, two plain opposing cardioids are used instead.
 * **orderLimiter**: takes a HOA stream of order N, and outputs the channel-limited HOA stream of order N'<=N
-* **converters.bf2acn**: converts a traditional FOA stream to FOA ACN/N3D stream
-* **converters.acn2bf**: converts the first-order channels of a HOA stream to traditional FOA stream
+* **converters.wxyz2acn**: converts a traditional FOA stream to FOA ACN/N3D stream
+* **converters.acn2wxyz**: converts the first-order channels of a HOA stream to traditional FOA stream
 * **converters.n3d2sn3d**: converts an ACN/N3D stream to an ACN/SN3D stream
 * **converters.sn3d2n3d**: converts an ACN/SN3D stream to an ACN/N3D stream
 * **converters.fuma2acn**: converts a FuMa stream to a ACN/N3D stream
@@ -74,6 +75,18 @@ encoder.azim = azim_value_in_degrees;
 encoder.elev = elev_value_in_degrees;
 encoder.updateGains();
 ```
+
+**ambisonic mirror** is initialized as
+
+```javascript
+var mirror = new webAudioAmbisonic.sceneMirror(audioContext, order)
+```
+
+The reflection planes (1: front-back), (2: left-right), (3: up-down), or (0: no reflection) can be updated at runtime by
+```javascript
+mirror.mirror(planeNo);
+```
+where *planeNo* is any of the above integers.
 
 **ambisonic rotator** is initialized as
 
