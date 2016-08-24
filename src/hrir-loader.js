@@ -15,7 +15,7 @@
 /* HRIR LOADER */
 /////////////////
 
-import * as serveSofaHrtf from 'serve-sofa-hrtf';
+import * as serveSofaHrir from 'serveSofaHrir';
 var utils = require("./utils.js");
 
 export default class HRIRloader {
@@ -28,7 +28,7 @@ export default class HRIRloader {
         this.onLoad = callback;
 
         // instantiate hrtfset from serve-sofa-hrtf lib
-        this.hrtfSet = new serveSofaHrtf.HrtfSet({ audioContext:this.context, coordinateSystem:'sofaSpherical' });
+        this.hrtfSet = new serveSofaHrir.HrtfSet({ audioContext:this.context, coordinateSystem:'sofaSpherical' });
 
         // define required speakers (hence hrirs) positions based on Ambisonic order
         this.wishedSpeakerPos = utils.getTdesign(2*this.order);
