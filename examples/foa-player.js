@@ -12,7 +12,7 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/BF_rec1.ogg";
-var irUrl = "IRs/HOA1_filters_virtual.wav";
+var irUrl = "IRs/HOA1_IRC_1008_virtual.wav";
 
 var soundBuffer, sound;
 
@@ -96,16 +96,16 @@ $.holdReady( true ); // to force awaiting on common.html loading
 $(document).ready(function() {
 
     // adapt common html elements to specific example
-    document.getElementById("div-reverb").outerHTML='';
+    document.getElementById("div-decoder").outerHTML='';
     document.getElementById("div-order").outerHTML='';
     document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
                   
     // update sample list for selection
-    var sampleList = {"soundscape": "sounds/BF_rec1.ogg",
-    "big band": "sounds/BF_rec2.ogg",
-    "choir": "sounds/BF_rec3.ogg",
-    "orchestral": "sounds/BF_rec4.ogg",
-    "folk": "sounds/BF_rec5.ogg"
+    var sampleList = {  "soundscape": "sounds/BF_rec1.ogg",
+                        "big band": "sounds/BF_rec2.ogg",
+                        "choir": "sounds/BF_rec3.ogg",
+                        "orchestral": "sounds/BF_rec4.ogg",
+                        "folk": "sounds/BF_rec5.ogg"
     };
     var $el = $("#sample_no");
     $el.empty(); // remove old options
@@ -132,21 +132,13 @@ $(document).ready(function() {
         document.getElementById('stop').disabled = true;
     });
                   
-    document.getElementById('M0').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'None';
-                                                 mirror.mirror(0);
-                                                 });
-    document.getElementById('M1').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'Front-back';
-                                                 mirror.mirror(1);
-                                                 });
-    document.getElementById('M2').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'Left-right';
-                                                 mirror.mirror(2);
-                                                 });
-    document.getElementById('M3').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'Up-down';
-                                                 mirror.mirror(3);
-                                                 });
+    // Mirror Buttons actions
+    for (var i=0; i<4; i++) {
+        var button = document.getElementById('M'+i);
+        button.addEventListener('click', function() {
+                                mirrorValue.innerHTML = this.innerHTML;
+                                mirror.mirror(parseInt(this.value));
+                                });
+    }
 
 });

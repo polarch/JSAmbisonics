@@ -19,20 +19,14 @@ Select sample:
 <!-- AMBISONIC ORDER -->
 <div id='div-order'>
 <p>
-Set Ambisonic order: <span id="order-value">3</span> &nbsp;
-<button id="N1">1st</button>
-<button id="N2">2nd</button>
-<button id="N3">3rd</button>
+Set Ambisonic order: <span id="order-value"></span> &nbsp;
 </p>
 </div>
 
-<!-- AMBISONIC REVERB -->
-<div id='div-reverb'>
+<!-- AMBISONIC DECODING -->
+<div id='div-decoder'>
 <p>
-Set reverb: <span id="reverb-value">None (virtual)</span> &nbsp;
-<button id="R0">None (virtual)</button>
-<button id="R1" >None (direct)</button>
-<button id="R2">Medium Room</button>
+Set decoding filters: <span id="decoder-value"></span> &nbsp;
 </p>
 </div>
 
@@ -48,10 +42,10 @@ Set reverb: <span id="reverb-value">None (virtual)</span> &nbsp;
 <div id='div-mirror'>
     <p>
     Set mirroring: <span id="mirror-value">None</span> &nbsp;
-    <button id="M0">None</button>
-    <button id="M1">Front-back</button>
-    <button id="M2">Left-right</button>
-    <button id="M3">Up-down</button>
+     <button id="M0" type="button" value="0">None</button>
+     <button id="M1" type="button" value="1">Front-Back</button>
+     <button id="M2" type="button" value="2">Left-Right</button>
+     <button id="M3" type="button" value="3">Up-Down</button>
     </p>
 </div>
 
@@ -100,18 +94,16 @@ var mouseDown = false;
 var azimValue = document.getElementById('azim-value');
 var elevValue = document.getElementById('elev-value');
 var orderValue = document.getElementById('order-value');
-var reverbValue = document.getElementById('reverb-value');
+var decoderValue = document.getElementById('decoder-value');
 var mirrorValue = document.getElementById('mirror-value');
 
 // Map sprite
 var mapSprite = new Image();
-// mapSprite.src = "https://dl.dropboxusercontent.com/u/6300538/WebAmbi/map.png";
 mapSprite.src = "images/map.png";
 
 // Create a basic class which will be used to create a marker
 var Marker = function () {
     this.Sprite = new Image();
-    // this.Sprite.src = "https://dl.dropboxusercontent.com/u/6300538/WebAmbi/cursor.png"
     this.Sprite.src = "images/cursor.png"
     this.Width = 30;
     this.Height = 30;

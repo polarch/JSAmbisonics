@@ -12,9 +12,9 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/HOA3_rec1.ogg";
-var irUrl_0 = "IRs/HOA4_filters_virtual.wav";
-var irUrl_1 = "IRs/HOA4_filters_direct.wav";
-var irUrl_2 = "IRs/room-medium-1-furnished-src-20-Set1.wav";
+var irUrl_0 = "IRs/HOA3_IRC_1008_virtual.wav";
+var irUrl_1 = "IRs/HOA3_filters_virtual.wav";
+var irUrl_2 = "IRs/HOA3_BRIRs-medium.wav";
 
 var maxOrder = 3;
 var orderOut = 3;
@@ -102,10 +102,10 @@ $(document).ready(function() {
     document.getElementById("move-map-instructions").outerHTML='Click on the map to rotate the scene:';
 
     // update sample list for selection
-    var sampleList = {"orchestral 1": "sounds/HOA3_rec1.ogg",
-    "orchestral 2": "sounds/HOA3_rec2.ogg",
-    "orchestral 3": "sounds/HOA3_rec3.ogg",
-    "theatrical": "sounds/HOA3_rec4.ogg"
+    var sampleList = {  "orchestral 1": "sounds/HOA3_rec1.ogg",
+                        "orchestral 2": "sounds/HOA3_rec2.ogg",
+                        "orchestral 3": "sounds/HOA3_rec3.ogg",
+                        "theatrical": "sounds/HOA3_rec4.ogg"
     };
     var $el = $("#sample_no");
     $el.empty(); // remove old options
@@ -132,59 +132,49 @@ $(document).ready(function() {
         document.getElementById('stop').disabled = true;
     });
 
-    document.getElementById('N1').addEventListener('click', function() {
-        orderOut = 1;
-        orderValue.innerHTML = orderOut;
-        limiter.updateOrder(orderOut);
-        limiter.out.connect(decoder.in);
-    });
-    document.getElementById('N2').addEventListener('click', function() {
-        orderOut = 2;
-        orderValue.innerHTML = orderOut;
-        limiter.updateOrder(orderOut);
-        limiter.out.connect(decoder.in);
-    });
-    document.getElementById('N3').addEventListener('click', function() {
-        orderOut = 3;
-        orderValue.innerHTML = orderOut;
-        limiter.updateOrder(orderOut);
-        limiter.out.connect(decoder.in);
-    });
+    // Order control buttons
+    orderValue.innerHTML = maxOrder;
+    var orderButtons = document.getElementById("div-order");
+    for (var i=1; i<=maxOrder; i++) {
+    var button = document.createElement("button");
+    button.setAttribute("id", 'N'+i);
+    button.setAttribute("value", i);
+    button.innerHTML = 'N'+i;
+    button.addEventListener('click', function() {
+                          orderOut = parseInt(this.value);
+                          orderValue.innerHTML = orderOut;
+                          limiter.updateOrder(orderOut);
+                          limiter.out.connect(decoder.in);
+                          });
+    orderButtons.appendChild(button);
+    }
 
-    document.getElementById('R0').addEventListener('click', function() {
-        reverbOut = 0;
-        reverbValue.innerHTML = 'None (virtual)';
-        loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
-        loader_filters.load();
-    });
-    document.getElementById('R1').addEventListener('click', function() {
-        reverbOut = 1;
-        reverbValue.innerHTML = 'None (direct)';
-        loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_1, assignFiltersOnLoad);
-        loader_filters.load();
-    });
-    document.getElementById('R2').addEventListener('click', function() {
-        reverbOut = 2;
-        reverbValue.innerHTML = 'Medium Room';
-        loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_2, assignFiltersOnLoad);
-        loader_filters.load();
-    });
-                  
-    document.getElementById('M0').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'None';
-                                                 mirror.mirror(0);
-                                                 });
-    document.getElementById('M1').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'Front-back';
-                                                 mirror.mirror(1);
-                                                 });
-    document.getElementById('M2').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'Left-right';
-                                                 mirror.mirror(2);
-                                                 });
-    document.getElementById('M3').addEventListener('click', function() {
-                                                 mirrorValue.innerHTML = 'Up-down';
-                                                 mirror.mirror(3);
-                                                 });
+    // Decoding buttons
+    var decoderButtons = document.getElementById("div-decoder");
+    var decoderStringList = ['Free-field HRIRs 1','Free-field HRIRs 2','Medium room BRIRs'];
+    decoderValue.innerHTML = decoderStringList[0];
+    var irUrlList = [irUrl_0, irUrl_1, irUrl_2];
+    for (i=0; i<irUrlList.length; i++) {
+
+    var button = document.createElement("button");
+    button.setAttribute("id", 'R'+i);
+    button.setAttribute("value", irUrlList[i]);
+    button.innerHTML = decoderStringList[i];
+    button.addEventListener('click', function() {
+                          decoderValue.innerHTML = this.innerHTML;
+                          loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, this.value, assignFiltersOnLoad);
+                          loader_filters.load();
+                          });
+    decoderButtons.appendChild(button);
+    }
+
+    // Mirror Buttons actions
+    for (var i=0; i<4; i++) {
+    var button = document.getElementById('M'+i);
+    button.addEventListener('click', function() {
+                          mirrorValue.innerHTML = this.innerHTML;
+                          mirror.mirror(parseInt(this.value));
+                          });
+    }
 
 });

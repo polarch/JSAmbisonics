@@ -74,16 +74,16 @@ $.holdReady( true ); // to force awaiting on common.html loading
 $(document).ready(function() {
 
     // adapt common html elements to specific example
-    document.getElementById("div-reverb").outerHTML = '';
+    document.getElementById("div-decoder").outerHTML = '';
     document.getElementById("div-order").outerHTML = '';
     document.getElementById("div-mirror").outerHTML = '';
     document.getElementById("move-map-instructions").outerHTML = 'Click on the map to rotate the microphone:';
 
     // update sample list for selection
-    var sampleList = {"orchestral 1": "sounds/HOA3_rec1.ogg",
-    "orchestral 2": "sounds/HOA3_rec2.ogg",
-    "orchestral 3": "sounds/HOA3_rec3.ogg",
-    "theatrical": "sounds/HOA3_rec4.ogg"
+    var sampleList = {  "orchestral 1": "sounds/HOA3_rec1.ogg",
+                        "orchestral 2": "sounds/HOA3_rec2.ogg",
+                        "orchestral 3": "sounds/HOA3_rec3.ogg",
+                        "theatrical": "sounds/HOA3_rec4.ogg"
     };
     var $el = $("#sample_no");
     $el.empty(); // remove old options
