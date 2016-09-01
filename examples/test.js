@@ -25,7 +25,7 @@ for (var i = 0; i < maxOrder; i++) hoa_limiter.updateOrder(i);
 var hoa_decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
 console.log(hoa_decoder);
 var hoa_assignFiltersOnLoad = function(buffer) { hoa_decoder.updateFilters(buffer); }
-var irUrl = "IRs/IRC_1008_R_HRIR_virtual.wav";
+var irUrl = "IRs/HOA3_IRC_1008_virtual.wav";
 var hoa_loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl, hoa_assignFiltersOnLoad);
 hoa_loader_filters.load();
 hoa_decoder.resetFilters();
@@ -38,7 +38,7 @@ hoa_rotator.pitch = 50;
 hoa_rotator.roll = -30;
 hoa_rotator.updateRotMtx();
 
-// test HOA rotator
+// test HOA mirror
 var hoa_mirror = new webAudioAmbisonic.sceneMirror(context, maxOrder);
 console.log(hoa_mirror);
 var mirrorPlaneList = [0, 1, 2, 3, 4]

@@ -12,7 +12,8 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/BF_rec1.ogg";
-var irUrl = "IRs/HOA1_IRC_1008_virtual.wav";
+var irUrl = "IRs/aalto2016_N1.wav";
+
 
 var soundBuffer, sound;
 

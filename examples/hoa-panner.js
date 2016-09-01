@@ -13,7 +13,7 @@ context.onstatechange = function() {
 
 var soundUrl = "sounds/sample1.ogg";
 var irUrl_0 = "IRs/HOA3_IRC_1008_virtual.wav";
-var irUrl_1 = "IRs/HOA3_filters_virtual.wav";
+var irUrl_1 = "IRs/aalto2016_N3.wav";
 var irUrl_2 = "IRs/HOA3_BRIRs-medium.wav";
 
 var maxOrder = 3;
