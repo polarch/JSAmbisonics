@@ -27,7 +27,7 @@ export default class intensityAnalyser {
         this.in = this.ctx.createChannelSplitter(4);
         this.out = this.ctx.createChannelMerger(4);
         // Gains to go from ACN/N3D to pressure-velocity (WXYZ)
-        this.gains = new Array(4);
+        this.gains = new Array(3);
         for (var i = 0; i < 3; i++) {
             this.gains[i] = this.ctx.createGain();
             this.gains[i].gain.value = 1 / Math.sqrt(3);
@@ -75,16 +75,16 @@ export default class intensityAnalyser {
         // Accumulators for correlations and energies
         for (let i = 0; i < this.fftSize; i++) {
 
-            iX = iX + Math.sqrt(2) * this.analBuffers[0][i] * this.analBuffers[1][i];
-            iY = iY + Math.sqrt(2) * this.analBuffers[0][i] * this.analBuffers[2][i];
-            iZ = iZ + Math.sqrt(2) * this.analBuffers[0][i] * this.analBuffers[3][i];
-            WW = WW + 2 * this.analBuffers[0][i] * this.analBuffers[0][i];
+            iX = iX + this.analBuffers[0][i] * this.analBuffers[1][i];
+            iY = iY + this.analBuffers[0][i] * this.analBuffers[2][i];
+            iZ = iZ + this.analBuffers[0][i] * this.analBuffers[3][i];
+            WW = WW + this.analBuffers[0][i] * this.analBuffers[0][i];
             XX = XX + this.analBuffers[1][i] * this.analBuffers[1][i];
             YY = YY + this.analBuffers[2][i] * this.analBuffers[2][i];
             ZZ = ZZ + this.analBuffers[3][i] * this.analBuffers[3][i];
         }
         I = [iX, iY, iZ]; // intensity
-        I_norm = Math.sqrt(I[0] * I[0] + I[1] * I[1] + I[2] * I[2]); // intensity magnitude
+        I_norm = Math.sqrt(I[0]*I[0] + I[1]*I[1] + I[2]*I[2]); // intensity magnitude
         E = (WW + XX + YY + ZZ) / 2; // energy
         Psi = 1 - I_norm / (E + 10e-8); // diffuseness
         azim = Math.atan2(iY, iX) * 180 / Math.PI;

@@ -21,6 +21,12 @@ var hoa_limiter = new webAudioAmbisonic.orderLimiter(context, maxOrder, orderOut
 console.log(hoa_limiter);
 for (var i = 0; i < maxOrder; i++) hoa_limiter.updateOrder(i);
 
+// test HOA order weighting
+var hoa_weight = new webAudioAmbisonic.orderWeight(context, maxOrder);
+console.log(hoa_weight);
+hoa_weight.computeMaxRECoeffs();
+hoa_weight.updateOrderGains();
+
 // test binaural HOA decoder
 var hoa_decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
 console.log(hoa_decoder);
