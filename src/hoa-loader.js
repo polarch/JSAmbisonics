@@ -28,6 +28,7 @@ export default class HOAloader {
         this.urls = new Array(this.nChGroups);
 
         var fileExt = url.slice(url.length - 3, url.length);
+        this.fileExt = fileExt;
 
         for (var i = 0; i < this.nChGroups; i++) {
 
@@ -96,11 +97,21 @@ export default class HOAloader {
 
         var length = this.buffers[0].length;
         var srate = this.buffers[0].sampleRate;
+        
+        // Detect if the 8-ch audio file is OGG and if the browser is Chrome,
+        // then remap 8-channel files to the correct order cause Chrome messe it up when loading
+        // Firefox does not have this issue. 8ch Wave files work fine for both browsers.
+        var remap8ChanFile = [1,2,3,4,5,6,7,8];
+        var isChrome = !!window.chrome
+        if (isChrome && this.fileExt.toLowerCase() == "ogg") {
+            console.log("Loading of 8chan OGG files using Chrome: remap channels to correct order!")
+            remap8ChanFile = [1,3,2,7,8,5,6,4];
+        }
 
         this.concatBuffer = this.context.createBuffer(nCh, length, srate);
         for (var i = 0; i < nChGroups; i++) {
             for (var j = 0; j < this.buffers[i].numberOfChannels; j++) {
-                this.concatBuffer.getChannelData(i * 8 + j).set(this.buffers[i].getChannelData(j));
+                this.concatBuffer.getChannelData(i * 8 + j).set(this.buffers[i].getChannelData(remap8ChanFile[j]-1));
             }
         }
     }
