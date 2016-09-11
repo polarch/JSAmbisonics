@@ -31,6 +31,7 @@ The implemented Web Audio classes are:
 * **virtualMic**: applies FOA and HOA virtual microphones to an ambionic stream, with real-time control of their orientation and pattern.
 * **binDecoder**: implements an ambisonic to binaural decoding, using user-defined HRTF-based filters. If these are not provided, two plain opposing cardioids are used instead.
 * **orderLimiter**: takes a HOA stream of order N, and outputs the channel-limited HOA stream of order N'<=N
+* **orderWeight**: applies user-specified gains to the channels of the same order, for directional smoothing or psychoacoustic (max energy-vector) decoding
 * **converters.wxyz2acn**: converts a traditional FOA stream to FOA ACN/N3D stream
 * **converters.acn2wxyz**: converts the first-order channels of a HOA stream to traditional FOA stream
 * **converters.n3d2sn3d**: converts an ACN/N3D stream to an ACN/SN3D stream
@@ -43,7 +44,7 @@ The library is a work-in-progress, but fully functional. At the moment, demos se
 ---
 ## Real-time demo (Chrome and Firefox)
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/d65f6ff058dd63be609ba79fdf3e73d6a52f90fd/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://github.com/polarch/JSAmbisonics/blob/1fb31e7767a34d6b1391847ade89846f94ee3730/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
@@ -179,7 +180,7 @@ See the scripts in the ``./examples`` folder for more insights on how to use the
 ---
 ## Note on the loading of multichannel files for HOA
 
-The HOA processing of *order=N* requires audio streams of *(N+1)^2* channels. Loading HOA recordins or HOA binaural filters from sound files of that many channels seems to be problematic for the browsers. Firefox seems to be able to handle many channels but Chrome fails at WAVE files of >8ch. For that reason a helper class is provided that loads individual 8ch files that have been split from the full HOA multichannel file. usage:
+The HOA processing of *order=N* requires audio streams of *(N+1)^2* channels. Loading HOA recordings or HOA binaural filters from sound files of that many channels seems to be problematic for the browsers. Both Firefox and Chrome seem to be able to handle WAVE and OGG files of up to 8ch. For that reason a helper class is provided that loads individual 8ch files that have been split from the full HOA multichannel file. Usage:
 
 ```javascript
 var HOA3soundBuffer;
