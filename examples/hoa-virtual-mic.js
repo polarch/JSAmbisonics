@@ -1,4 +1,4 @@
-console.log(webAudioAmbisonic);
+console.log(ambisonics);
 
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
@@ -16,10 +16,10 @@ var soundBuffer, sound;
 var maxOrder = 3;
 
 // initialize virtual micorphone block
-var vmic = new webAudioAmbisonic.virtualMic(context, maxOrder);
+var vmic = new ambisonics.virtualMic(context, maxOrder);
 console.log(vmic);
 // HOA analyser
-var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
+var analyser = new ambisonics.intensityAnalyser(context, maxOrder);
 console.log(analyser);
 // output gain
 var gainOut = context.createGain();
@@ -34,7 +34,7 @@ var assignSoundBufferOnLoad = function(buffer) {
     document.getElementById('play').disabled = false;
 }
 
-var loader_sound = new webAudioAmbisonic.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
+var loader_sound = new ambisonics.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
 loader_sound.load();
 
 // function to change sample from select box
@@ -46,7 +46,7 @@ function changeSample() {
         sound.stop(0);
         sound.isPlaying = false;
     }
-    loader_sound = new webAudioAmbisonic.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
+    loader_sound = new ambisonics.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
     loader_sound.load();
 }
 

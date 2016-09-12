@@ -54,18 +54,18 @@ HOA recordings are made by the author in the [Communication Acoustics laboratory
 To add the library to you node project, type in (terminal at project root):
 
 ```bash
-npm install polarch/JSAmbisonics
+npm install ambisonics
 ```
 
-To use the ambisonic objects, include the WebAudioAmbisonic library in the body of your html code as:
+To use the ambisonic objects, include the JSAmbisonics library in the body of your html code as:
 ```javascript
-<script type="text/javascript" src="web-audio-ambisonic.umd.js"></script>
+<script type="text/javascript" src=“ambisonics.umd.js"></script>
 ```
 
 **ambisonic encoder** is initialized as
 
 ```javascript
-var encoder = new webAudioAmbisonic.monoEncoder(audioContext, order)
+var encoder = new ambisonics.monoEncoder(audioContext, order)
 ```
 
 where *audioContext* is the current Web Audio context, and *order* the desired ambisonic order. The input stream comes from an audio node to be spatialized.
@@ -80,7 +80,7 @@ encoder.updateGains();
 **ambisonic mirror** is initialized as
 
 ```javascript
-var mirror = new webAudioAmbisonic.sceneMirror(audioContext, order)
+var mirror = new ambisonics.sceneMirror(audioContext, order)
 ```
 
 The reflection planes (1: front-back), (2: left-right), (3: up-down), or (0: no reflection) can be updated at runtime by
@@ -92,7 +92,7 @@ where *planeNo* is any of the above integers.
 **ambisonic rotator** is initialized as
 
 ```javascript
-var rotator = new webAudioAmbisonic.sceneRotator(audioContext, order)
+var rotator = new ambisonics.sceneRotator(audioContext, order)
 ```
 
 The yaw (Z-axis rotation), pitch (Y-axis) and roll (X-axis) rotation angles can be updated at runtime by
@@ -106,7 +106,7 @@ rotator.updateRotMtx();
 **ambisonic binaural decoder** is initialized as
 
 ```javascript
-var binDecoder = new webAudioAmbisonic.binDecoder(audioContext, order)
+var binDecoder = new ambisonics.binDecoder(audioContext, order)
 ```
 
 If no decoding filters are passed to the decoder, an initial decoding based on two opposing cardioids is defined by default.
@@ -127,7 +127,7 @@ Some FOA and HOA HRTF-based decoding filters are included in the examples.
 **ambisonic virtual microphone** is initialized as
 
 ```javascript
-var vmic = new webAudioAmbisonic.virtualMic(audioContext, order)
+var vmic = new ambisonics.virtualMic(audioContext, order)
 ```
 
 The virtual microphone is initialized to a hypercardioid of the appropriate order, pointing to the front. The orientation can be updated at runtime by
@@ -189,7 +189,7 @@ var url = "https://address/HOA3_rec1.wav";
 var callbackOnLoad = function(mergedBuffer) {
     HOA3soundBuffer = mergedBuffer;
 }
-var HOA3loader = new webAudioAmbisonic.HOAloader(audioContext, order, url, callbackOnLoad);
+var HOA3loader = new ambisonics.HOAloader(audioContext, order, url, callbackOnLoad);
 HOA3loader.load();
 ```
 The class will try to find files with the provided file name *HOA3_rec1.wav* but of the form:
@@ -207,7 +207,12 @@ and so on.
 ---
 ## Developers
 
-To modify the library you need Node.js installed on your machine. Install the project's dependencies typing in a terminal (opened in project's root):
+To modify the library you need Node.js installed on your machine. First install the development version of the library:
+
+```bash
+npm install polarch/JSAmbisonics
+
+and then install the project's dependencies typing in a terminal (opened in project's root):
 
 ```bash
 npm install
@@ -221,7 +226,7 @@ npm run watch
 
 and test the changes on the files of the ```./examples``` folder, serving ```./index.html``` with a local http server (see e.g. the [http-server node](https://github.com/indexzero/http-server)).
 
-When you're satisfied with your changes, create ```web-audio-ambisonic.*.js``` bundles with:
+When you're satisfied with your changes, create the ```ambisonics.*.js``` bundles with:
 
 ```bash
 npm run bundle

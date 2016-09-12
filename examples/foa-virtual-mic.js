@@ -1,4 +1,4 @@
-console.log(webAudioAmbisonic);
+console.log(ambisonics);
 
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
@@ -15,13 +15,13 @@ var soundUrl = "./sounds/BF_rec1.ogg";
 var soundBuffer, sound;
 
 // initialize virtual microphone block
-var vmic = new webAudioAmbisonic.virtualMic(context, 1);
+var vmic = new ambisonics.virtualMic(context, 1);
 console.log(vmic);
 // initialize intensity analyser
-var analyser = new webAudioAmbisonic.intensityAnalyser(context);
+var analyser = new ambisonics.intensityAnalyser(context);
 console.log(analyser);
 // converter from FuMa to ACN
-var converterF2A = new webAudioAmbisonic.converters.wxyz2acn(context);
+var converterF2A = new ambisonics.converters.wxyz2acn(context);
 // output gain
 var gainOut = context.createGain();
 

@@ -1,4 +1,4 @@
-console.log(webAudioAmbisonic);
+console.log(ambisonics);
 
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
@@ -17,16 +17,16 @@ var irUrl = "IRs/aalto2016_N1.wav";
 var soundBuffer, sound;
 
 // initialize encoder
-var encoder = new webAudioAmbisonic.monoEncoder(context, 1);
+var encoder = new ambisonics.monoEncoder(context, 1);
 console.log(encoder);
 // initialize mirroring
-var mirror = new webAudioAmbisonic.sceneMirror(context, 1);
+var mirror = new ambisonics.sceneMirror(context, 1);
 console.log(mirror);
 // initialize decoder
-var decoder = new webAudioAmbisonic.binDecoder(context, 1);
+var decoder = new ambisonics.binDecoder(context, 1);
 console.log(decoder);
 // initialize intensity analyser
-var analyser = new webAudioAmbisonic.intensityAnalyser(context);
+var analyser = new ambisonics.intensityAnalyser(context);
 console.log(analyser);
 // output gain
 var gainOut = context.createGain();

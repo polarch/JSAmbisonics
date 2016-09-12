@@ -1,5 +1,5 @@
 {
-  "name": "web-audio-ambisonic",
+  "name": "ambisonics",
   "version": "0.1.0",
   "description": "web audio classes for Ambisonic processing",
   "author": "Archontis Politis <archontis.politis@aalto.com>",
@@ -9,8 +9,8 @@
       "email": "David.Poirier-Quinot@ircam.fr"
     }
   ],
-  "main": "dist/index.js",
-  "standalone": "webAudioAmbisonic",
+  "main": "ambisonics.umd.js",
+  "standalone": "ambisonics",
   "scripts": {
     "bundle": "node ./bin/runner --bundle",
     "transpile": "node ./bin/runner --transpile",
@@ -22,6 +22,12 @@
     "type": "git",
     "url": "https://github.com/polarch/JSAmbisonics.git"
   },
+  "keywords": [
+    "audio",
+    "spatial",
+    "binaural",
+    "ambisonics"
+  ],
   "jshintConfig": {
     "esnext": true,
     "browser": true,
@@ -46,5 +52,12 @@
     "ora": "^0.2.0",
     "uglify-js": "^2.6.2",
     "watch": "^0.17.1"
-  }
+  },
+  "files": [
+    "LICENSE",
+    "Readme.md",
+    "ambisonics.umd.js",
+    "ambisonics.min.js",
+    "src/"
+  ]
 }

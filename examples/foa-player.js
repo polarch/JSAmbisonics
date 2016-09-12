@@ -1,4 +1,4 @@
-console.log(webAudioAmbisonic);
+console.log(ambisonics);
 
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
@@ -18,19 +18,19 @@ var irUrl = "IRs/aalto2016_N1.wav";
 var soundBuffer, sound;
 
 // initialize ambisonic mirroring
-var mirror = new webAudioAmbisonic.sceneMirror(context, 1);
+var mirror = new ambisonics.sceneMirror(context, 1);
 console.log(mirror);
 // initialize ambisonic rotator
-var rotator = new webAudioAmbisonic.sceneRotator(context, 1);
+var rotator = new ambisonics.sceneRotator(context, 1);
 console.log(rotator);
 // initialize ambisonic decoder
-var decoder = new webAudioAmbisonic.binDecoder(context, 1);
+var decoder = new ambisonics.binDecoder(context, 1);
 console.log(decoder);
 // initialize ambisonic analyser
-var analyser = new webAudioAmbisonic.intensityAnalyser(context);
+var analyser = new ambisonics.intensityAnalyser(context);
 console.log(analyser);
 // FuMa to ACN converter
-var converterF2A = new webAudioAmbisonic.converters.wxyz2acn(context);
+var converterF2A = new ambisonics.converters.wxyz2acn(context);
 console.log(converterF2A);
 // output gain
 var gainOut = context.createGain();

@@ -1,4 +1,4 @@
-console.log(webAudioAmbisonic);
+console.log(ambisonics);
 
 // Setup audio context and variables
 var AudioContext = window.AudioContext // Default
@@ -21,19 +21,19 @@ var orderOut = 3;
 var soundBuffer, sound;
 
 // define HOA encoder (panner)
-var encoder = new webAudioAmbisonic.monoEncoder(context, maxOrder);
+var encoder = new ambisonics.monoEncoder(context, maxOrder);
 console.log(encoder);
 // define HOA mirroring
-var mirror = new webAudioAmbisonic.sceneMirror(context, maxOrder);
+var mirror = new ambisonics.sceneMirror(context, maxOrder);
 console.log(mirror);
 // define HOA order limiter (to show the effect of order)
-var limiter = new webAudioAmbisonic.orderLimiter(context, maxOrder, orderOut);
+var limiter = new ambisonics.orderLimiter(context, maxOrder, orderOut);
 console.log(limiter);
 // binaural HOA decoder
-var decoder = new webAudioAmbisonic.binDecoder(context, maxOrder);
+var decoder = new ambisonics.binDecoder(context, maxOrder);
 console.log(decoder);
 // intensity analyser
-var analyser = new webAudioAmbisonic.intensityAnalyser(context, maxOrder);
+var analyser = new ambisonics.intensityAnalyser(context, maxOrder);
 console.log(analyser);
 // output gain
 var gainOut = context.createGain();
@@ -69,7 +69,7 @@ loadSample(soundUrl, assignSample2SoundBuffer);
 var assignFiltersOnLoad = function(buffer) {
     decoder.updateFilters(buffer);
 }
-var loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
+var loader_filters = new ambisonics.HOAloader(context, maxOrder, irUrl_0, assignFiltersOnLoad);
 loader_filters.load();
 
 // function to change sample from select box
@@ -161,7 +161,7 @@ $(document).ready(function() {
       button.innerHTML = decoderStringList[i];
       button.addEventListener('click', function() {
                               decoderValue.innerHTML = this.innerHTML;
-                              loader_filters = new webAudioAmbisonic.HOAloader(context, maxOrder, this.value, assignFiltersOnLoad);
+                              loader_filters = new ambisonics.HOAloader(context, maxOrder, this.value, assignFiltersOnLoad);
                               loader_filters.load();
                               });
       decoderButtons.appendChild(button);
