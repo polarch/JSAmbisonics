@@ -44,7 +44,7 @@ The library is a work-in-progress, but fully functional. At the moment, demos se
 ---
 ## Real-time demo (Chrome and Firefox)
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/1fb31e7767a34d6b1391847ade89846f94ee3730/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/9720cb52bab85aa1a4aa3f27fe0583186cb6532b/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
