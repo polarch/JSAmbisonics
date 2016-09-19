@@ -37,7 +37,7 @@ function loadSample(url, doAfterLoading) {
     fetchSound.open("GET", url, true); // Path to Audio File
     fetchSound.responseType = "arraybuffer"; // Read as Binary Data
     fetchSound.onload = function() {
-        context.decodeAudioData(fetchSound.response, doAfterLoading);
+        context.decodeAudioData(fetchSound.response, doAfterLoading, onDecodeAudioDataError);
     }
     fetchSound.send();
 }

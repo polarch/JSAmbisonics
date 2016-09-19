@@ -11,7 +11,7 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/sample1.ogg";
+var soundUrl = "sounds/sample2.wav";
 var irUrl_0 = "IRs/HOA3_IRC_1008_virtual.wav";
 var irUrl_1 = "IRs/aalto2016_N3.wav";
 var irUrl_2 = "IRs/HOA3_BRIRs-medium.wav";
@@ -59,7 +59,7 @@ function loadSample(url, doAfterLoading) {
     fetchSound.open("GET", url, true); // Path to Audio File
     fetchSound.responseType = "arraybuffer"; // Read as Binary Data
     fetchSound.onload = function() {
-        context.decodeAudioData(fetchSound.response, doAfterLoading);
+        context.decodeAudioData(fetchSound.response, doAfterLoading, onDecodeAudioDataError);
     }
     fetchSound.send();
 }
@@ -103,8 +103,8 @@ $.holdReady( true ); // to force awaiting on common.html loading
 $(document).ready(function() {
 
     // update sample list for selection
-    var sampleList = {"drum loop": "sounds/sample1.ogg",
-    "speech": "sounds/sample2.ogg"
+    var sampleList = {  "speech": "sounds/sample2.wav",
+                        "drum loop": "sounds/sample1.ogg"
     };
     var $el = $("#sample_no");
     $el.empty(); // remove old options

@@ -11,7 +11,7 @@ context.onstatechange = function() {
     if (context.state === "suspended") { context.resume(); }
 }
 
-var soundUrl = "sounds/sample1.ogg";
+var soundUrl = "sounds/sample2.wav";
 var irUrl = "IRs/aalto2016_N1.wav";
 
 var soundBuffer, sound;
@@ -44,7 +44,7 @@ function loadSample(url, doAfterLoading) {
     fetchSound.open("GET", url, true); // Path to Audio File
     fetchSound.responseType = "arraybuffer"; // Read as Binary Data
     fetchSound.onload = function() {
-        context.decodeAudioData(fetchSound.response, doAfterLoading);
+        context.decodeAudioData(fetchSound.response, doAfterLoading, onDecodeAudioDataError);
     }
     fetchSound.send();
 }
@@ -96,8 +96,8 @@ $(document).ready(function() {
     document.getElementById("div-order").outerHTML='';
                   
     // update sample list for selection
-    var sampleList = {  "drum loop": "sounds/sample1.ogg",
-                        "speech": "sounds/sample2.ogg"
+    var sampleList = {  "speech": "sounds/sample2.wav",
+                        "drum loop": "sounds/sample1.ogg"
     };
     var $el = $("#sample_no");
     $el.empty(); // remove old options

@@ -72,7 +72,7 @@ export default class HOAloader {
                     }
                 },
                 function(error) {
-                    console.error('decodeAudioData error', error);
+                    alert("Browser cannot decode audio data:  " +  url + "\n\nError: " + error + "\n\n(If you re using Safari and get a null error, this is most likely due to Apple's shady plan going on to stop the .ogg format from easing web developer's life :)");
                 }
             );
         }
@@ -96,6 +96,7 @@ export default class HOAloader {
         var nChGroups = this.nChGroups;
 
         var length = this.buffers[0].length;
+        this.buffers.forEach( (b) => {length = Math.max(length, b.length)});
         var srate = this.buffers[0].sampleRate;
         
         // Detect if the 8-ch audio file is OGG and if the browser is Chrome,

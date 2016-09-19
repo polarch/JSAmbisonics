@@ -235,6 +235,12 @@ function draw() {
 };
 draw();
 
+// function called when audiocontext.decodeAudioData fails to decode a given audio file, e.g. in Safari with .ogg vorbis format
+function onDecodeAudioDataError(error) {
+    var url = 'hjre';
+  alert("Browser cannot decode audio data..." + "\n\nError: " + error + "\n\n(If you re using Safari and get a null error, this is most likely due to Apple's shady plan going on to stop the .ogg format from easing web developer's life :)");
+}
+
 $.holdReady( false ); // to force awaiting on common.html loading
 
 </script>
