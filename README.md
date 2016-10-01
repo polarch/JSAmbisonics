@@ -49,7 +49,7 @@ If you would like to reference the library in an article please use the followin
     
 in which you can also find a detailed description of the internals of the library.
 
-Computation of spherical harmonics and rotations rely on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
+Computation of spherical harmonics and rotations relies on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
 ---
 ## Table of Contents <a name="table-of-contents"></a>
@@ -65,7 +65,7 @@ Computation of spherical harmonics and rotations rely on the JavaScript spherica
 ---
 ## Real-time demos (Chrome and Firefox) <a name="demos"></a>
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/cce9cef641bd3f802261ab3d50d1f9713ae0acaa/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/e87dd1910adcd69c94badf1e303201bbc68e64c9/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
