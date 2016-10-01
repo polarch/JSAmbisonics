@@ -1,5 +1,5 @@
 # JSAmbisonics
-A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using Web Audio.
+A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using the Web Audio API.
 
 ---
 >
@@ -13,16 +13,14 @@ A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) pr
 >
 ----
 
-## Description
+## Description <a name="description"></a>
 JSAmbisonics is a JavaScript library that implements a set of objects for real-time spatial audio processing, using the Ambisonics framework. The objects correspond to typical ambisonic processing blocks, and internally implement Web Audio graphs for the associated operations.
 
 The library is suitable for both FOA and HOA processing, using the following specifications:
-* FOA B-format signals with traditional ordering **[W X Y Z]** and a factor of **1/sqrt(2)** on the omnidirectional first channel.
-* FOA or HOA (up to 3rd-order) using the [Furse-Malham specification](http://www.blueripplesound.com/b-format).
 * FOA or HOA with ACN channel ordering and N3D normalization. This is the default mode, and all internal processing is done using this.
 * FOA or HOA with ACN channel ordering and SN3D normalization.
-
-Computation of spherical harmonics and rotations rely on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
+* FOA or HOA (up to 3rd-order) using the [Furse-Malham specification](http://www.blueripplesound.com/b-format).
+* FOA B-format signals with traditional ordering **[W X Y Z]** and a factor of **1/sqrt(2)** on the omnidirectional first channel.
 
 The implemented Web Audio classes are:
 * **monoEncoder**: encodes a monophonic sound source to an ambisonic stream of a set order, with real-time control of the panning direction.
@@ -37,19 +35,42 @@ The implemented Web Audio classes are:
 * **converters.n3d2sn3d**: converts an ACN/N3D stream to an ACN/SN3D stream
 * **converters.sn3d2n3d**: converts an ACN/SN3D stream to an ACN/N3D stream
 * **converters.fuma2acn**: converts a FuMa stream to a ACN/N3D stream
-* **intensityAnalyser**: implements an acoustic intensity analysis for visualization of directional information captured in the ambisonic stream.
+* **intensityAnalyser**: implements an acoustic intensity analysis for visualization of directional information captured in the ambisonic stream
+* **powermapAnalyser**: analysis of the directional power distribution in the sound field for visualization of directional information captured in the ambisonic stream
+* **rmsAnalyser**: returns the RMS values of the ambisonic channels, useful for metering and visualization.
 
-The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. No other browsers have been checked yet.
+The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. Safari seems to be working too with some issues in multichannel file loading. No other browsers have been checked yet.
+
+If you would like to reference the library in an article please use the following [publication](https://www.researchgate.net/publication/308761825_JSAmbisonics_A_Web_Audio_library_for_interactive_spatial_sound_processing_on_the_web):
+
+    JSAmbisonics: A Web Audio library for interactive spatial sound processing on the web
+    A. Politis, D. Poirier-Quinot
+    Interactive Audio Systems Symposium, York, UK, 2016
+    
+in which you can also find a detailed description of the internals of the library.
+
+Computation of spherical harmonics and rotations rely on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
 
 ---
-## Real-time demo (Chrome and Firefox)
+## Table of Contents <a name="table-of-contents"></a>
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/9720cb52bab85aa1a4aa3f27fe0583186cb6532b/index.html)  (serving the content of the ``./examples`` folder).
+  * [Description](#description)
+  * [Real-time demos](#demos)
+  * [Installation and usage](#usage)
+  * [Loading of multichannel files for HOA](#multichannel)
+  * [Legacy](#legacy)
+  * [Developers](#developers)
+  * [License](#license)
+
+---
+## Real-time demos (Chrome and Firefox) <a name="demos"></a>
+
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/cce9cef641bd3f802261ab3d50d1f9713ae0acaa/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
 ---
-## Usage
+## Installation and usage <a name="usage"></a>
 
 To add the library to you node project, type in (terminal at project root):
 
@@ -59,7 +80,7 @@ npm install ambisonics
 
 To use the ambisonic objects, include the JSAmbisonics library in the body of your html code as:
 ```javascript
-<script type="text/javascript" src=“ambisonics.umd.js"></script>
+<script type="text/javascript" src="ambisonics.umd.js"></script>
 ```
 
 **ambisonic encoder** is initialized as
@@ -178,7 +199,7 @@ soundBufferPlayer ------------->vmic------------>out
 See the scripts in the ``./examples`` folder for more insights on how to use the different objects of the library.
 
 ---
-## Note on the loading of multichannel files for HOA
+## Loading of multichannel files for HOA <a name="multichannel"></a>
 
 The HOA processing of *order=N* requires audio streams of *(N+1)^2* channels. Loading HOA recordings or HOA binaural filters from sound files of that many channels seems to be problematic for the browsers. Both Firefox and Chrome seem to be able to handle WAVE and OGG files of up to 8ch. For that reason a helper class is provided that loads individual 8ch files that have been split from the full HOA multichannel file. Usage:
 
@@ -205,12 +226,18 @@ The above example for 3rd-order will have exactly two files of 8ch (16 HOA chann
 and so on.
 
 ---
-## Developers
+## Legacy <a name="legacy"></a>
+
+In the **legacy** folder of the repository there is a copy of the FOA part of the initial release of the library, when the library was still split in FOA and HOA components. The only reason that this is preserved is that if somebody is interested in FOA only processing, the *WebAudio_FOA.js* file has all the components needed without the additional complexity of HOA processing and with no external dependencies.
+
+---
+## Developers <a name="developers"></a>
 
 To modify the library you need Node.js installed on your machine. First install the development version of the library:
 
 ```bash
 npm install polarch/JSAmbisonics
+```
 
 and then install the project's dependencies typing in a terminal (opened in project's root):
 
@@ -224,14 +251,14 @@ You can then start developing, using the ```watch```  utility to dynamically tra
 npm run watch
 ```
 
-and test the changes on the files of the ```./examples``` folder, serving ```./index.html``` with a local http server (see e.g. the [http-server node](https://github.com/indexzero/http-server)).
+and test the changes on the files of the ```./examples``` folder, serving ```./index.html``` with a local HTTP server (see e.g. the [http-server node](https://github.com/indexzero/http-server)).
 
 When you're satisfied with your changes, create the ```ambisonics.*.js``` bundles with:
 
 ```bash
 npm run bundle
 ```
-
-## License
+---
+## License <a name="license"></a>
 
 The library is released under the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause).
