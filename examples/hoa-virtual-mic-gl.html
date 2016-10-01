@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebAudio HOA GL</title>
+    <script src="http://threejs.org/build/three.min.js"></script>
+    <script src="../ambisonics.umd.js"></script>
+    <script src="../node_modules/spherical-harmonic-transform/bundle/spherical-harmonic-transform.js"></script>
+    <script src="../node_modules/spherical-harmonic-transform/resources/spherical-meshes.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="common.css">
+        
+</head>
+
+<body>
+    <div id='main-column'>
+
+    <h1>WebAudio Ambisonic - HOA Virtual Microphone</h1> <hr>
+    
+    <!-- PLAY / STOP -->
+    <p>
+    Start / Stop audio: &nbsp;
+    <button id="play" disabled>Play</button>
+    <button id="stop" disabled>Stop</button>
+    </p>
+    
+    <!-- OUTPUT VOLUME -->
+    <div id='div-volume'>
+        <label for="volume-slider">Volume</label> &nbsp;
+        <input id="volume-slider" type="range" min="0.1" max="10" value="1" step="0.1" />
+    </div>
+    
+    <div>
+        <p>
+        Select virtual microphone pattern: &nbsp;
+        <select id="pattern_id" onchange="changePattern()">
+            <option value="cardioid">cardioid</option>
+            <option value="supercardioid">supercardioid</option>
+            <option value="hypercardioid" selected>hypercardioid</option>
+            <option value="max_rE">max-rE</option>
+        </select>
+        </p>
+    </div>
+    
+    <hr>
+    
+    <!-- MOVE SOURCE ON MAP -->
+    <p id='move-map-instructions'> Click on the map to rotte the microphone: </p>
+    <p> <canvas id="Canvas" width="820" height="412"></canvas> </p>
+    <p>
+    Azimuth: <span id="azim-value">0</span>
+    Elevation: <span id="elev-value">0</span>
+    </p>
+    
+    
+    <!-- WEB GL CANVAS -->
+    <div id='div-threeJS'>
+        <p>Visualization:</p>
+        <canvas id="CanvasGL" width="410" height="410"></canvas>
+    </div>
+    
+    <p align="right"> <a href="../index.html">back to index</a>&nbsp; &nbsp;</p>
+    
+    <footer>
+        <hr>
+        <table>
+            <tr>
+                <th>Archontis Politis</th>
+                <th>David Poirier-Quinot</th>
+            </tr>
+            <tr>
+                <th>
+                    <a href="mailto:archontis.politis@aalto.fi">archontis.politis@aalto.fi</a>
+                </th>
+                <th>
+                    <a href="mailto:david.poirier-quinot@ircam.fr">david.poirier-quinot@ircam.fr</a>
+                </th>
+            </tr>
+        </table>
+    </footer>
+
+<script>
+    
+   
+    ////////////////////////////
+    // SET-UP GUI AND USER INPUT
+    var canvas = document.getElementById('Canvas');
+    var canvas_context = canvas.getContext("2d");
+    var mouseDown = false;
+    var azimValue = document.getElementById('azim-value');
+    var elevValue = document.getElementById('elev-value');
+    
+    // Map sprite
+    var mapSprite = new Image();
+    mapSprite.src = "images/map.png";
+    
+    // Create a basic class which will be used to create a marker
+    var Marker = function () {
+        this.Sprite = new Image();
+        this.Sprite.src = "images/cursor.png"
+        this.Width = 30;
+        this.Height = 30;
+        // marker to canvas center
+        this.XPos = (document.getElementById('Canvas').width / 2) - this.Width/2;
+        this.YPos = (document.getElementById('Canvas').height / 2) - this.Width/2;
+    }
+    var marker = new Marker();
+
+    // When the user clicks their mouse on our canvas run this code
+    function mouseAction(mouse) {
+        // Get current mouse coords
+        var rect = canvas.getBoundingClientRect();
+        var mouseXPos = (mouse.clientX - rect.left);
+        var mouseYPos = (mouse.clientY - rect.top);
+        
+        // Update webaudio
+        var angleX = -Math.round(360*(mouseXPos - (rect.width/2))/rect.width);
+        var angleY = Math.round(180*((rect.height/2) - mouseYPos)/rect.height);
+        
+        // call example specific function
+        mouseActionLocal([angleX, angleY]);
+        
+        // update html values
+        azimValue.innerHTML = angleX;
+        elevValue.innerHTML = angleY;
+        
+        // Move the marker when placed to a better location
+        marker.XPos = mouseXPos - (marker.Width/2);
+        marker.YPos = mouseYPos - (marker.Height/2);
+    }
+
+    // Define mouse drag on spatial map .png local impact
+    function mouseActionLocal(angleXY) {
+        vmic.azim = angleXY[0];
+        vmic.elev = angleXY[1];
+        vmic.updateOrientation();
+    }
+
+    function changePattern() {
+        vmic.vmicPattern = document.getElementById("pattern_id").value;
+        vmic.updatePattern();
+    }
+
+
+    // Add mouse click event listener to canvas
+    canvas.addEventListener("mousedown", function(mouse) {
+                            mouseDown = true;
+                            mouseAction(mouse);
+                            }, false);
+                            
+    canvas.addEventListener("mousemove", function(mouse) {
+                            if (mouseDown) mouseAction(mouse);
+                            }, false);
+                            
+    canvas.addEventListener("mouseup", function(mouse) {
+                            mouseDown = false;
+                            }, false);
+                        
+    var volumeSlider = document.getElementById('volume-slider');
+    volumeSlider.addEventListener('input', function(input) {
+        gainOut.gain.value = volumeSlider.value;
+    });
+
+
+   // handle buttons
+   document.getElementById('play').addEventListener('click', function() {
+        sound = context.createBufferSource();
+        sound.buffer = soundBuffer;
+        sound.loop = true;
+        sound.connect(vmic.in);
+        sound.start(0);
+        sound.isPlaying = true;
+        document.getElementById('play').disabled = true;
+        document.getElementById('stop').disabled = false;
+    });
+    document.getElementById('stop').addEventListener('click', function() {
+        sound.stop(0);
+        sound.isPlaying = false;
+        document.getElementById('play').disabled = false;
+        document.getElementById('stop').disabled = true;
+    });
+    
+    // Setup audio context and variables
+    var AudioContext = window.AudioContext // Default
+    || window.webkitAudioContext; // Safari and old versions of Chrome
+    var context = new AudioContext; // Create and Initialize the Audio Context
+    
+    var soundUrl = "sounds/HOA3_rec1.ogg";
+    var soundBuffer, sound;
+    var maxOrder = 3;
+    
+    // initialize virtual micorphone block
+    var vmic = new ambisonics.virtualMic(context, maxOrder);
+    // output gain
+    var gainOut = context.createGain();
+    
+    // connect HOA blocks
+    vmic.out.connect(gainOut);
+    gainOut.connect(context.destination);
+    
+    // load samples and assign to buffers
+    var assignSoundBufferOnLoad = function(buffer) {
+        soundBuffer = buffer;
+        document.getElementById('play').disabled = false;
+    }
+
+    var loader_sound = new ambisonics.HOAloader(context, maxOrder, soundUrl, assignSoundBufferOnLoad);
+    loader_sound.load();
+    
+    
+    /// THREEJS
+    // standard global variables
+    var container, scene, camera, renderer;
+    var gridObj, gridMesh, gridGeom, gridColors, gridData;
+    var scale = 100;
+    var colorSet =
+    {
+        3: new THREE.Color( 0xcc0000 ), // R
+        4: new THREE.Color( 0x00cc00 ), // G
+        5: new THREE.Color( 0x0000cc ), // B
+        6: new THREE.Color( 0xcccc00 ), // mustard
+        7: new THREE.Color( 0x999999 ), // gray
+        8: new THREE.Color( 0x990099 ), // eggplant
+        9: new THREE.Color( 0xff6600 ), // orange
+        10: new THREE.Color( 0x6666ff ) // 
+    };
+    init();
+
+    // FUNCTIONS
+    function init()
+    {
+        // CANVAS
+        canvasGL = document.getElementById('CanvasGL');
+        // SCENE
+        scene = new THREE.Scene();
+        // CAMERA
+        var VIEW_ANGLE = 45, ASPECT = canvasGL.width / canvasGL.height, NEAR = 0.1, FAR = 20000;
+        camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+        camera.position.set(0,0,400);
+        camera.lookAt(scene.position);
+        scene.add(camera);
+        // RENDERER
+        renderer = new THREE.WebGLRenderer( {
+       canvas: canvasGL,
+       antialias: true
+       } );
+       // LIGHT
+       var light = new THREE.PointLight(0xffffff);
+       light.position = camera.position;
+       scene.add(light);
+        
+       // PLOT RING OF DIRECTIONS
+        var ringGeom = new THREE.RingGeometry(120, 124, 30, 2, 0, Math.PI * 2);
+        var ringMesh = new THREE.Mesh(ringGeom, new THREE.MeshBasicMaterial({color: 0x00cc00, wireframe: false}));
+        ringMesh.position.set(0, 0, 0);
+        scene.add(ringMesh);
+        var spriteyF = makeTextSprite( "F",
+                                     { fontsize: 50, fontface: "Georgia", borderColor: {r:0, g:255, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:1.0} } );
+        spriteyF.position.set( 180,-10,0 );
+        scene.add( spriteyF );
+        var spriteyL = makeTextSprite( "L",
+                                      { fontsize: 50, fontface: "Georgia", borderColor: {r:0, g:255, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:1.0} } );
+        spriteyL.position.set( 40,130,0 );
+        scene.add( spriteyL );
+        var spriteyB = makeTextSprite( "B",
+                                      { fontsize: 50, fontface: "Georgia", borderColor: {r:0, g:255, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:1.0} } );
+        spriteyB.position.set( -95,-10,0 );
+        scene.add( spriteyB );
+        var spriteyR = makeTextSprite( "R",
+                                      { fontsize: 50, fontface: "Georgia", borderColor: {r:0, g:255, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:1.0} } );
+        spriteyR.position.set( 40,-155,0 );
+        scene.add( spriteyR );
+       
+       // PLOT SPHERICAL FUNCTION
+       gridData = SPHERICAL_MESHES.GeodomeMedHighRes;
+       meshDataToMesh(gridData);
+       scene.add(gridMesh);
+       
+    }
+
+function meshDataToMesh(meshData)
+{
+    gridGeom = new THREE.Geometry();
+    gridGeom.vertices = [];
+    // convert vertex data to THREE.js vectors
+    for (var i = 0; i < meshData.vertex.length; i++)
+    {
+        gridGeom.vertices.push( new THREE.Vector3( meshData.vertex[i][0], meshData.vertex[i][1], meshData.vertex[i][2] ).multiplyScalar(scale) );
+    };
+    
+    // convert face data to a single (triangulated) geometry
+    var faceMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors, side: THREE.Frontside, wireframe:false, wireframeLinewidth: 2 } );
+    // create faces
+    gridGeom.faces = [];
+    gridColors = [];
+    for (var faceNum = 0; faceNum < meshData.face.length; faceNum++)
+    {
+        gridGeom.faces.push( new THREE.Face3( meshData.face[faceNum][0], meshData.face[faceNum][1], meshData.face[faceNum][2] ) );
+        gridColors.push( new THREE.Color( 0x0000cc ) );
+        gridGeom.faces[faceNum].color = gridColors[faceNum];
+    }
+    
+    gridMesh = new THREE.Mesh(gridGeom, faceMaterial);
+}
+
+function modifyGeomFromSphCoeffs(coeffs)
+{
+    var invSHT = sht.inverseSHT(coeffs,sht.convertCart2Sph(gridData.vertex, 1));
+    var r=[], polarity;
+    for (var i = 0; i < invSHT.length; i++) r[i] = invSHT[i][2];
+    
+    // convert vertex data to THREE.js vectors
+    for ( var i = 0; i < gridGeom.vertices.length; i ++ ) {
+        var mag = Math.abs(r[i]);
+        gridGeom.vertices[ i ].x = mag*scale*gridData.vertex[i][0];
+        gridGeom.vertices[ i ].y = mag*scale*gridData.vertex[i][1];
+        gridGeom.vertices[ i ].z = mag*scale*gridData.vertex[i][2];
+    }
+    for (var faceNum = 0; faceNum < gridGeom.faces.length; faceNum++)
+    {
+        polarity = r[gridData.face[faceNum][0]] + r[gridData.face[faceNum][1]] + r[gridData.face[faceNum][2]];
+        if (polarity>=0) gridColors[faceNum].setHex( 0x0000cc );
+        else gridColors[faceNum].setHex( 0xcc0000 );
+    }
+
+}
+
+function makeTextSprite( message, parameters )
+{
+    if ( parameters === undefined ) parameters = {};
+    
+    var fontface = parameters.hasOwnProperty("fontface") ?
+    parameters["fontface"] : "Arial";
+    
+    var fontsize = parameters.hasOwnProperty("fontsize") ?
+    parameters["fontsize"] : 18;
+    
+    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+    parameters["borderThickness"] : 4;
+    
+    var borderColor = parameters.hasOwnProperty("borderColor") ?
+    parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+    
+    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+    parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+    
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
+    
+    // get size data (height depends only on font size)
+    var metrics = context.measureText( message );
+    var textWidth = metrics.width;
+    
+    // background color
+    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+    + backgroundColor.b + "," + backgroundColor.a + ")";
+    // border color
+    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+    + borderColor.b + "," + borderColor.a + ")";
+    
+    context.lineWidth = borderThickness;
+    roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+    // 1.4 is extra height factor for text below baseline: g,j,p,q.
+    
+    // text color
+    context.fillStyle = "rgba(0, 255, 0, 1.0)";
+    context.fillText( message, borderThickness, fontsize + borderThickness);
+    
+    // canvas contents will be used for a texture
+    var texture = new THREE.Texture(canvas)
+    texture.needsUpdate = true;
+    
+    var spriteMaterial = new THREE.SpriteMaterial( { map: texture, useScreenCoordinates: false } );
+    var sprite = new THREE.Sprite( spriteMaterial );
+    sprite.scale.set(100,50,1.0);
+    return sprite;
+}
+
+// function for drawing rounded rectangles
+function roundRect(ctx, x, y, w, h, r)
+{
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();   
+}
+
+
+    function draw() {
+      requestAnimationFrame(draw);
+      
+      // Clear Canvas
+      canvas_context.fillStyle = "#000";
+      canvas_context.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw map
+      canvas_context.drawImage(mapSprite, 0, 0);
+      
+      // Draw marker
+      canvas_context.drawImage(marker.Sprite, marker.XPos, marker.YPos, marker.Width, marker.Height);
+      
+      modifyGeomFromSphCoeffs(vmic.vmicGains);
+      gridMesh.geometry.verticesNeedUpdate = true;
+      gridMesh.geometry.colorsNeedUpdate = true;
+      
+     // Draw WebGL stuff if defined
+     if (renderer) renderer.render( scene, camera );
+
+    };
+    draw();
+
+</script>
+
+
+</body>
+
+</html>

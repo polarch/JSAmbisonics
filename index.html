@@ -13,23 +13,105 @@
     <h3>The examples below illustrate the use of the
         <a href="https://github.com/polarch/JSAmbisonics">JS Ambisonics Library</a>:
     </h3>
-    <ul class='index-list'>
-
-        <li><a href="examples/foa-panner.html"> FOA Panner </a></li>
-        <li><a href="examples/foa-player.html"> FOA Player </a></li>
-        <li><a href="examples/foa-virtual-mic.html"> FOA Virtual Mircophone </a></li>
+    
+    <hr>
+    <h3>FOA examples</h3>
+        
+        <div class="fancy">
+            <a href="examples/foa-panner.html"> <br/>FOA Panner</a>
+            <p> An example of a first-order ambisonic encoding of a sound source.
+            The user can control the direction of the source.<br/>
+            The vector intensity visualizer analyzes the sound-field and shows the strongest sound activity.<br/>
+            In this case, as there is only a single source, it just follows it.
+            </p>
+        </div>
+        
+        <div class="fancy">
+            <a href="examples/foa-player.html"> <br/>FOA Player</a>
+            <p> An example of a loading FOA ambisonic recordings, with binaural decoding.<br/>
+            The user can control the rotation of the sound scene.<br/>
+            The vector intensity visualizer analyzes the sound-field and shows the strongest sound activity.<br/>
+            In this case, multiple directions are rapidly analyzed according to the sound scene activity.
+            </p>
+        </div>
+        
+        <div class="fancy">
+            <a href="examples/foa-virtual-mic.html"> <br/>FOA Virtual Microphone</a>
+            <p> An example of a listening to the output of a virtual microphone, inside a FOA ambisonic recording.<br/>
+            The user can control the look-up direction of the microphone, and its pattern.<br/>
+            The vector intensity visualizer analyzes the sound-field and shows the strongest sound activity.<br/>
+            In this case, multiple directions are rapidly analyzed according to the sound scene activity.
+            </p>
+        </div>
 
         <br/>
-
-        <li><a href="examples/hoa-panner.html"> HOA Panner </a></li>
-        <li><a href="examples/hoa-player.html"> HOA Player </a></li>
-        <li><a href="examples/hoa-virtual-mic.html"> HOA Virtual Microphone </a></li>
+        <hr>
+        <h3>HOA examples</h3>
+        
+        <div class="fancy">
+            <a href="examples/hoa-panner.html"> <br/>HOA Panner</a>
+            <p> An example of a higher-order ambisonic encoding of a sound source. </br>
+            The example demonstrates the effect of the ambisonic order on the perception of the sound source. </br>
+            The user can switch between different sets of decoding filters on-the-fly.
+            </p>
+        </div>
+        
+        <div class="fancy">
+            <a href="examples/hoa-player.html"> <br/>HOA Player</a>
+            <p> An example of a loading HOA ambisonic recordings, with binaural decoding.<br/>
+            The user can control the rotation of the sound scene.<br/>
+            The example demonstrates the effect of the ambisonic order on the perception of the sound source. </br>
+            The user can switch between different sets of decoding filters on-the-fly.
+            </p>
+        </div>
+        
+        <div class="fancy">
+            <a href="examples/hoa-virtual-mic.html"> <br/>HOA Virtual Microphone</a>
+            <p> An example of a listening to the output of a virtual microphone, inside a HOA ambisonic recording.<br/>
+            The user can control the look-up direction of the microphone, and its pattern.<br/>
+            The vector intensity visualizer analyzes the sound-field and shows the strongest sound activity.<br/>
+            In this case, multiple directions are rapidly analyzed according to the sound scene activity.
+            </p>
+        </div>
 
         <br/>
+        <hr>
+        <h3>Mobile Device-tracked Audiovisual Player example</h3>
+        
+        <div class="fancy">
+            <a href="https://dl.dropboxusercontent.com/u/6300538/JSAmbisonics_AVmobile_demo/index.html"> <br/>Google-Cardboard-style Spherical Audio/Video player (Android/Chrome only!)</a>
+            <p>
+            The following example combines spherical video
+            rendering, Google-Carboard style, with head-tracking based on the
+            smartphone/tablet orientation sensors, and respective ambisonic rendering
+            using JSAmbisonics.<br/>
+            The WebGL/THREEJS code for the visuals is based on the tutorial code
+            available <a href="https://www.gadgetdaily.xyz/create-virtual-reality-panoramas-with-three-js/"> here</a>.<br/><br/>
+            The audio/video recording is taken in Helsinki Concert Hall (Musiikkitalo), on a Brahms piece rehearsed by the Sibelius Academy Symphony Orchestra.
+            </p>
+        </div>
+        
+        
+        <br/>
+        <hr>
+        <h3>WebGL integration examples</h3>
+        
+        <div class="fancy">
+            <a href="examples/hoa-virtual-mic-gl.html"> <br/>WebGL Virtual Microphone visualization</a>
+            <p> This is the same as the HOA virtual microphone example above, but with an additional visualization of the rotated microphone pattern using WebGL.
+            </p>
+        </div>
+        
 
-        <li><a href="examples/test.html"> Test </a></li>
+        <br/>
+        <hr>
+        <h3>Library module tests</h3>
+        
+        <a href="examples/test.html"> Test </a></li>
+        <p> (Not intended for mobiles)<br/> Test script that goes through all the objects in the library, initializes them and logs information on the console - useful to see if the browser supports the library.
+        </p>
+        
 
-    </ul>
 
 </body>
 

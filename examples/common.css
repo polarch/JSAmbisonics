@@ -41,3 +41,24 @@ table {
     text-align: center;
 }
 
+
+.fancy
+{
+    margin-right: auto;
+    margin-left: auto;
+    min-height: 150px;
+    max-width: 800px;
+    
+    /* Background color and gradients */
+    background: #eeeeee;
+    background: -moz-linear-gradient(top, #ffffff, #cccccc);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#cccccc));
+    /* really nifty translucence */
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.8), rgba(200, 200, 200, 0.8) );
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from( rgba(255, 255, 255, 0.8) ), to( rgba(200, 200, 200, 0.8) ));
+    
+    /* Rounded corners */
+    -moz-border-radius: 15px 15px 15px 15px;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}
