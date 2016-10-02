@@ -29,12 +29,23 @@ hoa_weight.updateOrderGains();
 
 // test binaural HOA decoder
 var hoa_decoder = new ambisonics.binDecoder(context, maxOrder);
+hoa_decoder.resetFilters();
 console.log(hoa_decoder);
+
+// test HOA loader
 var hoa_assignFiltersOnLoad = function(buffer) { hoa_decoder.updateFilters(buffer); }
-var irUrl = "IRs/HOA3_IRC_1008_virtual.wav";
+var irUrl = 'IRs/HOA3_IRC_1008_virtual.wav';
 var hoa_loader_filters = new ambisonics.HOAloader(context, maxOrder, irUrl, hoa_assignFiltersOnLoad);
 hoa_loader_filters.load();
 hoa_decoder.resetFilters();
+console.log(hoa_loader_filters);
+
+// test SOFA HRIR loader
+var irUrl_01 = 'IRs/IRC_1037_C_HRIR_44100.sofa.json';
+var assignFiltersOnLoad2 = function(buffer) { hoa_decoder.updateFilters(buffer); }
+var hrir_loader = new ambisonics.HRIRloader(context, maxOrder, assignFiltersOnLoad2);
+hrir_loader.load(irUrl_01);
+console.log(hrir_loader);
 
 // test HOA rotator
 var hoa_rotator = new ambisonics.sceneRotator(context, maxOrder);
@@ -84,4 +95,3 @@ hoa_analyser.computeIntensity();
 hoa_encoder.out.connect(hoa_limiter.in);
 hoa_limiter.out.connect(hoa_decoder.in);
 hoa_decoder.out.connect(context.destination);
-

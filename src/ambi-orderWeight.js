@@ -5,7 +5,7 @@
 //  davipoir@ircam.fr
 ////////////////////////////////////////////////////////////////////
 //
-//  WebAudio_HOA a JavaScript library for higher-order Ambisonics
+//  JSAmbisonics a JavaScript library for higher-order Ambisonics
 //  The library implements Web Audio blocks that perform
 //  typical ambisonic processing operations on audio signals.
 //
