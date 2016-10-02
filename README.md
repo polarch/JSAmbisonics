@@ -58,6 +58,7 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
   * [Real-time demos](#demos)
   * [Installation and usage](#usage)
   * [Loading of multichannel files for HOA](#multichannel)
+  * [Integration with SOFA HRTFs](#sofa)  
   * [Legacy](#legacy)
   * [Developers](#developers)
   * [License](#license)
@@ -65,7 +66,7 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
 ---
 ## Real-time demos (Chrome and Firefox) <a name="demos"></a>
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/93852783181027fe8adb34e487b91a007b547d5c/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/1ccae3a6f0a60a690f5eb4bb5bbb21b58a5d5993/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
@@ -224,6 +225,28 @@ The above example for 3rd-order will have exactly two files of 8ch (16 HOA chann
   HOA2_rec1_09-09ch.wav
 ```
 and so on.
+
+---
+## Integration with SOFA HRTFs <a name="sofa"></a>
+
+Generation of the binaural decoding filters require Head-related Transfer Functions (HRTFs), and they depend on the order, the measurement grid of the HRTFs, and the choice of ambisonic decoding approach. This is often not a straightforward task and not for the end-user of the library. If users are not satisfied with the example filters provided in the repo, and they have access to various HRTF sets, or to their own personalized HRTFs, they should have an automated way to generate these filters.
+A module that loads HRTFs and attempts to do that is included in the library. The HRTFs should be in the [SOFA](https://www.sofaconventions.org/mediawiki/index.php/Main_Page) format, which seems to be the most established one at the moment. Usage:
+
+```javascript
+var decodingFilterBuffer;
+var order = 3;
+var url = "https://address/HRTFset_subjectXX.sofa.json";
+var callbackOnLoad = function(decodedBuffer) {
+    decodingFilterBuffer = decodedBuffer;
+}
+
+var binDecoder = new ambisonics.binDecoder(audioContext, order);
+var hrirLoader = new ambisonics.HOAloader(audioContext, order, callbackOnLoad);
+hrirLoader.load(url);
+binDecoder.updateFilters(decodingFilterBuffer);
+```
+
+The SOFA file should be first converted to a JSON file; see the example files in the repo. Scripts to convert SOFA files to JSON will be provided soon.
 
 ---
 ## Legacy <a name="legacy"></a>
