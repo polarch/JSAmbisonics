@@ -60,6 +60,7 @@
     "Readme.md",
     "ambisonics.umd.js",
     "ambisonics.min.js",
-    "src/"
+    "src/",
+    "bin/"
   ]
 }
