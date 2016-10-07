@@ -66,7 +66,7 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
 ---
 ## Real-time demos (Chrome and Firefox) <a name="demos"></a>
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/1ccae3a6f0a60a690f5eb4bb5bbb21b58a5d5993/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/b9cee723be065e8caa6afccb6662c0cb4b21dbf7/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
