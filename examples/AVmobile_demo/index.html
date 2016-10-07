@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Cardboard Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+
+            #example {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+
+            #video {
+                position: absolute;
+                left: -9999em;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="example"></div>
+        <video id="video" autoplay loop>
+            <source src="videos/musiikkitalo1_seg1_short.webm" type="video/webm"></source>
+            <source src="videos/musiikkitalo1_seg1_short.mp4" type="video/mp4"></source>
+            Your browser does not support the video element
+        </video>
+        
+<!--        <script src="http://threejs.org/build/three.min.js"></script>        -->
+        <script src="js/third-party/threejs/three.min.js"></script>
+        <script src="js/third-party/threejs/StereoEffect.js"></script>
+        <script src="js/third-party/threejs/DeviceOrientationControls.js"></script>
+        <script src="js/third-party/threejs/OrbitControls.js"></script>
+        <script src="../../ambisonics.min.js"></script>
+        
+        <script src="js/paper.js"></script>
+    </body>
+</html>
