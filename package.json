@@ -9,7 +9,7 @@
       "email": "David.Poirier-Quinot@ircam.fr"
     }
   ],
-  "main": "ambisonics.umd.js",
+  "main": "dist/index.js",
   "standalone": "ambisonics",
   "scripts": {
     "bundle": "node ./bin/runner --bundle",
