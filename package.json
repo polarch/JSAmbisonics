@@ -38,7 +38,7 @@
     "babel-runtime": "^6.6.1",
     "get-float-time-domain-data": "^0.1.0",
     "numeric": "^1.2.6",
-    "serve-sofa-hrtf": "git://github.com/Ircam-RnD/serveSofaHrir",
+    "serve-sofa-hrtf": "Ircam-RnD/serveSofaHrir",
     "spherical-harmonic-transform": "^0.1.0",
     "convex-hull": "^1.0.3"
   },
