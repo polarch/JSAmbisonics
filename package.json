@@ -62,6 +62,6 @@
     "ambisonics.min.js",
     "src/",
     "bin/",
-    "dist/index.js"
+    "dist/"
   ]
 }
