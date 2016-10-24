@@ -79,8 +79,19 @@ To add the library to you node project, type in (terminal at project root):
 npm install ambisonics
 ```
 
-To use the ambisonic objects, include the JSAmbisonics library in the body of your html code as:
+##### CommonJS (browserify)
+
+To use directly from node modules
+
 ```javascript
+var ambisonics = require('ambisonics');
+```
+
+##### Global
+
+To use the ambisonic objects globally, include the JSAmbisonics library in the body of your html code as:
+
+```html
 <script type="text/javascript" src="ambisonics.umd.js"></script>
 ```
 
