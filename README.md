@@ -84,6 +84,11 @@ To use the ambisonic objects, include the JSAmbisonics library in the body of yo
 <script type="text/javascript" src="ambisonics.umd.js"></script>
 ```
 
+or use it directly as a node module:
+```javascript
+var ambisonics = require('ambisonics');
+```
+
 **ambisonic encoder** is initialized as
 
 ```javascript
