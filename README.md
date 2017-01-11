@@ -1,5 +1,6 @@
 # JSAmbisonics
 A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using the Web Audio API.
+**[Live Demo](https://cdn.rawgit.com/polarch/JSAmbisonics/793b13f8fe22a6d511bf1ae360c4f96f2ef2bced/index.html)**
 
 ---
 >
@@ -66,7 +67,7 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
 ---
 ## Real-time demos (Chrome and Firefox) <a name="demos"></a>
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/b9cee723be065e8caa6afccb6662c0cb4b21dbf7/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/793b13f8fe22a6d511bf1ae360c4f96f2ef2bced/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
 
