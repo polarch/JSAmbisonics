@@ -3,11 +3,13 @@
 <link rel="stylesheet" type="text/css" href="common.css">
 
 <!-- PLAY / STOP -->
+<div id='div-play-stop-buttons'>
 <p>
 Start / Stop audio: &nbsp;
 <button id="play" disabled>Play</button>
 <button id="stop" disabled>Stop</button>
 </p>
+</div>
 
 <!-- SAMPLE SELECTOR -->
 <p>
@@ -15,6 +17,7 @@ Select sample:
 <select id="sample_no" onchange="changeSample()">
     <option value=""></option>
 </select>
+</p>
 
 <!-- AMBISONIC ORDER -->
 <div id='div-order'>
