@@ -99,14 +99,14 @@ export default class HOAloader {
         this.buffers.forEach( (b) => {length = Math.max(length, b.length)});
         var srate = this.buffers[0].sampleRate;
         
-        // Detect if the 8-ch audio file is OGG and if the browser is Chrome,
-        // then remap 8-channel files to the correct order cause Chrome messe it up when loading
-        // Firefox does not have this issue. 8ch Wave files work fine for both browsers.
+        // Detect if the 8-ch audio file is OGG, then remap 8-channel files to the correct
+        // order cause Chrome and Firefox messes it up when loading. Other browsers have not
+        // been tested with OGG files. 8ch Wave files work fine for both browsers.
         var remap8ChanFile = [1,2,3,4,5,6,7,8];
-        var isChrome = !!window.chrome
-        if (isChrome && this.fileExt.toLowerCase() == "ogg") {
-            console.log("Loading of 8chan OGG files using Chrome: remap channels to correct order!")
+        if (this.fileExt.toLowerCase() == "ogg") {
+            console.log("Loading of 8chan OGG files [Chrome/Firefox]: remap channels to correct order!")
             remap8ChanFile = [1,3,2,7,8,5,6,4];
+            //remap8ChanFile = [1,3,2,8,6,7,4,5];
         }
 
         this.concatBuffer = this.context.createBuffer(nCh, length, srate);
