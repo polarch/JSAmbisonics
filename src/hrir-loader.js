@@ -64,7 +64,7 @@ export default class HRIRloader {
             // DEBUG END //////////////////////////////////////////////////
 
             // get decoding matrix
-            this.decodingMatrix = utils.getAmbiBinauralDecMtx(grantedFilterPos, this.order);
+            this.decodingMatrix = utils.getAmbisonicDecMtx(grantedFilterPos, this.order);
 
             // convert hrir filters to hoa filters
             this.hoaBuffer = this.getHoaFilterFromHrirFilter();

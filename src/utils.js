@@ -46,7 +46,7 @@ export function deg2rad(aedArrayIn) {
 }
 
 
-export function getAmbiBinauralDecMtx(hrtf_dirs_deg, order) {
+export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
 
     // triangulation
     var hrtf_dirs_rad = deg2rad(hrtf_dirs_deg);
@@ -2063,6 +2063,6 @@ export function getTdesign(degree) {
 }
 
 // exports
-module.exports.getAmbiBinauralDecMtx = getAmbiBinauralDecMtx;
+module.exports.getAmbisonicDecMtx = getAmbisonicDecMtx;
 module.exports.getTdesign = getTdesign;
 module.exports.deg2rad = deg2rad;

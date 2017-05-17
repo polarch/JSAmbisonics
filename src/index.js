@@ -6,6 +6,7 @@ export { default as orderWeight } from './ambi-orderWeight';
 export { default as sceneRotator } from './ambi-sceneRotator';
 export { default as sceneMirror } from './ambi-sceneMirror';
 export { default as binDecoder} from './ambi-binauralDecoder';
+export { default as decoder} from './ambi-decoder';
 export { default as virtualMic } from './ambi-virtualMic';
 export { default as rmsAnalyser } from './ambi-rmsAnalyser';
 export { default as powermapAnalyser } from './ambi-powermapAnalyser';
