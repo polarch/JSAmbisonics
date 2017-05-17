@@ -1,6 +1,6 @@
 # JSAmbisonics
 A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using the Web Audio API.
-**[Live Demo](https://cdn.rawgit.com/polarch/JSAmbisonics/06ae3ec4cb54fcc453c071aec21f4990ecb0cf34/index.html)**
+**[Live Demo](https://cdn.rawgit.com/polarch/JSAmbisonics/b536e502/index.html)**
 
 ---
 >
