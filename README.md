@@ -254,11 +254,11 @@ binDecoder.updateFilters(decodingFilterBuffer);
 
 The SOFA file should be first converted to a JSON file. The appropriate *HRIRloader_xxxxx* should be used, depending on the origin of the SOFA files.
 
-### HRIRloader_ircam
+**HRIRloader_ircam**
 
-This loader is meant to be used with JSON-converted SOFA files from IRCAM. Two examples are included in the repo. This loader relies on the IRCAM module [serveSofaHrir](https://github.com/Ircam-RnD/serveSofaHrir) and it is included for future loading of HRTFs srved publicly from IRCAM. Scripts to convert your own SOFA files to this JSON convention are not included.
+This loader is meant to be used with JSON-converted SOFA files from IRCAM. Two examples are included in the repo. This loader relies on the IRCAM module [serveSofaHrir](https://github.com/Ircam-RnD/serveSofaHrir) and it is included for future loading of HRTFs served publicly from IRCAM. Scripts to convert your own SOFA files to this JSON convention are not included.
 
-### HRIRloader_local
+**HRIRloader_local**
 
 This loader is meant to be used with the user's own SOFA files. You need to have Python installed to convert the SOFA files to JSON, and the h5py Python library installed. Using PIP do:
 
