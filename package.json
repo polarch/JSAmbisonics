@@ -1,6 +1,6 @@
 {
   "name": "ambisonics",
-  "version": "0.3.0",
+  "version": "0.2.3",
   "description": "web audio classes for Ambisonic processing",
   "author": "Archontis Politis <archontis.politis@aalto.com>",
   "contributors": [
