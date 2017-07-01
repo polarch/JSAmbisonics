@@ -236,7 +236,7 @@ and so on.
 ## Integration with SOFA HRTFs <a name="sofa"></a>
 
 Generation of the binaural decoding filters require Head-related Transfer Functions (HRTFs), and they depend on the order, the measurement grid of the HRTFs, and the choice of ambisonic decoding approach. This is often not a straightforward task and not for the end-user of the library. If users are not satisfied with the example filters provided in the repo, and they have access to various HRTF sets, or to their own personalized HRTFs, they should have an automated way to generate these filters.
-A module that loads HRTFs and attempts to do that is included in the library. The HRTFs should be in the [SOFA](https://www.sofaconventions.org/mediawiki/index.php/Main_Page) format, which seems to be the most established one at the moment. Usage:
+A module that loads HRTFs and attempts to do that is included in the library. The HRTFs should be in the standardized [SOFA](https://www.sofaconventions.org/mediawiki/index.php/Main_Page) format, which seems to be the most established one at the moment. Usage:
 
 ```javascript
 var decodingFilterBuffer;
@@ -247,17 +247,37 @@ var callbackOnLoad = function(decodedBuffer) {
 }
 
 var binDecoder = new ambisonics.binDecoder(audioContext, order);
-var hrirLoader = new ambisonics.HOAloader(audioContext, order, callbackOnLoad);
+var hrirLoader = new ambisonics.HRIRloader_xxxxx(audioContext, order, callbackOnLoad);
 hrirLoader.load(url);
 binDecoder.updateFilters(decodingFilterBuffer);
 ```
 
-The SOFA file should be first converted to a JSON file; see the example files in the repo. Scripts to convert SOFA files to JSON will be provided soon.
+The SOFA file should be first converted to a JSON file. The appropriate *HRIRloader_xxxxx* should be used, depending on the origin of the SOFA files.
+
+### HRIRloader_ircam
+
+This loader is meant to be used with JSON-converted SOFA files from IRCAM. Two examples are included in the repo. This loader relies on the IRCAM module [serveSofaHrir](https://github.com/Ircam-RnD/serveSofaHrir) and it is included for future loading of HRTFs srved publicly from IRCAM. Scripts to convert your own SOFA files to this JSON convention are not included.
+
+### HRIRloader_local
+
+This loader is meant to be used with the user's own SOFA files. You need to have Python installed to convert the SOFA files to JSON, and the h5py Python library installed. Using PIP do:
+
+```bash
+pip install h5py
+```
+
+Then in the ```./utils``` folder do (thanks to Antti Vanne for the script) 
+
+```bash
+python sofa2json.py [HRTFsetFilePath].sofa
+```
+
+That will generate the same file but as [HRTFsetFilePath].sofa.json, which you can then load normally, using the loader as above.
 
 ---
 ## Legacy <a name="legacy"></a>
 
-In the **legacy** folder of the repository there is a copy of the FOA part of the initial release of the library, when the library was still split in FOA and HOA components. The only reason that this is preserved is that if somebody is interested in FOA only processing, the *WebAudio_FOA.js* file has all the components needed without the additional complexity of HOA processing and with no external dependencies.
+In the ```./legacy``` folder of the repository there is a copy of the FOA part of the initial release of the library, when the library was still split in FOA and HOA components. The only reason that this is preserved is that if somebody is interested in FOA only processing, the *WebAudio_FOA.js* file has all the components needed without the additional complexity of HOA processing and with no external dependencies.
 
 ---
 ## Developers <a name="developers"></a>
