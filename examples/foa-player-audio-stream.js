@@ -5,7 +5,7 @@ var AudioContext = window.AudioContext // Default
     || window.webkitAudioContext; // Safari and old versions of Chrome
 var context = new AudioContext; // Create and Initialize the Audio Context
 
-var irUrl = "IRs/aalto2016_N1.wav";
+var irUrl = "IRs/ambisonic2binaural_filters/aalto2016_N1.wav";
 var soundBuffer, sound, soundUrl;
 var maxOrder = 1;
 

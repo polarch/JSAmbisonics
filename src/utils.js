@@ -25,7 +25,7 @@ export function deg2rad(aedArrayIn) {
     // format: [ [azim_1, elev_1, dist_1], ..., [azim_N, elev_N, dist_N] ]
     // or
     //         [ [azim_1, elev_1],         ..., [azim_N, elev_N] ]
-    let aedArrayOut = [];
+    var aedArrayOut = [];
     var PI_180 = Math.PI / 180.0;
     
     for (let i = 0; i < aedArrayIn.length; i++) {
@@ -45,6 +45,30 @@ export function deg2rad(aedArrayIn) {
     return aedArrayOut;
 }
 
+export function rad2deg(aedArrayIn) {
+    // format: [ [azim_1, elev_1, dist_1], ..., [azim_N, elev_N, dist_N] ]
+    // or
+    //         [ [azim_1, elev_1],         ..., [azim_N, elev_N] ]
+    var aedArrayOut = [];
+    var PI_180 = 180.0 / Math.PI;
+    
+    for (let i = 0; i < aedArrayIn.length; i++) {
+        if (aedArrayIn[0].length == 3)
+            aedArrayOut.push([
+                              aedArrayIn[i][0] * PI_180,
+                              aedArrayIn[i][1] * PI_180,
+                              aedArrayIn[i][2]
+                              ]);
+        else if (aedArrayIn[0].length == 2)
+            aedArrayOut.push([
+                              aedArrayIn[i][0] * PI_180,
+                              aedArrayIn[i][1] * PI_180,
+                              ]);
+        
+    }
+    return aedArrayOut;
+}
+
 
 export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
 
@@ -57,18 +81,18 @@ export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
     
     // triplet coordinate inversions for VBAP
     var layoutInvMtx = new Array(nTri);
-    for (var n=0; n<nTri; n++) {
+    for (let n=0; n<nTri; n++) {
         
         // get the unit vectors for the current group
-        var tempGroup = new Array(3);
-        for (var i=0; i<3; i++) {
+        let tempGroup = new Array(3);
+        for (let i=0; i<3; i++) {
             tempGroup[i] = vertices[triplets[n][i]];
         }
         // get inverse mtx of current group
-        var tempInvMtx = numeric.inv(tempGroup);
-        var tempInvVec = []; //vectorize matrix by stacking columns
-        for (var i=0; i<3; i++) {
-            for (var j=0; j<3; j++) {
+        let tempInvMtx = numeric.inv(tempGroup);
+        let tempInvVec = []; //vectorize matrix by stacking columns
+        for (let i=0; i<3; i++) {
+            for (let j=0; j<3; j++) {
                 tempInvVec.push(tempInvMtx[j][i]);
             }
         }
@@ -79,8 +103,6 @@ export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
     // t-value for the t-design
     var t = 2*order + 1;
     // vbap gains for selected t-design
-    // eval("var td = SPH_T_DESIGNS.TD" + t);
-    // var td_dirs_rad = td.azimElev;
     var td_dirs_deg = getTdesign(2*order);
     var td_dirs_rad = deg2rad(td_dirs_deg);
     var G_td = vbap3(td_dirs_rad, triplets, layoutInvMtx, nHRTFs);
@@ -110,14 +132,14 @@ var vbap3 = function (dirs_rad, triplets, ls_invMtx, ls_num) {
     var gainMtx = new Array(nDirs);
     var U = jshlib.convertSph2Cart(dirs_rad);
     
-    for (var ns=0; ns<nDirs; ns++) {
-        var u = U[ns];
-        var gains = new Array(nLS);
+    for (let ns=0; ns<nDirs; ns++) {
+        let u = U[ns];
+        let gains = new Array(nLS);
         gains.fill(0);
 
-        for (var i=0; i<nTri; i++) {
-            var g_tmp = [];
-            var v_tmp = [ ls_invMtx[i][0], ls_invMtx[i][1], ls_invMtx[i][2] ];
+        for (let i=0; i<nTri; i++) {
+            let g_tmp = [];
+            let v_tmp = [ ls_invMtx[i][0], ls_invMtx[i][1], ls_invMtx[i][2] ];
             g_tmp[0] = numeric.dotVV( v_tmp , u );
             v_tmp = [ ls_invMtx[i][3], ls_invMtx[i][4], ls_invMtx[i][5] ];
             g_tmp[1] = numeric.dotVV( v_tmp , u );
@@ -127,7 +149,7 @@ var vbap3 = function (dirs_rad, triplets, ls_invMtx, ls_num) {
 
                 let norm_g_tmp = Math.sqrt(numeric.sum(numeric.pow(g_tmp,2))); // normalize gains
                 let g_tmp_normed = numeric.div(g_tmp, norm_g_tmp);
-                for (var j=0;j<3;j++) {
+                for (let j=0;j<3;j++) {
                     gains[ triplets[i][j] ] = g_tmp_normed[j];
                 }
                 break;
@@ -139,6 +161,54 @@ var vbap3 = function (dirs_rad, triplets, ls_invMtx, ls_num) {
         gainMtx[ns] = gains_normed;
     }
     return gainMtx;
+}
+
+export function createNearestLookup(dirs_deg, ang_res) {
+    
+    var nDirs = dirs_deg.length;
+    var dirs_xyz = jshlib.convertSph2Cart(deg2rad(dirs_deg));
+    var nAzi = Math.round(360/ang_res[0]) + 1;
+    var nEle = Math.round(180/ang_res[1]) + 1;
+    var azi = new Array(nAzi);
+    azi[0] = -180;
+    for (let i=1; i<nAzi; i++) {
+        azi[i] = azi[i-1] + ang_res[0];
+    }
+    var nGrid = nAzi*nEle;
+    var nearestLookup = new Array(nGrid);
+    for (let i = 0; i < nGrid; i++) {
+        let grid_deg = [[ (i%nAzi)*ang_res[0]-180, Math.floor(i/nAzi)*ang_res[1]-90 ]];
+        let grid_xyz = jshlib.convertSph2Cart(deg2rad(grid_deg));
+        let minVal = 1000;
+        for (let j = 0; j < nDirs; j++) {
+            let newMinVal = numeric.sum(numeric.pow(numeric.sub(grid_xyz[0], dirs_xyz[j]),2));
+            if (newMinVal<minVal) {
+                nearestLookup[i] = j;
+                minVal = newMinVal;
+            }
+        }
+    }
+    return nearestLookup;
+}
+
+export function findNearest(dirs_deg, nearestLookup, ang_res) {
+    
+    var nDirs = dirs_deg.length;
+    var azim = [];
+    var elev = [];
+    for (let i = 0; i < nDirs; i++) {
+        azim.push(dirs_deg[i][0]+180);
+        elev.push(dirs_deg[i][1]+90);
+    }
+    var nAzi = Math.round(360/ang_res[0]) + 1;
+    var aziIndex = numeric.round( numeric.div( numeric.mod(azim,360), ang_res[0]) );
+    var elevIndex = numeric.round( numeric.div(elev, ang_res[1]) );
+    var gridIndex = numeric.add( numeric.mul(elevIndex,nAzi), aziIndex, 1);
+    var nearestIndex = [];
+    for (let i = 0; i < nDirs; i++) {
+        nearestIndex.push(nearestLookup[gridIndex[i]]);
+    }
+    return nearestIndex;
 }
 
 
@@ -168,7 +238,7 @@ export function getTdesign(degree) {
     if (degree > 21){ throw new Error('Designs of order greater than 21 are not implemented'); }
     else if (degree < 1){ throw new Error('Order should be at least 1'); }
     
-    let speakerPos = [
+    var speakerPos = [
                       [
                        [0.00,   0.00,   1.00],
                        [180.00,   0.00,   1.00],
@@ -2058,7 +2128,7 @@ export function getTdesign(degree) {
                       ];
     
     // [dirs(:,1), dirs(:,2)] = cart2sph(vecs(:,1), vecs(:,2), vecs(:,3));
-    let dirs = speakerPos[degree-1];
+    var dirs = speakerPos[degree-1];
     return dirs
 }
 
@@ -2066,3 +2136,6 @@ export function getTdesign(degree) {
 module.exports.getAmbisonicDecMtx = getAmbisonicDecMtx;
 module.exports.getTdesign = getTdesign;
 module.exports.deg2rad = deg2rad;
+module.exports.rad2deg = rad2deg;
+module.exports.createNearestLookup = createNearestLookup;
+module.exports.findNearest = findNearest;

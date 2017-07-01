@@ -14,7 +14,7 @@
     var context = new AudioContext; // Create and Initialize the Audio Context
  
     var soundUrl = "videos/musiikkitalo1_seg1_short_wxyz.wav";
-    var irUrl = "../IRs/HOA1_IRC_1008_virtual.wav";
+    var irUrl = "../ambisonic2binaural_filters/IRs/HOA1_IRC_1008_virtual.wav";
     var soundBuffer, sound;
 
      // initialize ambisonic rotator

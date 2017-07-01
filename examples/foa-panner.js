@@ -12,7 +12,7 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/sample2.wav";
-var irUrl = "IRs/aalto2016_N1.wav";
+var irUrl = "IRs/ambisonic2binaural_filters/aalto2016_N1.wav";
 
 var soundBuffer, sound;
 

@@ -13,7 +13,8 @@ export { default as powermapAnalyser } from './ambi-powermapAnalyser';
 export { default as intensityAnalyser} from './ambi-intensityAnalyser';
 
 export { default as HOAloader } from './hoa-loader';
-export { default as HRIRloader } from './hrir-loader';
+export { default as HRIRloader_local } from './hrir-loader_local';
+export { default as HRIRloader_ircam } from './hrir-loader_ircam';
 
 import * as _converters from './ambi-converters';
 export const converters = _converters;

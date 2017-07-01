@@ -12,9 +12,9 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/HOA3_rec1.ogg";
-var irUrl_0 = "IRs/HOA3_IRC_1008_virtual.wav";
-var irUrl_1 = "IRs/aalto2016_N3.wav";
-var irUrl_2 = "IRs/HOA3_BRIRs-medium.wav";
+var irUrl_0 = "IRs/ambisonic2binaural_filters/HOA3_IRC_1008_virtual.wav";
+var irUrl_1 = "IRs/ambisonic2binaural_filters/aalto2016_N3.wav";
+var irUrl_2 = "IRs/ambisonic2binaural_filters/HOA3_BRIRs-medium.wav";
 
 var maxOrder = 3;
 var orderOut = 3;

@@ -12,8 +12,8 @@ context.onstatechange = function() {
 }
 
 var soundUrl = "sounds/sample2.wav";
-var irUrl_0 = "IRs/IRC_1037_C_HRIR_44100.sofa.json";
-var irUrl_1 = "IRs/IRC_1076_C_HRIR_44100.sofa.json";
+var irUrl_0 = "IRs/ircam_JSON_format/IRC_1037_C_HRIR_44100.sofa.json";
+var irUrl_1 = "IRs/ircam_JSON_format/IRC_1076_C_HRIR_44100.sofa.json";
 
 var maxOrder = 4;
 var orderOut = 4;
@@ -69,7 +69,7 @@ var assignFiltersOnLoad = function(buffer) {
     console.log('successfully loaded HOA buffer:', buffer);
     decoder.updateFilters(buffer);
 }
-var loader_filters = new ambisonics.HRIRloader(context, maxOrder, assignFiltersOnLoad);
+var loader_filters = new ambisonics.HRIRloader_ircam(context, maxOrder, assignFiltersOnLoad);
 loader_filters.load(irUrl_0);
 
 // function to change sample from select box
@@ -161,7 +161,7 @@ $(document).ready(function() {
     button.innerHTML = decoderStringList[i];
     button.addEventListener('click', function() {
                           decoderValue.innerHTML = this.innerHTML;
-                          loader_filters = new ambisonics.HRIRloader(context, maxOrder, assignFiltersOnLoad);
+                          loader_filters = new ambisonics.HRIRloader_ircam(context, maxOrder, assignFiltersOnLoad);
                           loader_filters.load(this.value);
                           });
     decoderButtons.appendChild(button);
