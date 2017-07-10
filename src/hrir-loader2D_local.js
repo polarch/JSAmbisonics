@@ -23,7 +23,7 @@
 
 var utils = require("./utils.js");
 
-export default class HRIRloader_local {
+export default class HRIRloader2D_local {
     constructor(context, order, callback) {
         this.context = context;
         this.order = order;

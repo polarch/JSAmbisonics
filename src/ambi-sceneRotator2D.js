@@ -21,7 +21,7 @@
 /* HOA ROTATOR 2D */
 ///////////////////
 
-export default class sceneRotator {
+export default class sceneRotator2D {
 
     constructor(audioCtx, order) {
 
