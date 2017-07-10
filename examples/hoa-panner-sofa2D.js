@@ -1,0 +1,185 @@
+////////////////////////////////////////////////////////////////////
+//
+//  hoa-panner-sofa2D showing an example for 2D Ambisonics usage.
+//  Due to channel limitations of the Web Audio API up to 15th order
+//  2D Ambisonics is possible.
+//
+//  adapted by Thomas Deppisch
+//  thomas.deppisch93@gmail.com
+//
+////////////////////////////////////////////////////////////////////
+
+console.log(ambisonics);
+
+// Setup audio context and variables
+var AudioContext = window.AudioContext // Default
+    || window.webkitAudioContext; // Safari and old versions of Chrome
+var context = new AudioContext; // Create and Initialize the Audio Context
+
+// added resume context to handle Firefox suspension of it when new IR loaded
+// see: http://stackoverflow.com/questions/32955594/web-audio-scriptnode-not-called-after-button-onclick
+context.onstatechange = function() {
+    if (context.state === "suspended") { context.resume(); }
+}
+
+var soundUrl = "sounds/sample2.wav";
+var irUrl_0 = "IRs/ircam_JSON_format/IRC_1037_C_HRIR_44100.sofa.json";
+var irUrl_1 = "IRs/ircam_JSON_format/IRC_1076_C_HRIR_44100.sofa.json";
+
+var maxOrder = 15;
+var orderOut = 5;
+var soundBuffer, sound;
+
+// define HOA encoder (panner)
+var encoder = new ambisonics.monoEncoder2D(context, maxOrder);
+console.log(encoder);
+// define HOA rotator
+var rotator = new ambisonics.sceneRotator2D(context, maxOrder);
+console.log(rotator);
+// binaural HOA decoder
+var decoder = new ambisonics.binDecoder2D(context, maxOrder);
+console.log(decoder);
+// output gain
+var gainOut = context.createGain();
+
+// intensity analyser
+var analyser = new ambisonics.intensityAnalyser(context, maxOrder);
+console.log(analyser);
+
+// connect HOA blocks
+encoder.out.connect(rotator.in);
+rotator.out.connect(decoder.in);
+decoder.out.connect(gainOut);
+gainOut.connect(context.destination);
+
+// function to assign sample to the sound buffer for playback (and enable playbutton)
+var assignSample2SoundBuffer = function(decodedBuffer) {
+    soundBuffer = decodedBuffer;
+    document.getElementById('play').disabled = false;
+}
+
+// function to load samples
+function loadSample(url, doAfterLoading) {
+    var fetchSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
+    fetchSound.open("GET", url, true); // Path to Audio File
+    fetchSound.responseType = "arraybuffer"; // Read as Binary Data
+    fetchSound.onload = function() {
+        context.decodeAudioData(fetchSound.response, doAfterLoading);
+    }
+    fetchSound.send();
+}
+loadSample(soundUrl, assignSample2SoundBuffer);
+
+// load filters and assign to buffers
+var assignFiltersOnLoad = function(buffer) {
+    console.log('successfully loaded HOA buffer:', buffer);
+    decoder.updateFilters(buffer);
+}
+var loader_filters = new ambisonics.HRIRloader2D_local(context, maxOrder, assignFiltersOnLoad);
+loader_filters.load(irUrl_0);
+
+// function to change sample from select box
+function changeSample() {
+    document.getElementById('play').disabled = true;
+    document.getElementById('stop').disabled = true;
+    soundUrl = document.getElementById("sample_no").value;
+    if (typeof sound != 'undefined' && sound.isPlaying) {
+        sound.stop(0);
+        sound.isPlaying = false;
+    }
+    loadSample(soundUrl, assignSample2SoundBuffer);
+}
+
+// Define mouse drag on spatial map .png local impact
+function mouseActionLocal(angleXY) {
+    encoder.azim = angleXY[0];
+    encoder.elev = angleXY[1];
+    encoder.updateGains();
+}
+
+function drawLocal() {
+    // Update audio analyser buffers
+    analyser.updateBuffers();
+    var params = analyser.computeIntensity();
+    updateCircles(params, canvas);
+}
+
+$.holdReady( true ); // to force awaiting on common.html loading
+
+$(document).ready(function() {
+
+    // update sample list for selection
+    var sampleList = {  "speech": "sounds/sample2.wav",
+                        "drum loop": "sounds/sample1.ogg"
+    };
+    var $el = $("#sample_no");
+    $el.empty(); // remove old options
+    $.each(sampleList, function(key,value) {
+        $el.append($("<option></option>")
+                .attr("value", value).text(key));
+        });
+
+    // Init event listeners
+    document.getElementById('play').addEventListener('click', function() {
+        sound = context.createBufferSource();
+        sound.buffer = soundBuffer;
+        sound.loop = true;
+        sound.connect(encoder.in);
+        sound.start(0);
+        sound.isPlaying = true;
+        document.getElementById('play').disabled = true;
+        document.getElementById('stop').disabled = false;
+    });
+    document.getElementById('stop').addEventListener('click', function() {
+        sound.stop(0);
+        sound.isPlaying = false;
+        document.getElementById('play').disabled = false;
+        document.getElementById('stop').disabled = true;
+    });
+
+    // Order control buttons
+    orderValue.innerHTML = maxOrder;
+    var orderButtons = document.getElementById("div-order");
+    for (var i=1; i<=maxOrder; i++) {
+    var button = document.createElement("button");
+    button.setAttribute("id", 'N'+i);
+    button.setAttribute("value", i);
+    button.innerHTML = 'N'+i;
+    button.addEventListener('click', function() {
+                          orderOut = parseInt(this.value);
+                          orderValue.innerHTML = orderOut;
+                          limiter.updateOrder(orderOut);
+                          limiter.out.connect(decoder.in);
+                          });
+    orderButtons.appendChild(button);
+    }
+
+    // Decoding buttons
+    var decoderButtons = document.getElementById("div-decoder");
+    var decoderStringList = ['IRCAM Listen 1037','IRCAM Listen 1076'];
+    decoderValue.innerHTML = decoderStringList[0];
+    var irUrlList = [irUrl_0, irUrl_1];
+    for (i=0; i<irUrlList.length; i++) {
+
+    var button = document.createElement("button");
+    button.setAttribute("id", 'R'+i);
+    button.setAttribute("value", irUrlList[i]);
+    button.innerHTML = decoderStringList[i];
+    button.addEventListener('click', function() {
+                          decoderValue.innerHTML = this.innerHTML;
+                          loader_filters = new ambisonics.HRIRloader_ircam(context, maxOrder, assignFiltersOnLoad);
+                          loader_filters.load(this.value);
+                          });
+    decoderButtons.appendChild(button);
+    }
+
+    // Mirror Buttons actions
+    for (var i=0; i<4; i++) {
+    var button = document.getElementById('M'+i);
+    button.addEventListener('click', function() {
+                          mirrorValue.innerHTML = this.innerHTML;
+                          mirror.mirror(parseInt(this.value));
+                          });
+    }
+
+});
