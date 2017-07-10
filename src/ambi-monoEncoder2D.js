@@ -57,10 +57,10 @@ export default class monoEncoder2D {
 
     updateGains() {
         var N = this.order;
-        var g_enc = getCircHarmonics(N, [this.azim]);
+        var g_enc = utils.getCircHarmonics(N, [this.azim]);
 
         for (var i = 0; i < this.nCh; i++) {
-            this.gainNodes[i].gain.value = g_enc[i][0] * this.interpolationFactor;
+            this.gainNodes[i].gain.value = g_enc[i][0];
         }
     }
 }

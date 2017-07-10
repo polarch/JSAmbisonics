@@ -31,7 +31,7 @@ export default class HRIRloader2D_local {
         // function called when filters loaded
         this.onLoad = callback;
         // define required virtual speaker positions based on Ambisonic order
-        this.vls_dirs_deg = sampleCircle(2*this.order + 2); //2n+2 virtual speakers for 2D
+        this.vls_dirs_deg = utils.sampleCircle(2*this.order + 2); //2n+2 virtual speakers for 2D
         this.nVLS = this.vls_dirs_deg.length;
         // angular resolution for fast lookup to closest HRIR to a given direction
         this.nearestLookupRes = [5,5];
@@ -120,13 +120,13 @@ export default class HRIRloader2D_local {
         // max rE optimization
         var a_n = [];
         a_n.push(1);
-        for(i=1;i<(this.order+1);i++){
+        for(var i=1;i<(this.order+1);i++){
           a_n.push(Math.cos((i*Math.PI)/(this.nCh)));
           a_n.push(Math.cos((i*Math.PI)/(this.nCh)));
         }
         var diagA = numeric.diag(a_n);
         // get decoding matrix
-        this.decodingMatrix = numeric.transpose(getCircHarmonics(this.order,getColumn(this.nearest_dirs_deg, 0)));
+        this.decodingMatrix = numeric.transpose(utils.getCircHarmonics(this.order,utils.getColumn(this.nearest_dirs_deg, 0)));
         this.decodingMatrix = numeric.dot(this.decodingMatrix, diagA);
         // normalise to number of speakers
         this.decodingMatrix = numeric.mul((2*Math.PI)/this.vls_dirs_deg.length, this.decodingMatrix);

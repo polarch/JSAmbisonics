@@ -15,7 +15,7 @@
 ////////////////////////////////////////////////////////////////////
 //
 //  added for 2D use:
-//  sampleCircle(), getCircHarmonics()
+//  getColumn(), sampleCircle(), getCircHarmonics()
 //  adapted by Thomas Deppisch
 //  thomas.deppisch93@gmail.com
 //
@@ -77,20 +77,26 @@ export function rad2deg(aedArrayIn) {
     return aedArrayOut;
 }
 
-function sampleCircle(numPoints){
+export function getColumn(anArray, columnNumber) {
+  return anArray.map(function(row) {
+                     return row[columnNumber];
+                     });
+}
+
+export function sampleCircle(numPoints){
   // finds equidistant points on circle for virtual speaker positions
   var speakerAngles = [];
   var deltaAngle = 360/numPoints;
   // format for hrtf.nearest: [azim,elev,radius]
   var currentAngle = 0;
-  for (i=0;i<numPoints;i++){
+  for (var i=0;i<numPoints;i++){
     speakerAngles.push([currentAngle,0,1]);
     currentAngle += deltaAngle;
   }
   return speakerAngles;
 }
 
-function getCircHarmonics(order, phis) {
+export function getCircHarmonics(order, phis) {
   // calculates circular harmonics of arbitrary order
   var N = order;
   var numCircHarm = 2*N+1;
