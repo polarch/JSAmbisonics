@@ -33,22 +33,27 @@ var soundBuffer, sound;
 // define HOA encoder (panner)
 var encoder = new ambisonics.monoEncoder2D(context, maxOrder);
 console.log(encoder);
-// define HOA rotator
-var rotator = new ambisonics.sceneRotator2D(context, maxOrder);
-console.log(rotator);
+// define HOA mirroring
+var mirror = new ambisonics.sceneMirror2D(context, maxOrder);
+console.log(mirror);
+// define HOA order limiter (to show the effect of order)
+var limiter = new ambisonics.orderLimiter2D(context, maxOrder, orderOut);
+console.log(limiter);
 // binaural HOA decoder
 var decoder = new ambisonics.binDecoder2D(context, maxOrder);
 console.log(decoder);
-// output gain
-var gainOut = context.createGain();
-
 // intensity analyser
 var analyser = new ambisonics.intensityAnalyser(context, maxOrder);
 console.log(analyser);
+// output gain
+var gainOut = context.createGain();
 
 // connect HOA blocks
-encoder.out.connect(rotator.in);
-rotator.out.connect(decoder.in);
+encoder.out.connect(mirror.in);
+
+mirror.out.connect(analyser.in);
+mirror.out.connect(limiter.in);
+limiter.out.connect(decoder.in);
 decoder.out.connect(gainOut);
 gainOut.connect(context.destination);
 

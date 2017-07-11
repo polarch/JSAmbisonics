@@ -3,10 +3,12 @@
 export { default as monoEncoder } from './ambi-monoEncoder';
 export { default as monoEncoder2D } from './ambi-monoEncoder2D';
 export { default as orderLimiter } from './ambi-orderLimiter';
+export { default as orderLimiter2D } from './ambi-orderLimiter2D';
 export { default as orderWeight } from './ambi-orderWeight';
 export { default as sceneRotator } from './ambi-sceneRotator';
 export { default as sceneRotator2D } from './ambi-sceneRotator2D';
 export { default as sceneMirror } from './ambi-sceneMirror';
+export { default as sceneMirror2D } from './ambi-sceneMirror2D';
 export { default as binDecoder} from './ambi-binauralDecoder';
 export { default as binDecoder2D} from './ambi-binauralDecoder2D';
 export { default as decoder} from './ambi-decoder';
