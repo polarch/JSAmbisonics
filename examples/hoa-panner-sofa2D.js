@@ -43,7 +43,7 @@ console.log(limiter);
 var decoder = new ambisonics.binDecoder2D(context, maxOrder);
 console.log(decoder);
 // intensity analyser
-var analyser = new ambisonics.intensityAnalyser(context, maxOrder);
+var analyser = new ambisonics.intensityAnalyser2D(context, maxOrder);
 console.log(analyser);
 // output gain
 var gainOut = context.createGain();
@@ -172,7 +172,7 @@ $(document).ready(function() {
     button.innerHTML = decoderStringList[i];
     button.addEventListener('click', function() {
                           decoderValue.innerHTML = this.innerHTML;
-                          loader_filters = new ambisonics.HRIRloader_ircam(context, maxOrder, assignFiltersOnLoad);
+                          loader_filters = new ambisonics.HRIRloader2D_local(context, maxOrder, assignFiltersOnLoad);
                           loader_filters.load(this.value);
                           });
     decoderButtons.appendChild(button);

@@ -16,6 +16,7 @@ export { default as virtualMic } from './ambi-virtualMic';
 export { default as rmsAnalyser } from './ambi-rmsAnalyser';
 export { default as powermapAnalyser } from './ambi-powermapAnalyser';
 export { default as intensityAnalyser} from './ambi-intensityAnalyser';
+export { default as intensityAnalyser2D} from './ambi-intensityAnalyser2D';
 
 export { default as HOAloader } from './hoa-loader';
 export { default as HRIRloader_local } from './hrir-loader_local';
