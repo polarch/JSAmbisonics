@@ -121,12 +121,12 @@ export default class HRIRloader2D_local {
         var a_n = [];
         a_n.push(1);
         for(var i=1;i<(this.order+1);i++){
-          a_n.push(Math.cos((i*Math.PI)/(this.nCh)));
-          a_n.push(Math.cos((i*Math.PI)/(this.nCh)));
+          a_n.push(Math.cos((i*Math.PI)/(2*this.order+2)));
+          a_n.push(Math.cos((i*Math.PI)/(2*this.order+2)));
         }
         var diagA = numeric.diag(a_n);
         // get decoding matrix
-        this.decodingMatrix = numeric.transpose(utils.getCircHarmonics(this.order,utils.getColumn(this.nearest_dirs_deg, 0)));
+        this.decodingMatrix = numeric.transpose(utils.getCircHarmonics(this.order,utils.getColumn(this.vls_dirs_deg, 0)));
         this.decodingMatrix = numeric.dot(this.decodingMatrix, diagA);
         // normalise to number of speakers
         this.decodingMatrix = numeric.mul((2*Math.PI)/this.vls_dirs_deg.length, this.decodingMatrix);
