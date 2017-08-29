@@ -12,6 +12,14 @@
 //  typical ambisonic processing operations on audio signals.
 //
 ////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+//
+//  added for 2D use:
+//  getColumn(), sampleCircle(), getCircHarmonics()
+//  adapted by Thomas Deppisch
+//  thomas.deppisch93@gmail.com
+//
+////////////////////////////////////////////////////////////////////
 
 ///////////
 /* UTILS */
@@ -27,7 +35,7 @@ export function deg2rad(aedArrayIn) {
     //         [ [azim_1, elev_1],         ..., [azim_N, elev_N] ]
     var aedArrayOut = [];
     var PI_180 = Math.PI / 180.0;
-    
+
     for (let i = 0; i < aedArrayIn.length; i++) {
         if (aedArrayIn[0].length == 3)
         aedArrayOut.push([
@@ -40,7 +48,7 @@ export function deg2rad(aedArrayIn) {
                         aedArrayIn[i][0] * PI_180,
                         aedArrayIn[i][1] * PI_180,
                         ]);
-        
+
     }
     return aedArrayOut;
 }
@@ -51,7 +59,7 @@ export function rad2deg(aedArrayIn) {
     //         [ [azim_1, elev_1],         ..., [azim_N, elev_N] ]
     var aedArrayOut = [];
     var PI_180 = 180.0 / Math.PI;
-    
+
     for (let i = 0; i < aedArrayIn.length; i++) {
         if (aedArrayIn[0].length == 3)
             aedArrayOut.push([
@@ -64,11 +72,47 @@ export function rad2deg(aedArrayIn) {
                               aedArrayIn[i][0] * PI_180,
                               aedArrayIn[i][1] * PI_180,
                               ]);
-        
+
     }
     return aedArrayOut;
 }
 
+export function getColumn(anArray, columnNumber) {
+  return anArray.map(function(row) {
+                     return row[columnNumber];
+                     });
+}
+
+export function sampleCircle(numPoints){
+  // finds equidistant points on circle for virtual speaker positions
+  var speakerAngles = [];
+  var deltaAngle = 360/numPoints;
+  // format for hrtf.nearest: [azim,elev,radius]
+  var currentAngle = 0;
+  for (var i=0;i<numPoints;i++){
+    speakerAngles.push([currentAngle,0,1]);
+    currentAngle += deltaAngle;
+  }
+  return speakerAngles;
+}
+
+export function getCircHarmonics(order, phis) {
+  // calculates circular harmonics of arbitrary order
+  var N = order;
+  var numCircHarm = 2*N+1;
+  var Ndirs = phis.length;
+  var Y_N = new Array(numCircHarm);
+  var cosmphis, sinmphis;
+  var arr1 = new Array(Ndirs);
+  phis = numeric.mul(phis, (Math.PI / 180));
+  arr1.fill(1/Math.sqrt(2*Math.PI));
+  Y_N[0] = arr1;
+  for (var i = 0; i < N; i++) {
+    Y_N[2*i+1] = numeric.div(numeric.sin(numeric.mul(-(i+1),phis)),Math.sqrt(Math.PI));
+    Y_N[2*i+2] = numeric.div(numeric.cos(numeric.mul((i+1),phis)),Math.sqrt(Math.PI));
+  }
+  return Y_N;
+}
 
 export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
 
@@ -78,11 +122,11 @@ export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
     var triplets = convexhull(vertices);
     var nTri = triplets.length;
     var nHRTFs = hrtf_dirs_rad.length;
-    
+
     // triplet coordinate inversions for VBAP
     var layoutInvMtx = new Array(nTri);
     for (let n=0; n<nTri; n++) {
-        
+
         // get the unit vectors for the current group
         let tempGroup = new Array(3);
         for (let i=0; i<3; i++) {
@@ -120,18 +164,18 @@ export function getAmbisonicDecMtx(hrtf_dirs_deg, order) {
 
 
 var vbap3 = function (dirs_rad, triplets, ls_invMtx, ls_num) {
-    
+
     var nDirs = dirs_rad.length;
     var nLS = ls_num;
     var nTri = triplets.length;
-    
+
     function getMinOfArray(numArray) {
         return Math.min.apply(null, numArray);
     }
-    
+
     var gainMtx = new Array(nDirs);
     var U = jshlib.convertSph2Cart(dirs_rad);
-    
+
     for (let ns=0; ns<nDirs; ns++) {
         let u = U[ns];
         let gains = new Array(nLS);
@@ -164,7 +208,7 @@ var vbap3 = function (dirs_rad, triplets, ls_invMtx, ls_num) {
 }
 
 export function createNearestLookup(dirs_deg, ang_res) {
-    
+
     var nDirs = dirs_deg.length;
     var dirs_xyz = jshlib.convertSph2Cart(deg2rad(dirs_deg));
     var nAzi = Math.round(360/ang_res[0]) + 1;
@@ -192,7 +236,7 @@ export function createNearestLookup(dirs_deg, ang_res) {
 }
 
 export function findNearest(dirs_deg, nearestLookup, ang_res) {
-    
+
     var nDirs = dirs_deg.length;
     var azim = [];
     var elev = [];
@@ -237,7 +281,7 @@ export function findNearest(dirs_deg, nearestLookup, ang_res) {
 export function getTdesign(degree) {
     if (degree > 21){ throw new Error('Designs of order greater than 21 are not implemented'); }
     else if (degree < 1){ throw new Error('Order should be at least 1'); }
-    
+
     var speakerPos = [
                       [
                        [0.00,   0.00,   1.00],
@@ -2126,7 +2170,7 @@ export function getTdesign(degree) {
                        [-129.40,  -28.85,   1.00],
                        ]
                       ];
-    
+
     // [dirs(:,1), dirs(:,2)] = cart2sph(vecs(:,1), vecs(:,2), vecs(:,3));
     var dirs = speakerPos[degree-1];
     return dirs

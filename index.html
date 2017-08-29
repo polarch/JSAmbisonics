@@ -13,10 +13,10 @@
     <h3>The examples below illustrate the use of the
         <a href="https://github.com/polarch/JSAmbisonics">JS Ambisonics Library</a>:
     </h3>
-    
+
     <hr>
     <h3>FOA examples</h3>
-        
+
         <div class="fancy">
             <a href="examples/foa-panner.html"> <br/>FOA Panner</a>
             <p> An example of a first-order ambisonic encoding of a sound source.
@@ -25,7 +25,7 @@
             In this case, as there is only a single source, it just follows it.
             </p>
         </div>
-        
+
         <div class="fancy">
             <a href="examples/foa-player.html"> <br/>FOA Player</a>
             <p> An example of a loading FOA ambisonic recordings, with binaural decoding.<br/>
@@ -34,7 +34,7 @@
             In this case, multiple directions are rapidly analyzed according to the sound scene activity.
             </p>
         </div>
-        
+
         <div class="fancy">
             <a href="examples/foa-virtual-mic.html"> <br/>FOA Virtual Microphone</a>
             <p> An example of a listening to the output of a virtual microphone, inside a FOA ambisonic recording.<br/>
@@ -47,7 +47,7 @@
         <br/>
         <hr>
         <h3>HOA examples</h3>
-        
+
         <div class="fancy">
             <a href="examples/hoa-panner.html"> <br/>HOA Panner</a>
             <p> An example of a higher-order ambisonic encoding of a sound source. </br>
@@ -55,7 +55,15 @@
             The user can switch between different sets of decoding filters on-the-fly.
             </p>
         </div>
-        
+
+        <div class="fancy">
+            <a href="examples/hoa-panner-sofa2D.html"> <br/>2D HOA Panner</a>
+            <p> An example of a higher-order ambisonic encoding only using circular harmonics (2D). </br>
+            Same example as above but with 2D classes and horizontal only spatialization. </br>
+            Allows the use of Ambisonics up to 15th order.
+            </p>
+        </div>
+
         <div class="fancy">
             <a href="examples/hoa-player.html"> <br/>HOA Player</a>
             <p> An example of a loading HOA ambisonic recordings, with binaural decoding.<br/>
@@ -64,7 +72,7 @@
             The user can switch between different sets of decoding filters on-the-fly.
             </p>
         </div>
-        
+
         <div class="fancy">
             <a href="examples/hoa-virtual-mic.html"> <br/>HOA Virtual Microphone</a>
             <p> An example of a listening to the output of a virtual microphone, inside a HOA ambisonic recording.<br/>
@@ -86,12 +94,12 @@
             <p> An example of a loading HOA ambisonic recordings, decoded on a mutli-channel array of speakers. </br>
             The example demonstrates how to use the web audio API for rendering on a multi-channel architecture.
             </p>
-        </div>        
+        </div>
 
         <br/>
         <hr>
         <h3>Mobile Device-tracked Audiovisual Player example</h3>
-        
+
         <div class="fancy">
             <a href="examples/AVmobile_demo/index.html"> <br/>Google-Cardboard-style Spherical Audio/Video player (Android/Chrome only!)</a>
             <p>
@@ -104,33 +112,33 @@
             The audio/video recording is taken in Helsinki Concert Hall (Musiikkitalo), on a Brahms piece rehearsed by the Sibelius Academy Symphony Orchestra.
             </p>
         </div>
-        
-        
+
+
         <br/>
         <hr>
         <h3>SOFA HRTFs integration example</h3>
-        
+
         <div class="fancy">
             <a href="examples/hoa-panner-sofa.html"> <br/>SOFA HRTFs HOA panner</a>
             <p> This is the same as the HOA panner example above, but in this example integration with SOFA HRTFs is demonstrated. Instead of loading or switching the decoding filters directly, as in the previous examples, different sets of HRTFs in the SOFA format are loaded and switched, and the decoding filters are generated automatically for the specified order.
             </p>
         </div>
-        
-        
+
+
         <br/>
         <hr>
         <h3>WebGL integration examples</h3>
-        
+
         <div class="fancy">
             <a href="examples/hoa-virtual-mic-gl.html"> <br/>WebGL Virtual Microphone visualization</a>
             <p> This is the same as the HOA virtual microphone example above, but with an additional visualization of the rotated microphone pattern using WebGL.
             </p>
         </div>
-        
+
         <br/>
         <hr>
         <h3>HTML audio stream</h3>
-        
+
         <div class="fancy">
             <a href="examples/foa-player-audio-stream.html"> <br/>FOA player based on audio element</a>
             <p> This is the same as the FOA player but using the HTML audio element to stream audio. Useful to e.g. stream large audio files on mobile devices.
@@ -140,11 +148,11 @@
         <br/>
         <hr>
         <h3>Library module tests</h3>
-        
+
         <a href="examples/test.html"> Test </a></li>
         <p> (Not intended for mobiles)<br/> Test script that goes through all the objects in the library, initializes them and logs information on the console - useful to see if the browser supports the library.
         </p>
-        
+
 
 
 </body>
