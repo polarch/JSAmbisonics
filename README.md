@@ -1,6 +1,6 @@
 # JSAmbisonics
 A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using the Web Audio API.
-**[Live Demo](https://cdn.rawgit.com/polarch/JSAmbisonics/0ff18e0224654067c61b4b144ee95a1fd00a15d9/index.html)**
+**[Live Demo](https://cdn.rawgit.com/polarch/JSAmbisonics/e28e15b384f2442a66fadc0035439c64ed65fa4d/index.html)**
 
 ---
 >
@@ -57,9 +57,11 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
 
   * [Description](#description)
   * [Real-time demos](#demos)
+  * [Projects using JSAmbisonics](#projects) 
   * [Installation and usage](#usage)
   * [Loading of multichannel files for HOA](#multichannel)
   * [Integration with SOFA HRTFs](#sofa)  
+  * [2D HOA processing](#2d)
   * [Legacy](#legacy)
   * [Developers](#developers)
   * [License](#license)
@@ -67,9 +69,19 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
 ---
 ## Real-time demos (Chrome and Firefox) <a name="demos"></a>
 
-See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/06ae3ec4cb54fcc453c071aec21f4990ecb0cf34/index.html)  (serving the content of the ``./examples`` folder).
+See the live [Rawgit demo](https://cdn.rawgit.com/polarch/JSAmbisonics/e28e15b384f2442a66fadc0035439c64ed65fa4d/index.html)  (serving the content of the ``./examples`` folder).
 
 HOA recordings are made by the author in the [Communication Acoustics laboratory of Aalto University](http://spa.aalto.fi/en/research/research_groups/communication_acoustics/), using the [Eigenmike](http://www.mhacoustics.com/products#eigenmike1) microphone.
+
+---
+## Projects using JSAmbisonics <a name="projects"></a>
+
+We are aware of the following projects using the library:
+
+* [Web Audio spatial scene rendering with interactive walkthrough capabilities](https://git.iem.at/thomasdeppisch/walkthrough/) (Thomas Deppisch, IEM Graz)
+* [Veri](https://namel.github.io/veri/): a 360 video player
+* [Patches](https://patches.vizor.io/): the browser-based VR world-making platform of [Vizor](https://vizor.io/)
+* Mobile spatial audio experiments by [Infinite Dimensions Audio](http://idaaudio.com/)
 
 ---
 ## Installation and usage <a name="usage"></a>
@@ -273,6 +285,20 @@ python sofa2json.py [HRTFsetFilePath].sofa
 ```
 
 That will generate the same file but as [HRTFsetFilePath].sofa.json, which you can then load normally, using the loader as above.
+
+---
+## 2D HOA processing <a name="2d"></a>
+
+In many cases a scene may be limited to sounds coming only from the horizontal plane, either due to scene properties (e.g. a cocktail party of multiple speakers at ear level), due to rendering restrictions (e.g. HRTF filters available only on the horizontal plane), or due to reduced processing requirements. In such cases not all HOA components are active, since sounds are constrained only to the horizontal plane, without elevation information. For HOA processing of *order=N*, then only *(2N+1)* HOA channels are active. To take advantage of the reduced processing and bandwidth needs of 2D HOA processing, it is better to design the encoder, rotation, decoding, and rest of the modules from scratch instead of just using the full 3D ones. Such objects have been contributed by [Thomas Deppisch](https://github.com/thomasdeppisch), developed as part of his bachelor thesis at Institute of Electronic Music and Acoustics (IEM), KUG/TU Graz, Austria. Many thanks! Some 2D HOA examples are included in the demos.
+
+The following objects have a 2D processing counterpart, their usage is exactly the same as the full 3D ones:
+* **monoEncoder2D**
+* **sceneRotator2D**
+* **sceneMirror2D**
+* **binauralDecoder2D**
+* **orderLimiter2D**
+* **intensityAnalyser2D**
+* **hrirLoader2D_local**
 
 ---
 ## Legacy <a name="legacy"></a>
