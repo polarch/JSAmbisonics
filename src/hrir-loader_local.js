@@ -112,7 +112,7 @@ export default class HRIRloader_local {
     computeDecFilters() {
 
         // get decoding matrix
-        this.decodingMatrix = utils.getAmbiBinauralDecMtx(this.nearest_dirs_deg, this.order);
+        this.decodingMatrix = utils.getAmbisonicDecMtx(this.nearest_dirs_deg, this.order);
         // convert hrir filters to hoa filters
         this.hoaBuffer = this.getHoaFilterFromHrirFilter(this.nCh, this.nSamples, this.fs, this.vls_hrirs, this.decodingMatrix);
         // pass resulting hoa filters to user callback
