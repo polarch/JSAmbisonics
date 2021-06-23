@@ -39,6 +39,7 @@ The implemented Web Audio classes are:
 * **intensityAnalyser**: implements an acoustic intensity analysis for visualization of directional information captured in the ambisonic stream
 * **powermapAnalyser**: analysis of the directional power distribution in the sound field for visualization of directional information captured in the ambisonic stream
 * **rmsAnalyser**: returns the RMS values of the ambisonic channels, useful for metering and visualization.
+* **convolver**: performs multichannel convolution, typically used to convolve a mono anechoic file with an ambisonic room impulse response.
 
 The library is a work-in-progress, but fully functional. At the moment, demos seem to work fine in Mozilla Firefox and Google Chrome. Safari seems to be working too with some issues in multichannel file loading. No other browsers have been checked yet.
 
