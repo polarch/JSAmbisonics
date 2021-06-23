@@ -12,6 +12,7 @@ export { default as sceneMirror2D } from './ambi-sceneMirror2D';
 export { default as binDecoder} from './ambi-binauralDecoder';
 export { default as binDecoder2D} from './ambi-binauralDecoder2D';
 export { default as decoder} from './ambi-decoder';
+export { default as convolver} from './ambi-convolver';
 export { default as virtualMic } from './ambi-virtualMic';
 export { default as rmsAnalyser } from './ambi-rmsAnalyser';
 export { default as powermapAnalyser } from './ambi-powermapAnalyser';
