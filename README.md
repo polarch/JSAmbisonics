@@ -1,6 +1,6 @@
 # JSAmbisonics
 A JS library for first-order ambisonic (FOA) and higher-order ambisonic (HOA) processing for  browsers, using the Web Audio API.
-**[Live Demo](https://cdn.rawgit.com/polarch/JSAmbisonics/e28e15b384f2442a66fadc0035439c64ed65fa4d/index.html)**
+**[Live Demo](https://pyrapple.github.io/JSAmbisonics/)**
 
 ---
 >
@@ -48,7 +48,7 @@ If you would like to reference the library in an article please use the followin
     JSAmbisonics: A Web Audio library for interactive spatial sound processing on the web
     A. Politis, D. Poirier-Quinot
     Interactive Audio Systems Symposium, York, UK, 2016
-    
+
 in which you can also find a detailed description of the internals of the library.
 
 Computation of spherical harmonics and rotations relies on the JavaScript spherical harmonic library contributed by the author [here](https://github.com/polarch/Spherical-Harmonic-Transform-JS). The HOA code is based on the larger Matlab [HOA](https://github.com/polarch/Higher-Order-Ambisonics) and [Spherical Harmonic Transform](https://github.com/polarch/Spherical-Harmonic-Transform) libraries contributed by the author in Github. The rotation algorithm is the fast recursive one by [Ivanic and Ruedenberg](http://pubs.acs.org/doi/abs/10.1021/jp953350u?journalCode=jpchax).
@@ -58,10 +58,10 @@ Computation of spherical harmonics and rotations relies on the JavaScript spheri
 
   * [Description](#description)
   * [Real-time demos](#demos)
-  * [Projects using JSAmbisonics](#projects) 
+  * [Projects using JSAmbisonics](#projects)
   * [Installation and usage](#usage)
   * [Loading of multichannel files for HOA](#multichannel)
-  * [Integration with SOFA HRTFs](#sofa)  
+  * [Integration with SOFA HRTFs](#sofa)
   * [2D HOA processing](#2d)
   * [Legacy](#legacy)
   * [Developers](#developers)
@@ -279,7 +279,7 @@ This loader is meant to be used with the user's own SOFA files. You need to have
 pip install h5py
 ```
 
-Then in the ```./utils``` folder do (thanks to Antti Vanne for the script) 
+Then in the ```./utils``` folder do (thanks to Antti Vanne for the script)
 
 ```bash
 python sofa2json.py [HRTFsetFilePath].sofa
