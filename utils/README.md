@@ -7,15 +7,8 @@ This folder contains a set of Matlab scripts that can be used to create assets (
 
 ## Download new HRIR sets
 
-The Matlab scripts are compliant with the [LISTEN HRTF database](http://recherche.ircam.fr/equipes/salles/listen/download.html). for direct download, type the following in a terminal opened in this directory:
+New SOFA HRTF can be downloaded from the SOFA Convention website: https://www.sofaconventions.org. The Matlab SOFA toolbox (to read .sofa files) can be downloaded from there as well.
 
-```
-HRIR_ID=1008
-wget ftp://ftp.ircam.fr/pub/IRCAM/equipes/salles/listen/archive/SUBJECTS/IRC_${HRIR_ID}.zip
-unzip IRC_${HRIR_ID}.zip
-mv RAW/MAT/HRIR/* .
-rm -Rf IRC_${HRIR_ID}.zip && rm -Rf RAW && rm -Rf COMPENSATED
-```
 
 ## Create Ambisonic HRIRs
 

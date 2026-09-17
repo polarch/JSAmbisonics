@@ -36,20 +36,23 @@ if nargin < 4; useRawArray = false; end
 
 %% Get Ambisonic decode matrix
 
-if ~useRawArray;
+if ~useRawArray
+
     % Define virtual speaker array based on HRIR set measurement grid
     [~, ls_dirs_rad_orig] = getTdesign(2*order);
-
-    % Find closest HRIRs in the set and return actual directions
-    [hrirs_closest, ls_dirs_rad] = getClosestHRIRs(hrirs.', dirsAziElev, ls_dirs_rad_orig);
     
+    % Find closest HRIRs in the set and return actual directions
+    ls_dirs_rad = wrapToPi(deg2rad(360-dirsAziElev));
+    [hrirs_closest, ls_dirs_rad] = getClosestHRIRs(hrirs.', ls_dirs_rad, ls_dirs_rad_orig);
     rE_WEIGHT = 1;
+
 else
+    
     % Every HRIR in the set is considered as a virtual speaker. Non-optimal
     % method, yet some prefer how the resulting hoa irs sound. use at your
     % own risk.
     hrirs_closest = hrirs.';
-    ls_dirs_rad = deg2rad(dirsAziElev);
+    ls_dirs_rad = deg2rad(360-dirsAziElev);
     rE_WEIGHT = 0;
 end
 

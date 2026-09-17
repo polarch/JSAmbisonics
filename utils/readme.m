@@ -22,30 +22,31 @@ cd( fileparts( mfilename('fullpath') ) );
 
 % Select encoding approach
 available_approach = {'DIRECT','VIRTUAL'};
-ENCODING_APPROACH = available_approach{2};
+ENCODING_APPROACH = available_approach{1};
 
 %% Load HRIR
 
-hrir_base_name = 'IRC_1008_R_HRIR'; % see README.md for download instructions
-hrir_filename = fullfile( pwd, [hrir_base_name '.mat'] );
-load( hrir_filename, 'l_hrir_S', 'r_hrir_S' );
+% hrir_base_name = 'IRC_1008_C_44100'; % see README.md for download instructions
+hrir_filename = fullfile( pwd, [hrir_base_name '.sofa'] );
+s = SOFAload(hrir_filename);
 
 %% Generate SH HRIR
 
-order = 3;
-dirsAziElev  = [l_hrir_S.azim_v, l_hrir_S.elev_v];
+order = 1;
+dirsAziElev  = s.SourcePosition(:, 1:2);
 
-switch ENCODING_APPROACH,
-    case 'DIRECT',
-        hrirs = r_hrir_S.content_m.';
-        dirsAziElev(:,1) = 360 - dirsAziElev(:,1); % coordinate system mod
+switch ENCODING_APPROACH
+    
+    case 'DIRECT'
+
+        hrirs = squeeze( s.Data.IR(:, 2, :) ).'; % only right hrtf
         dirsAziElev = deg2rad(dirsAziElev);
         [h_hoa2bin, H_hoa2bin] = getHOA2binauralFilters_direct(order, hrirs, dirsAziElev);
 
-    case 'VIRTUAL', 
-        hrirs_l = l_hrir_S.content_m;
-        hrirs_r = r_hrir_S.content_m;
-        useRawArray = true;
+    case 'VIRTUAL'
+        
+        hrirs_l = squeeze( s.Data.IR(:, 1, :) ); % only left hrtf (since we're being arbitrary, why not be fair)
+        useRawArray = false;
         h_hoa2bin = getHOA2binauralFilters_virtual(order, hrirs_l, dirsAziElev, useRawArray);
 end
 
@@ -53,6 +54,6 @@ end
 
 filepath = pwd;
 filename = [hrir_base_name '_' ENCODING_APPROACH '.wav'];
-fs_in = l_hrir_S.sampling_hz;
+fs_in = s.Data.SamplingRate;
 sig = h_hoa2bin / max(sum(abs(h_hoa2bin))); % normalization
 audiowriteHOA(order, filepath, filename, sig, fs_in);
